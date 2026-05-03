@@ -1,10 +1,16 @@
-* { box-sizing: border-box; }
+* { 
+  box-sizing: border-box; 
+}
+
 body { 
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   margin: 0; padding: 20px; min-height: 100vh;
 }
-.container { max-width: 1400px; margin: 0 auto; }
+
+.container { 
+  max-width: 1400px; margin: 0 auto;
+}
 
 .card { 
   background: white; 
@@ -43,7 +49,7 @@ h2 {
 
 #search {
   width: 100%;
-  padding: 18px 90px 18px 20px; /* Perbesar padding kanan untuk memberi ruang kedua ikon */
+  padding: 18px 90px 18px 20px; 
   font-size: 16px; 
   border: 3px solid #e0e6ed;
   border-radius: 50px; 
@@ -61,7 +67,7 @@ h2 {
 
 .search-icon {
   position: absolute; 
-  right: 50px;  /* Geser ke kiri supaya tidak berdempetan */
+  right: 50px;  
   top: 50%; 
   transform: translateY(-50%);
   cursor: pointer; 
@@ -72,7 +78,7 @@ h2 {
 
 .clear-icon {
   position: absolute; 
-  right: 20px;  /* Tetap di ujung kanan input */
+  right: 20px;  
   top: 50%; 
   transform: translateY(-50%);
   cursor: pointer; 
@@ -90,6 +96,7 @@ h2 {
 }
 
 .filter-group label { font-weight: 600; color: #555; font-size: 0.9em; }
+
 select, input[type="date"] {
   padding: 12px; border: 2px solid #e0e6ed;
   border-radius: 10px; font-size: 16px;
@@ -167,7 +174,22 @@ tr:hover {
 .export-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(102,126,234,0.4); }
 
 @media (max-width: 768px) {
-  .filters { flex-direction: column; }
+  .filters { flex-direction: column; gap: 10px; }
   table { font-size: 14px; }
   th, td { padding: 12px 8px; }
+  .stat-card { font-size: 1em; padding: 15px; }
+  .card {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  #search {
+    padding: 15px 70px 15px 20px; 
+    font-size: 14px;
+  }
+  .search-icon, .clear-icon {
+    font-size: 18px;
+  }
+  .highlight {
+    background: #fff3b0;
+  }
 }
