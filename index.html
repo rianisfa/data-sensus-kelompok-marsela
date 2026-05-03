@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Sensus Kelompok Marsela</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+<div class="container">
+  <div class="card">
+    <h2>🚀 DATA SENSUS KELOMPOK MARSELA</h2>
+    
+    <!-- 📊 STATISTICS -->
+    <div class="stats-grid" id="stats"></div>
+    
+    <!-- 🔍 SEARCH & FILTERS -->
+    <div class="search-container">
+      <input type="text" id="search" placeholder="🔍 Cari nama....">
+      <span class="search-icon">🔍</span>
+      <span class="clear-icon" id="clear" title="Clear">✕</span>
+    </div>
+    
+    <div class="filters">
+      <div class="filter-group">
+        <label>Filter Kelamin</label>
+        <select id="filterKelamin">
+          <option value="">Semua</option>
+          <option value="Laki-laki">Laki-laki</option>
+          <option value="Perempuan">Perempuan</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Filter Kategori</label>
+        <select id="filterKategori">
+          <option value="">Semua</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- 📋 TABLE -->
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>👤 Nama Lengkap</th>
+          <th>⚥ Kelamin</th>
+          <th>📅 Tgl Lahir</th>
+          <th>🎂 Umur</th>
+          <th>🏷️ Kategori</th>
+          <th>📍 Status</th>
+        </tr>
+      </thead>
+      <tbody id="hasil"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const data = [
+    {"no":"1","nama":"Ade Febriansyah","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"2","nama":"Isnaini Zulfa Fauziah","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"3","nama":"Febriani Naura Rumaisha","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"4","nama":"Agus Joko Susilo","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"5","nama":"Nur Uswatun Khasanah","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"6","nama":"H. Ahmad Fathony","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"7","nama":"Nurul Hidayah Putri","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"8","nama":"Narendra Ishamudin Fathony","kelamin":"L","tgl_lahir":"2016-11-07","umur":"10","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"9","nama":"Nayaka Yusuf Fathony","kelamin":"L","tgl_lahir":"2015-01-12","umur":"11","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"10","nama":"Ahmad Nurhakim","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"11","nama":"Mailania Fatkhuroyani","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"12","nama":"Arif Hidayat","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"13","nama":"Bagus Rachmad Febriyanto","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"14","nama":"Bambang Kaptomirin","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"15","nama":"Diana Mardiana","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"16","nama":"Angelia Putri","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"17","nama":"Cecilia Karim","kelamin":"P","tgl_lahir":"2010-02-24","umur":"16","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"18","nama":"Batistuta Amirullah Fauaz","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"19","nama":"Elsye Tri Wardani ","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"20","nama":"Bargrana Syiam Elbata","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"21","nama":"Didik Priyadi","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"22","nama":"Diky Firdaus ","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"23","nama":"Afdhal","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"24","nama":"H. Djono Slamet ","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"25","nama":"Ribut Iriani","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"26","nama":"Ibrohim Mahardika","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"27","nama":"Dini Kholisoh","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"28","nama":"Dondy Permana","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"29","nama":"Dumadi","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"30","nama":"Harjanti","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"31","nama":"Agung Dwi Harsanto","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"32","nama":"Dian Indira Prastiwi","kelamin":"P","tgl_lahir":"2007-09-08","umur":"19","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"33","nama":"Edi Purnomo","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"34","nama":"Meisari Dewi","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"35","nama":"Hasna Az Zahra","kelamin":"P","tgl_lahir":"2014-11-28","umur":"12","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"36","nama":"Akmal Majid Faruq","kelamin":"L","tgl_lahir":"2019-01-21","umur":"7","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"37","nama":"Edo Tricahyo","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"38","nama":"Priska Humaira","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"39","nama":"Iswara Satria Adiwinahyu","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"40","nama":"Eko Puji Wicaksono","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"41","nama":"Sunarti","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"42","nama":"Rifky Abdillah","kelamin":"L","tgl_lahir":"2008-01-26","umur":"18","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"43","nama":"Erwanto Sulistiono","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"44","nama":"Santi Syawaliyah","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"45","nama":"Ernaldi Febrian Sulistio","kelamin":"L","tgl_lahir":"2005-02-12","umur":"21","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"46","nama":"Erika Putri Sulistio","kelamin":"P","tgl_lahir":"2007-03-14","umur":"19","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"47","nama":"Fahmi Gitawan","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"48","nama":"Dwi Vella Yanti","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"49","nama":"Althaf Rafardhan Amrullah","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"50","nama":"Raizura Iqalla","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"51","nama":"Faizal Riski Romadhon","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"52","nama":"Ika Setyowati","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"53","nama":"Zaid Alcantara Fariztyan","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"54","nama":"Fikri Yansyah","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"55","nama":"Elma Wahyuni","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"56","nama":"Arsya Adhlino Gavin","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"57","nama":"H. Mahsun Abdillah","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"58","nama":"Yuliarti ( Mahsun )","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"59","nama":"Wisam Abyadha Ibrahim","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"60","nama":"Alauna Rafi Faida","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"61","nama":"Adini Aflaha Fidata","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"62","nama":"H. Maryanto","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"63","nama":"Atikah","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"64","nama":"Afrianda","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"65","nama":"Prita Ainandiyah","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"66","nama":"Indira Rifti","kelamin":"P","tgl_lahir":"2010-06-09","umur":"16","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"67","nama":"H. Mursito","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"68","nama":"Sri Utari Thaib","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"69","nama":"Ghulam Hadist Ulil Ilmi","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"70","nama":"H. Ponco Budiman","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"71","nama":"Ririh Krishnani","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"72","nama":"Prita Aziziya","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"73","nama":"H. Solikhin","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"74","nama":"Titik Suciati","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"75","nama":"Muhammad Nabil Al Faqih","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"76","nama":"H. Sugiyanto / Mijan","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"77","nama":"Dwi Nur Setyorini","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"78","nama":"Andan Febriansyah","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"79","nama":"Edi Santoso","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"80","nama":"H. Suparno","kelamin":"L","tgl_lahir":"1969-01-02","umur":"57","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"81","nama":"Eni Ernawati","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"82","nama":"Wisnu Saputro","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"83","nama":"Tiara","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"84","nama":"Karunia Kinanti","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"85","nama":"Restu Vinileh","kelamin":"L","tgl_lahir":"2011-10-20","umur":"15","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"86","nama":"Miftah Ahmad Khoiri","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"87","nama":"Nina Allifa","kelamin":"P","tgl_lahir":"2009-04-13","umur":"17","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"88","nama":"H. Suwito","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"89","nama":"Elok Mei Suryani","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"90","nama":"Ahmad Ranger Ramadhana","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"91","nama":"Juwita Angella","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"92","nama":"Ahmad Serhana Rubicon","kelamin":"L","tgl_lahir":"2017-01-17","umur":"9","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"93","nama":"Queenza Agnia Adha","kelamin":"P","tgl_lahir":"2009-11-23","umur":"17","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"94","nama":"Ahmad Afghani Aluxury","kelamin":"L","tgl_lahir":"2011-10-18","umur":"15","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"95","nama":"Bilqis Cahya Mentari","kelamin":"P","tgl_lahir":"2007-07-06","umur":"19","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"96","nama":"Alkamora Kahiyang Tamma","kelamin":"P","tgl_lahir":"2018-11-20","umur":"8","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"97","nama":"Hartoyo","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"98","nama":"Tumini","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"99","nama":"Fitri Fatiha Nasywa Khoirunnisa","kelamin":"P","tgl_lahir":"2004-11-15","umur":"22","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"100","nama":"Saefina Hayyatu Ramadhanti","kelamin":"P","tgl_lahir":"2014-07-18","umur":"12","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"101","nama":"Muhammad Hasbiey Alva Rasyid","kelamin":"L","tgl_lahir":"2017-02-05","umur":"9","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"102","nama":"Mutia Dewi Fadzila","kelamin":"P","tgl_lahir":"2007-12-21","umur":"19","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"103","nama":"Imron Alfatah","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"104","nama":"Tri Yuli Pramudiati","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"105","nama":"Izqian Raden Fattah","kelamin":"L","tgl_lahir":"2026-03-14","umur":"0","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"106","nama":"Lukman Izzar","kelamin":"L","tgl_lahir":"2020-01-11","umur":"6","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"107","nama":"Istarto","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"108","nama":"Dewi Nurwati","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"109","nama":"Royan Hafiz Hafiludin","kelamin":"L","tgl_lahir":"2009-02-15","umur":"17","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"110","nama":"Yazidan Faqih Amirudin","kelamin":"L","tgl_lahir":"2016-01-31","umur":"10","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"111","nama":"Wajihan Awala Salsabila","kelamin":"P","tgl_lahir":"2012-11-06","umur":"14","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"112","nama":"H. Jaka Purnama","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"113","nama":"Tri Marini","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"114","nama":"Anggoro Bayo Kartiko","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"115","nama":"Kania Dewi Pramesti","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"116","nama":"Viona Citra Maharani","kelamin":"P","tgl_lahir":"2011-12-23","umur":"15","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"117","nama":"Jalal","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"118","nama":"Suwarni","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"119","nama":"Dea","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Cucu"},
+    {"no":"120","nama":"Jefri Susanto","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"121","nama":"Rani Yulia","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"122","nama":"Nuha Anindya","kelamin":"P","tgl_lahir":"2022-03-16","umur":"4","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"123","nama":"Putri Jefri","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"124","nama":"Kennez Keneisha Rafifa","kelamin":"P","tgl_lahir":"2019-03-27","umur":"7","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"125","nama":"Khadijah Azkhaira Salwa","kelamin":"P","tgl_lahir":"2021-03-08","umur":"5","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"126","nama":"Kanapi Haryono","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"127","nama":"Komarudin","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"128","nama":"Lukman Setyawan","kelamin":"L","tgl_lahir":"1997-01-17","umur":"29","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"129","nama":"Risqiana Sunaryo","kelamin":"P","tgl_lahir":"1999-10-04","umur":"27","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"130","nama":"Gavi Kaivandra Radeva","kelamin":"L","tgl_lahir":"2025-08-17","umur":"1","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"131","nama":"Maruf As Sidiq","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"132","nama":"Dwi Maharani","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"133","nama":"Althaf El Ikram As Sidiq","kelamin":"L","tgl_lahir":"2018-11-16","umur":"8","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"134","nama":"Alfiana Khoirani","kelamin":"P","tgl_lahir":"2007-05-29","umur":"19","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"135","nama":"Matuh Edi Sapurta","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"136","nama":"Muh Jahro","kelamin":"L","tgl_lahir":"1979-03-22","umur":"47","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"137","nama":"Winarsih","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"138","nama":"Farafisa Mirza Ayuningtyas","kelamin":"P","tgl_lahir":"2015-04-05","umur":"11","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"139","nama":"Mirza Putri Apriliana","kelamin":"P","tgl_lahir":"2008-03-03","umur":"18","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"140","nama":"Muhammad Rosid Noor Ichsan","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"141","nama":"Hanna Aulia Zahra","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"142","nama":"Muhammad Musa Noor Aulia","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"143","nama":"Putra Rosid","kelamin":"L","tgl_lahir":"2025-08-25","umur":"1","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"144","nama":"Muhammad Syamsul Afandi","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"145","nama":"Ade Putri Setia Tama","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"146","nama":"Arshad Gavin Pradita","kelamin":"L","tgl_lahir":"2021-08-05","umur":"5","kategori":"PAUD","status":"Anak"},
+    {"no":"147","nama":"Syaluna Affandi Putri","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"148","nama":"Nur Rokhim","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"149","nama":"Siti Muslimin","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"150","nama":"Rizal Zaki","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"151","nama":"Aisyah Rosita Zasky","kelamin":"P","tgl_lahir":"2010-04-03","umur":"16","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"152","nama":"H. Rachmat Agustian","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"153","nama":"Rizka Annisa","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"154","nama":"Alicia Princessa Marwah","kelamin":"P","tgl_lahir":"2020-03-11","umur":"6","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"155","nama":"Arsakha Virendra Muhammad","kelamin":"L","tgl_lahir":"2013-08-29","umur":"13","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"156","nama":"Riva Hardiyanto","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"157","nama":"Rochmad","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"158","nama":"Suparmi","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"159","nama":"Rohmat Fauzi","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"160","nama":"Maisaroh","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"161","nama":"Faiz Khairul Fadhillah","kelamin":"L","tgl_lahir":"2015-04-12","umur":"11","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"162","nama":"Faza Afifah Ramadhani","kelamin":"P","tgl_lahir":"2013-07-18","umur":"13","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"163","nama":"Roynol Pratama","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"164","nama":"Fitriaty Fauziah","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"165","nama":"Muhammad Ezwan Alana Pratama","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"166","nama":"Ainita Fayza Rahman","kelamin":"P","tgl_lahir":"2017-07-07","umur":"9","kategori":"SD / Caberawit","status":"Keponakan"},
+    {"no":"167","nama":"Alethea Figa Rahman","kelamin":"P","tgl_lahir":"2015-10-28","umur":"11","kategori":"SD / Caberawit","status":"Keponakan"},
+    {"no":"168","nama":"Rudi Rusdianto","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"169","nama":"Rosidah","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"170","nama":"Ahmad Rafly","kelamin":"L","tgl_lahir":"2007-08-09","umur":"19","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"171","nama":"Ibrahim Al Faqih","kelamin":"L","tgl_lahir":"2011-09-08","umur":"15","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"172","nama":"Ibrahim Al Fatir","kelamin":"L","tgl_lahir":"2010-05-25","umur":"16","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"173","nama":"Aldina Diah Ayu","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"174","nama":"Sarwoko","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"175","nama":"Bu Sarwoko","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"176","nama":"Anisa Tri Yanuaty","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"177","nama":"Aisyah Forty Marjany","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"178","nama":"Slamet Nur Ikhsanuddin","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"179","nama":"Ridita Nur Mutiara Rusyda","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"180","nama":"Shakeela","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"181","nama":"Sachika Aanaya Almahyra","kelamin":"P","tgl_lahir":"2020-10-14","umur":"6","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"182","nama":"Shakala Malik Alhakim","kelamin":"L","tgl_lahir":"2019-07-12","umur":"7","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"183","nama":"Sugiyono","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"184","nama":"Bella Nur Aini","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"185","nama":"Namira Grasiella Prameswari","kelamin":"P","tgl_lahir":"2020-10-13","umur":"6","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"186","nama":"Ahmad Giebell Maheswara","kelamin":"L","tgl_lahir":"2018-03-08","umur":"8","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"187","nama":"Naura Binar Maheswari","kelamin":"P","tgl_lahir":"2015-03-14","umur":"11","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"188","nama":"Sunardi","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"189","nama":"Ratna Widyawati","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"190","nama":"Aril Graha Kusuma","kelamin":"L","tgl_lahir":"2008-04-11","umur":"18","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"191","nama":"Bima Saputra","kelamin":"L","tgl_lahir":"2006-05-18","umur":"20","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"192","nama":"Devita Ningrum","kelamin":"P","tgl_lahir":"2013-05-27","umur":"13","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"193","nama":"Lusiyana Savera Ningrum","kelamin":"P","tgl_lahir":"2011-09-28","umur":"15","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"194","nama":"Sutar","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"195","nama":"Naharotun","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"196","nama":"Zhabania Renata Furi","kelamin":"P","tgl_lahir":"2014-07-07","umur":"12","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"197","nama":"Zuhayra Annisa Faradina","kelamin":"P","tgl_lahir":"2018-11-11","umur":"8","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"198","nama":"Zhafira Razana Raum","kelamin":"P","tgl_lahir":"2012-07-12","umur":"14","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"199","nama":"Tukino","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"200","nama":"Sani","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"201","nama":"Tumin","kelamin":"L","tgl_lahir":"1968-06-22","umur":"58","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"202","nama":"Nismawati","kelamin":"P","tgl_lahir":"1976-04-12","umur":"50","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"203","nama":"Zulkarnain Sulistyo","kelamin":"L","tgl_lahir":"1999-09-13","umur":"27","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"204","nama":"Zahra Maulina","kelamin":"P","tgl_lahir":"2002-06-16","umur":"24","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"205","nama":"Bilal Fatkhul Fauzan","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"206","nama":"Sitta Asiah Miftahuljannah","kelamin":"P","tgl_lahir":"2011-05-18","umur":"15","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"207","nama":"Khalid Maulana","kelamin":"L","tgl_lahir":"2014-11-01","umur":"12","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"208","nama":"Warsum Subinto","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"209","nama":"Parwati","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"210","nama":"Keynes Janeeta Seza","kelamin":"P","tgl_lahir":"2018-01-31","umur":"8","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"211","nama":"Yoga","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"212","nama":"Yogi","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"213","nama":"H. Giyadi","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Duda","status":"Kepala Keluarga"},
+    {"no":"214","nama":"Dini Trinity K","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"215","nama":"Dinda Pramesti","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"216","nama":"H. Ngari Santo Sutomo","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Duda","status":"Kepala Keluarga"},
+    {"no":"217","nama":"Sridina Rodhiah","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"218","nama":"Dullah","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"219","nama":"Erik Sunandar","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"220","nama":"Eki Ludfianti","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"221","nama":"Malika Rahmashaliha","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"222","nama":"Khayra Nafi Layal","kelamin":"P","tgl_lahir":"2008-05-29","umur":"18","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"223","nama":"Aisha Rayna Adeela","kelamin":"P","tgl_lahir":"2010-06-05","umur":"16","kategori":"SMP Sederajat","status":"Anak"},
+    {"no":"224","nama":"Mada Samodra","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bapak - Bapak","status":"Kepala Keluarga"},
+    {"no":"225","nama":"Ibu Mada Samodra","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"226","nama":"Anak Bp. Mada","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"PAUD","status":"Anak"},
+    {"no":"227","nama":"Anak Bp. Mada","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"PAUD","status":"Anak"},
+    {"no":"228","nama":"Jumini","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"229","nama":"Sri Hidayati","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"230","nama":"Kaisha Rafa Rumaisya","kelamin":"P","tgl_lahir":"2018-03-17","umur":"8","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"231","nama":"Kayla Az Zahra Humaira","kelamin":"P","tgl_lahir":"2015-10-14","umur":"11","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"232","nama":"Dewi Masitaningsih","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"233","nama":"Keisha Nadhifa Ailani Sibuea","kelamin":"P","tgl_lahir":"2016-12-19","umur":"10","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"234","nama":"Siti Rofingatun","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"235","nama":"Ada Dwi Saputro","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"236","nama":"Ibunya Mba Azka","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Ibu - Ibu","status":"Istri"},
+    {"no":"237","nama":"Azka","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"238","nama":"Anaknya","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"SD / Caberawit","status":"Anak"},
+    {"no":"239","nama":"Dewi Sukesi","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Janda","status":"Kepala Keluarga"},
+    {"no":"240","nama":"Sari Siti Nurjannah","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Janda","status":"Kepala Keluarga"},
+    {"no":"241","nama":"Sudartinah / eyang muji","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Janda","status":"Kepala Keluarga"},
+    {"no":"242","nama":"Sumini Nur Aini","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Janda","status":"Kepala Keluarga"},
+    {"no":"243","nama":"Prima Afiari","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Janda","status":"Kepala Keluarga"},
+    {"no":"244","nama":"Abimana Satria Bhagawanta","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Bayi Balita","status":"Anak"},
+    {"no":"245","nama":"Erlangga Addit Prabowo","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"246","nama":"Ade Royan Aprilia","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"247","nama":"Brilian Isfa Habibna Asabillar Rosyad","kelamin":"L","tgl_lahir":"2001-11-11","umur":"25","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"248","nama":"Muhammad Sholehuddin","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"249","nama":"Rafiq Fauzi Agustian","kelamin":"L","tgl_lahir":"1999-08-15","umur":"27","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"250","nama":"Toha Khoirul Ihsan","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"251","nama":"Muhammad Rizky","kelamin":"L","tgl_lahir":"2008-05-10","umur":"18","kategori":"SMA Sederajat","status":"Anak"},
+    {"no":"252","nama":"Fauzi (Ngawi)","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"253","nama":"Abi Arza Nurkahfi","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"254","nama":"Mahendra Cakra","kelamin":"L","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"255","nama":"Lara","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"256","nama":"Alena Zovanka","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"257","nama":"Ambar Kusuma Wardany","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"258","nama":"Elva Alfia Muhfita","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"259","nama":"Indah Maulina Firda Octavia","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"260","nama":"Sarah Putri Rahmawati","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"261","nama":"Vina Nur Aisah","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"},
+    {"no":"262","nama":"Annisa Kartika Sari","kelamin":"P","tgl_lahir":"","umur":"126","kategori":"Muda - Mudi (Usia Nikah)","status":"Anak"}
+  ]
+
+let filteredData = [];
+let isLoaded = false;
+let kkIndex = {};
+let allKategori = new Set();
+let allStatus = new Set();
+
+const input = document.getElementById("search");
+const clearBtn = document.getElementById("clear");
+
+// Pasang event listener untuk pencarian realtime dengan debounce 300ms
+input.addEventListener('input', debounce(applyFilters, 300));
+
+// Event listener untuk tombol clear (menghapus input dan filter)
+clearBtn.addEventListener('click', () => {
+  input.value = '';
+  document.querySelectorAll('.filter-group select').forEach(el => el.value = '');
+  applyFilters();
+});
+
+function updateStatistics(data) {
+  const cleanedData = data.filter(d => d.nama && d.kelamin).map(d => {
+    return {
+      ...d,
+      kelamin: d.kelamin.trim().toUpperCase(),  // normalisasi 'L' / 'P'
+      kk: d.kk.trim()
+    };
+  });
+
+  const countLakiLaki = cleanedData.filter(d => d.kelamin === 'L').length;
+  const countPerempuan = cleanedData.filter(d => d.kelamin === 'P').length;
+
+  // Hitung jumlah Kepala Keluarga (KK) yang unik
+  const kepalaKeluargaUnique = new Set(
+    cleanedData.filter(d => d.status === "Kepala Keluarga").map(d => d.nama.toLowerCase())
+  );
+  const countKK = kepalaKeluargaUnique.size;
+
+  // Update statistik
+  document.getElementById("totalCount").textContent = `👥 Total: ${data.length}`;
+  document.getElementById("maleCount").textContent = `♂️ Laki-laki: ${countLakiLaki}`;
+  document.getElementById("femaleCount").textContent = `♀️ Perempuan: ${countPerempuan}`;
+  document.getElementById("kkCount").textContent = `🏠 KK: ${countKK}`;
+}
+
+// Langsung proses data tanpa fetch lagi
+isLoaded = true;
+preprocessData();
+populateFilters();
+tampilSemua();
+
+// ⚡ PREPROCESSING DATA
+function preprocessData() {
+  kkIndex = {};
+  allKategori.clear();
+
+  data.forEach(d => {
+    if (!kkIndex[d.kk]) kkIndex[d.kk] = [];
+    kkIndex[d.kk].push(d);
+
+    allKategori.add(d.kategori);  // dari 'kategori' bukan 'status'
+  });
+}
+
+// 📊 UPDATE STATISTICS
+function updateStats() {
+  const total = data.length;
+
+  const cleanedData = data.map(d => ({
+    ...d,
+    kelamin: d.kelamin?.trim().toUpperCase(),
+    kk: d.kk?.trim().toLowerCase()
+  }));
+
+  const laki = cleanedData.filter(d => d.kelamin === 'L').length;
+  const perempuan = cleanedData.filter(d => d.kelamin === 'P').length;
+
+  const kepalaKeluargaUnique = new Set(
+    cleanedData.filter(d => d.status === 'Kepala Keluarga')
+               .map(d => d.nama.toLowerCase())
+  );
+  const kkCount = kepalaKeluargaUnique.size;
+
+  // Update statistik
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card">👥 Total: ${total}</div>
+    <div class="stat-card">♂️ Laki-laki: ${laki}</div>
+    <div class="stat-card">♀️ Perempuan: ${perempuan}</div>
+    <div class="stat-card">🏠 KK: ${kkCount}</div>
+  `;
+}
+
+// 🎛️ POPULATE FILTERS
+function populateFilters() {
+  const katSelect = document.getElementById('filterKategori');
+  
+  // Clear previous options
+  katSelect.innerHTML = '<option value="">Semua</option>';
+
+  // Add new options for kategori
+  Array.from(allKategori).sort().forEach(kat => {
+    katSelect.innerHTML += `<option value="${kat}">${kat}</option>`;
+  });
+}
+
+// 🔍 MASTER SEARCH & FILTER
+function applyFilters() {
+  let results = [...data];
+
+  const keyword = input.value.toLowerCase().trim();
+  if (keyword) {
+    results = results.filter(d => {
+      const nama = d.nama ? d.nama.toLowerCase().trim() : "";
+      return nama.includes(keyword);
+    });
+  }
+
+  const kelaminFilter = document.getElementById('filterKelamin').value;
+  let kelaminVal = '';
+  if (kelaminFilter === "Laki-laki") kelaminVal = "L";
+  else if (kelaminFilter === "Perempuan") kelaminVal = "P";
+
+  const kategoriFilter = document.getElementById('filterKategori').value;
+
+  results = results.filter(d => {
+    const kategoriOk = !kategoriFilter || d.kategori === kategoriFilter;
+    const kelaminOk = !kelaminVal || d.kelamin === kelaminVal;
+    return kategoriOk && kelaminOk;
+  });
+
+  filteredData = results;
+  renderTable(results);
+  updateStatsFiltered(results);
+}
+
+// ⚡ RENDER TABLE
+function renderTable(dataList) {
+  if (!dataList.length) {
+    hasil.innerHTML = '<tr><td colspan="7" class="no-data">📭 Data tidak ditemukan</td></tr>';
+    return;
+  }
+
+  let html = '';
+  dataList.forEach((d, i) => {
+    const umur = hitungUmur(d.tgl_lahir);
+    html += `
+      <tr>
+        <td>${i + 1}</td>
+        <td><strong>${d.nama || '-'}</strong></td>
+        <td>${d.kelamin || '-'}</td>
+        <td>${d.tgl_lahir || '-'}</td>
+        <td>${umur}</td>
+        <td>${d.kategori || '-'}</td>
+        <td>${d.status || '-'}</td>
+      </tr>
+    `;
+  });
+
+  hasil.innerHTML = html;
+}
+
+// 📊 STATS FILTERED
+function updateStatsFiltered(dataList) {
+  const stats = document.getElementById('stats');
+
+  const filteredTotal = dataList.length;
+  const filteredLaki = dataList.filter(d => d.kelamin === 'L').length;
+  const filteredPerempuan = dataList.filter(d => d.kelamin === 'P').length;
+
+  const total = data.length;
+  const totalLaki = data.filter(d => d.kelamin === 'L').length;
+  const totalPerempuan = data.filter(d => d.kelamin === 'P').length;
+
+  const kepalaKeluargaUniqueFiltered = new Set(
+    dataList.filter(d => d.status.toLowerCase() === 'kepala keluarga').map(d => d.nama.toLowerCase())
+  );
+  const filteredKK = kepalaKeluargaUniqueFiltered.size;
+
+  const kepalaKeluargaUniqueTotal = new Set(
+    data.filter(d => d.status.toLowerCase() === 'kepala keluarga').map(d => d.nama.toLowerCase())
+  );
+  const totalKK = kepalaKeluargaUniqueTotal.size;
+
+  stats.innerHTML = `
+    <div class="stat-card">👥 Total: ${filteredTotal} / ${total}</div>
+    <div class="stat-card">♂️ Laki-laki: ${filteredLaki} / ${totalLaki}</div>
+    <div class="stat-card">♀️ Perempuan: ${filteredPerempuan} / ${totalPerempuan}</div>
+    <div class="stat-card">🏠 KK: ${filteredKK} / ${totalKK}</div>
+  `;
+}
+
+// 📋 SHOW ALL
+function tampilSemua() {
+  renderTable(data);
+}
+
+// 🔥 HITUNG UMUR
+function hitungUmur(tgl) {
+  if (!tgl) return '-';
+  const lahir = new Date(tgl);
+  if (isNaN(lahir)) return '-';
+  
+  const today = new Date();
+  let umur = today.getFullYear() - lahir.getFullYear();
+  const m = today.getMonth() - lahir.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < lahir.getDate())) {
+    umur--;
+  }
+  return umur;
+}
+
+// 🎨 EVENT LISTENERS
+['filterKelamin', 'filterKategori'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', applyFilters);
+});
+
+// 🛠️ UTILITIES
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+// 🚀 INIT
+</script>
+
+</body>
+</html>
