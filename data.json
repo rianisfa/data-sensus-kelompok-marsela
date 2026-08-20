@@ -944,15 +944,15 @@
         "status": "Istri"
     },
     {
-        "nama": "Nuha Anindya",
+        "nama": "Nuhaa Anindya Jefri",
         "kelamin": "P",
         "tgl_lahir": "2022-03-16",
         "umur": "4",
-        "kategori": "Bayi Balita",
+        "kategori": "PAUD",
         "status": "Anak"
     },
     {
-        "nama": "Putri Jefri",
+        "nama": "Mayzurra Khoirunnisa Jr.",
         "kelamin": "P",
         "tgl_lahir": "",
         "umur": "126",
@@ -960,7 +960,7 @@
         "status": "Anak"
     },
     {
-        "nama": "Kennez Keneisha Rafifa",
+        "nama": "Kennez Keneisha Rafifa Jr.",
         "kelamin": "P",
         "tgl_lahir": "2019-03-27",
         "umur": "7",
@@ -968,11 +968,11 @@
         "status": "Anak"
     },
     {
-        "nama": "Khadijah Azkhaira Salwa",
+        "nama": "Khadijah Azkhaira Salwa Jr.",
         "kelamin": "P",
         "tgl_lahir": "2021-03-08",
         "umur": "5",
-        "kategori": "Bayi Balita",
+        "kategori": "PAUD",
         "status": "Anak"
     },
     {
@@ -2068,8 +2068,16 @@
         "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
-        "kategori": "Muda - Mudi",
-        "status": "Anak"
+        "kategori": "Bapak - Bapak",
+        "status": "Kepala Keluarga"
+    },
+    {
+        "nama": "Yolanda",
+        "kelamin": "P",
+        "tgl_lahir": "",
+        "umur": "126",
+        "kategori": "Ibu - Ibu",
+        "status": "Istri"
     },
     {
         "nama": "Intan",
