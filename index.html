@@ -26,15 +26,15 @@
     
     <div class="filters">
       <div class="filter-group">
-        <label>Jenis Gender</label>
-        <select id="filterGender">
+        <label>Filter Kelamin</label>
+        <select id="filterKelamin">
           <option value="">Semua</option>
           <option value="Laki-laki">Laki-laki</option>
           <option value="Perempuan">Perempuan</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>Jenis Kategori</label>
+        <label>Filter Kategori</label>
         <select id="filterKategori">
           <option value="">Semua</option>
         </select>
@@ -47,7 +47,7 @@
         <tr>
           <th>No</th>
           <th>Nama Lengkap</th>
-          <th>Gender</th>
+          <th>Kelamin</th>
           <th>Tgl Lahir</th>
           <th>Umur</th>
           <th>Kategori</th>
@@ -130,12 +130,12 @@ function updateStats() {
 
   const cleanedData = data.map(d => ({
     ...d,
-    gender: d.gender?.trim().toUpperCase(),
+    kelamin: d.kelamin?.trim().toUpperCase(),
     kk: d.kk?.trim().toLowerCase()
   }));
 
-  const laki = cleanedData.filter(d => d.gender === 'L').length;
-  const perempuan = cleanedData.filter(d => d.gender === 'P').length;
+  const laki = cleanedData.filter(d => d.kelamin === 'L').length;
+  const perempuan = cleanedData.filter(d => d.kelamin === 'P').length;
 
   const kepalaKeluargaUnique = new Set(
     cleanedData.filter(d => d.status === 'Kepala Keluarga')
@@ -177,17 +177,17 @@ function applyFilters() {
     });
   }
 
-  const genderFilter = document.getElementById('filtergender').value;
-  let genderVal = '';
-  if (genderFilter === "Laki-laki") genderVal = "L";
-  else if (genderFilter === "Perempuan") genderVal = "P";
+  const kelaminFilter = document.getElementById('filterKelamin').value;
+  let kelaminVal = '';
+  if (kelaminFilter === "Laki-laki") kelaminVal = "L";
+  else if (kelaminFilter === "Perempuan") kelaminVal = "P";
 
   const kategoriFilter = document.getElementById('filterKategori').value;
 
   results = results.filter(d => {
     const kategoriOk = !kategoriFilter || d.kategori === kategoriFilter;
-    const genderOk = !genderVal || d.gender === genderVal;
-    return kategoriOk && genderOk;
+    const kelaminOk = !kelaminVal || d.kelamin === kelaminVal;
+    return kategoriOk && kelaminOk;
   });
 
   filteredData = results;
@@ -209,7 +209,7 @@ const sortedList = [...dataList].sort((a,b) => a.nama.localeCompare(b.nama))
       <tr>
         <td>${i + 1}</td>
         <td><strong>${d.nama || '-'}</strong></td>
-        <td>${d.gender || '-'}</td>
+        <td>${d.kelamin || '-'}</td>
         <td>${d.tgl_lahir || '-'}</td>
         <td>${umur}</td>
         <td>${d.kategori || '-'}</td>
@@ -226,12 +226,12 @@ function updateStatsFiltered(dataList) {
   const stats = document.getElementById('stats');
 
   const filteredTotal = dataList.length;
-  const filteredLaki = dataList.filter(d => d.gender === 'L').length;
-  const filteredPerempuan = dataList.filter(d => d.gender === 'P').length;
+  const filteredLaki = dataList.filter(d => d.kelamin === 'L').length;
+  const filteredPerempuan = dataList.filter(d => d.kelamin === 'P').length;
 
   const total = data.length;
-  const totalLaki = data.filter(d => d.gender === 'L').length;
-  const totalPerempuan = data.filter(d => d.gender === 'P').length;
+  const totalLaki = data.filter(d => d.kelamin === 'L').length;
+  const totalPerempuan = data.filter(d => d.kelamin === 'P').length;
 
   const kepalaKeluargaUniqueFiltered = new Set(
     dataList.filter(d => d.status.toLowerCase() === 'kepala keluarga').map(d => d.nama.toLowerCase())
@@ -272,7 +272,7 @@ function hitungUmur(tgl) {
 }
 
 // 🎨 EVENT LISTENERS
-['filtergender', 'filterKategori'].forEach(id => {
+['filterKelamin', 'filterKategori'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('change', applyFilters);
 });
