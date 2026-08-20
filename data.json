@@ -132,7 +132,7 @@
         "kelamin": "P",
         "tgl_lahir": "2010-02-24",
         "umur": "16",
-        "kategori": "SMP Sederajat",
+        "kategori": "SMA Sederajat",
         "status": "Anak"
     },
     {
@@ -252,7 +252,7 @@
         "kelamin": "P",
         "tgl_lahir": "2007-09-08",
         "umur": "19",
-        "kategori": "SMP Sederajat",
+        "kategori": "SMA Sederajat",
         "status": "Anak"
     },
     {
@@ -332,7 +332,7 @@
         "kelamin": "L",
         "tgl_lahir": "2008-01-26",
         "umur": "18",
-        "kategori": "SMA Sederajat",
+        "kategori": "Muda - Mudi",
         "status": "Anak"
     },
     {
@@ -364,7 +364,7 @@
         "kelamin": "P",
         "tgl_lahir": "2007-03-14",
         "umur": "19",
-        "kategori": "SMA Sederajat",
+        "kategori": "Muda - Mudi",
         "status": "Anak"
     },
     {
@@ -524,7 +524,7 @@
         "kelamin": "P",
         "tgl_lahir": "2010-06-09",
         "umur": "16",
-        "kategori": "SMP Sederajat",
+        "kategori": "SMA Sederajat",
         "status": "Anak"
     },
     {
@@ -732,7 +732,7 @@
         "kelamin": "P",
         "tgl_lahir": "2009-11-23",
         "umur": "17",
-        "kategori": "SMP Sederajat",
+        "kategori": "SMA Sederajat",
         "status": "Anak"
     },
     {
@@ -868,7 +868,7 @@
         "kelamin": "P",
         "tgl_lahir": "2012-11-06",
         "umur": "14",
-        "kategori": "SD / Caberawit",
+        "kategori": "SMP Sederajat",
         "status": "Anak"
     },
     {
@@ -1044,7 +1044,7 @@
         "kelamin": "P",
         "tgl_lahir": "2007-05-29",
         "umur": "19",
-        "kategori": "SMA Sederajat",
+        "kategori": "Muda - Mudi",
         "status": "Anak"
     },
     {
@@ -1180,7 +1180,7 @@
         "kelamin": "P",
         "tgl_lahir": "2010-04-03",
         "umur": "16",
-        "kategori": "SMP Sederajat",
+        "kategori": "SMA Sederajat",
         "status": "Anak"
     },
     {
@@ -1205,14 +1205,6 @@
         "tgl_lahir": "2020-03-11",
         "umur": "6",
         "kategori": "Bayi Balita",
-        "status": "Anak"
-    },
-    {
-        "nama": "Arsakha Virendra Muhammad",
-        "kelamin": "L",
-        "tgl_lahir": "2013-08-29",
-        "umur": "13",
-        "kategori": "SD / Caberawit",
         "status": "Anak"
     },
     {
@@ -1332,7 +1324,7 @@
         "kelamin": "L",
         "tgl_lahir": "2007-08-09",
         "umur": "19",
-        "kategori": "SMA Sederajat",
+        "kategori": "Muda - Mudi",
         "status": "Anak"
     },
     {
@@ -1348,7 +1340,7 @@
         "kelamin": "L",
         "tgl_lahir": "2010-05-25",
         "umur": "16",
-        "kategori": "SMP Sederajat",
+        "kategori": "SMA Sederajat",
         "status": "Anak"
     },
     {
@@ -1500,7 +1492,7 @@
         "kelamin": "L",
         "tgl_lahir": "2006-05-18",
         "umur": "20",
-        "kategori": "SMA Sederajat",
+        "kategori": "Muda - Mudi",
         "status": "Anak"
     },
     {
@@ -1508,7 +1500,7 @@
         "kelamin": "P",
         "tgl_lahir": "2013-05-27",
         "umur": "13",
-        "kategori": "SD / Caberawit",
+        "kategori": "SMP Sederajat",
         "status": "Anak"
     },
     {
@@ -1756,7 +1748,7 @@
         "kelamin": "P",
         "tgl_lahir": "2010-06-05",
         "umur": "16",
-        "kategori": "SMP Sederajat",
+        "kategori": "SMA Sederajat",
         "status": "Anak"
     },
     {
