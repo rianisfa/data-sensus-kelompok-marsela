@@ -1856,14 +1856,6 @@
         "status": "Anak"
     },
     {
-        "nama": "Ibunya Mba Azka",
-        "kelamin": "P",
-        "tgl_lahir": "",
-        "umur": "126",
-        "kategori": "Ibu - Ibu",
-        "status": "Istri"
-    },
-    {
         "nama": "Azka",
         "kelamin": "P",
         "tgl_lahir": "",
@@ -1872,8 +1864,8 @@
         "status": "Anak"
     },
     {
-        "nama": "Anaknya",
-        "kelamin": "L",
+        "nama": "Keysha Aulia Zahira",
+        "kelamin": "P",
         "tgl_lahir": "",
         "umur": "126",
         "kategori": "SD / Caberawit",
@@ -2057,6 +2049,14 @@
     },
     {
         "nama": "Lia",
+        "kelamin": "P",
+        "tgl_lahir": "",
+        "umur": "126",
+        "kategori": "Muda - Mudi",
+        "status": "Anak"
+    },
+    {
+        "nama": "Azra Zakiyah",
         "kelamin": "P",
         "tgl_lahir": "",
         "umur": "126",
