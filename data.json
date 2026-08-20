@@ -2062,5 +2062,29 @@
         "umur": "126",
         "kategori": "Muda - Mudi",
         "status": "Anak"
+    },
+    {
+        "nama": "Robi Suprihatin",
+        "kelamin": "L",
+        "tgl_lahir": "",
+        "umur": "126",
+        "kategori": "Muda - Mudi",
+        "status": "Anak"
+    },
+    {
+        "nama": "Intan",
+        "kelamin": "P",
+        "tgl_lahir": "",
+        "umur": "126",
+        "kategori": "Ibu - Ibu",
+        "status": "Istri"
+    },
+    {
+        "nama": "Sopia",
+        "kelamin": "P",
+        "tgl_lahir": "",
+        "umur": "126",
+        "kategori": "Muda - Mudi",
+        "status": "Anak"
     }
 ]
