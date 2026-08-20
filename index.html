@@ -81,31 +81,6 @@ clearBtn.addEventListener('click', () => {
   applyFilters();
 });
 
-function updateStatistics(data) {
-  const cleanedData = data.filter(d => d.nama && d.kelamin).map(d => {
-    return {
-      ...d,
-      kelamin: d.kelamin.trim().toUpperCase(),  // normalisasi 'L' / 'P'
-      kk: d.kk.trim()
-    };
-  });
-
-  const countLakiLaki = cleanedData.filter(d => d.kelamin === 'L').length;
-  const countPerempuan = cleanedData.filter(d => d.kelamin === 'P').length;
-
-  // Hitung jumlah Kepala Keluarga (KK) yang unik
-  const kepalaKeluargaUnique = new Set(
-    cleanedData.filter(d => d.status === "Kepala Keluarga").map(d => d.nama.toLowerCase())
-  );
-  const countKK = kepalaKeluargaUnique.size;
-
-  // Update statistik
-  document.getElementById("totalCount").textContent = `Total: ${data.length}`;
-  document.getElementById("maleCount").textContent = `Laki-laki: ${countLakiLaki}`;
-  document.getElementById("femaleCount").textContent = `Perempuan: ${countPerempuan}`;
-  document.getElementById("kkCount").textContent = `KK: ${countKK}`;
-}
-
 // Mengambil data dari file data.json
 fetch('data.json')
   .then(response => {
@@ -149,7 +124,7 @@ function preprocessData() {
   });
 }
 
-// 📊 UPDATE STATISTICS
+// 📊 UPDATE STATISTICS (DEFAULT)
 function updateStats() {
   const total = data.length;
 
