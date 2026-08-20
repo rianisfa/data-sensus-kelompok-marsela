@@ -204,8 +204,8 @@
         "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
-        "kategori": "Muda - Mudi",
-        "status": "Anak"
+        "kategori": "Bapak - Bapak",
+        "status": "Kepala Keluarga"
     },
     {
         "nama": "Dini Kholisoh",
@@ -400,7 +400,7 @@
         "status": "Anak"
     },
     {
-        "nama": "Faizal Riski Romadhon",
+        "nama": "Faizal Risky Romadhon",
         "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
@@ -456,7 +456,7 @@
         "status": "Kepala Keluarga"
     },
     {
-        "nama": "Yuliarti ( Mahsun )",
+        "nama": "Yuliarti",
         "kelamin": "P",
         "tgl_lahir": "",
         "umur": "126",
@@ -468,8 +468,8 @@
         "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
-        "kategori": "Muda - Mudi",
-        "status": "Anak"
+        "kategori": "Bapak - Bapak",
+        "status": "Kepala Keluarga"
     },
     {
         "nama": "Alauna Rafi Faida",
@@ -656,14 +656,6 @@
         "status": "Anak"
     },
     {
-        "nama": "Tiara",
-        "kelamin": "P",
-        "tgl_lahir": "",
-        "umur": "126",
-        "kategori": "Muda - Mudi",
-        "status": "Anak"
-    },
-    {
         "nama": "Karunia Kinanti",
         "kelamin": "P",
         "tgl_lahir": "",
@@ -784,14 +776,6 @@
         "status": "Istri"
     },
     {
-        "nama": "Fitri Fatiha Nasywa Khoirunnisa",
-        "kelamin": "P",
-        "tgl_lahir": "2004-11-15",
-        "umur": "22",
-        "kategori": "Muda - Mudi",
-        "status": "Anak"
-    },
-    {
         "nama": "Saefina Hayyatu Ramadhanti",
         "kelamin": "P",
         "tgl_lahir": "2014-07-18",
@@ -902,14 +886,6 @@
         "umur": "126",
         "kategori": "Ibu - Ibu",
         "status": "Istri"
-    },
-    {
-        "nama": "Anggoro Bayo Kartiko",
-        "kelamin": "L",
-        "tgl_lahir": "",
-        "umur": "126",
-        "kategori": "Muda - Mudi",
-        "status": "Anak"
     },
     {
         "nama": "Kania Dewi Pramesti",
@@ -1040,7 +1016,7 @@
         "status": "Anak"
     },
     {
-        "nama": "Maruf As Sidiq",
+        "nama": "Ma'aruf As Sidiq",
         "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
@@ -1088,7 +1064,7 @@
         "status": "Kepala Keluarga"
     },
     {
-        "nama": "Winarsih",
+        "nama": "Asih",
         "kelamin": "P",
         "tgl_lahir": "",
         "umur": "126",
@@ -1784,7 +1760,7 @@
         "status": "Anak"
     },
     {
-        "nama": "Mada Samodra",
+        "nama": "Mada Samodra Qisthisuni",
         "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
@@ -1792,7 +1768,7 @@
         "status": "Kepala Keluarga"
     },
     {
-        "nama": "Ibu Mada Samodra",
+        "nama": "Livie Maulani",
         "kelamin": "P",
         "tgl_lahir": "",
         "umur": "126",
@@ -1800,15 +1776,15 @@
         "status": "Istri"
     },
     {
-        "nama": "Anak Bp. Mada",
+        "nama": "Bakr Shiddiq Mahapatih",
         "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
-        "kategori": "PAUD",
+        "kategori": "SD / Caberawit",
         "status": "Anak"
     },
     {
-        "nama": "Anak Bp. Mada",
+        "nama": "Umar Faruq Mahapatih",
         "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
@@ -1920,7 +1896,7 @@
         "status": "Kepala Keluarga"
     },
     {
-        "nama": "Sudartinah / eyang muji",
+        "nama": "Sudartinah",
         "kelamin": "P",
         "tgl_lahir": "",
         "umur": "126",
@@ -2008,23 +1984,7 @@
         "status": "Anak"
     },
     {
-        "nama": "Fauzi (Ngawi)",
-        "kelamin": "L",
-        "tgl_lahir": "",
-        "umur": "126",
-        "kategori": "Muda - Mudi",
-        "status": "Anak"
-    },
-    {
         "nama": "Abi Arza Nurkahfi",
-        "kelamin": "L",
-        "tgl_lahir": "",
-        "umur": "126",
-        "kategori": "Muda - Mudi",
-        "status": "Anak"
-    },
-    {
-        "nama": "Mahendra Cakra",
         "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
@@ -2040,7 +2000,7 @@
         "status": "Anak"
     },
     {
-        "nama": "Alena Zovanka",
+        "nama": "Alena Zovanka", 
         "kelamin": "P",
         "tgl_lahir": "",
         "umur": "126",
@@ -2089,6 +2049,14 @@
     },
     {
         "nama": "Annisa Kartika Sari",
+        "kelamin": "P",
+        "tgl_lahir": "",
+        "umur": "126",
+        "kategori": "Muda - Mudi",
+        "status": "Anak"
+    },
+    {
+        "nama": "Lia",
         "kelamin": "P",
         "tgl_lahir": "",
         "umur": "126",
