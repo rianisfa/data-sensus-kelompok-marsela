@@ -91,7 +91,7 @@ fetch('data.json')
   })
   .then(jsonData => {
     // Masukkan data dari JSON ke dalam variabel global 'data'
-    data = jsonData; 
+    data = jsonData.sort((a, b) => a.nama.localeCompare(b.nama)); 
     isLoaded = true;
 
     // Jalankan fungsi inisialisasi SETELAH data berhasil dimuat
