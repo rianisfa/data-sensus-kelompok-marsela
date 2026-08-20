@@ -1880,6 +1880,14 @@
         "status": "Kepala Keluarga"
     },
     {
+        "nama": "Suwarni",
+        "kelamin": "P",
+        "tgl_lahir": "",
+        "umur": "126",
+        "kategori": "Janda",
+        "status": "Kepala Keluarga"
+    },
+    {
         "nama": "Sari Siti Nurjannah",
         "kelamin": "P",
         "tgl_lahir": "",
@@ -2090,6 +2098,22 @@
     {
         "nama": "Sopia",
         "kelamin": "P",
+        "tgl_lahir": "",
+        "umur": "126",
+        "kategori": "Muda - Mudi",
+        "status": "Anak"
+    },
+    {
+        "nama": "Rosyid",
+        "kelamin": "L",
+        "tgl_lahir": "",
+        "umur": "126",
+        "kategori": "Muda - Mudi",
+        "status": "Anak"
+    },
+        {
+        "nama": "Sadika",
+        "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
         "kategori": "Muda - Mudi",
