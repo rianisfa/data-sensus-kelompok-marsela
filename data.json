@@ -464,14 +464,6 @@
         "status": "Istri"
     },
     {
-        "nama": "Wisam Abyadha Ibrahim",
-        "kelamin": "L",
-        "tgl_lahir": "",
-        "umur": "126",
-        "kategori": "Bapak - Bapak",
-        "status": "Kepala Keluarga"
-    },
-    {
         "nama": "Alauna Rafi Faida",
         "kelamin": "P",
         "tgl_lahir": "",
@@ -617,14 +609,6 @@
     },
     {
         "nama": "Andan Febriansyah",
-        "kelamin": "L",
-        "tgl_lahir": "",
-        "umur": "126",
-        "kategori": "Muda - Mudi",
-        "status": "Anak"
-    },
-    {
-        "nama": "Edi Santoso",
         "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
@@ -1952,14 +1936,6 @@
         "status": "Anak"
     },
     {
-        "nama": "Rafiq Fauzi Agustian",
-        "kelamin": "L",
-        "tgl_lahir": "1999-08-15",
-        "umur": "27",
-        "kategori": "Muda - Mudi",
-        "status": "Anak"
-    },
-    {
         "nama": "Toha Khoirul Ihsan",
         "kelamin": "L",
         "tgl_lahir": "",
@@ -1992,7 +1968,7 @@
         "status": "Anak"
     },
     {
-        "nama": "Alena Zovanka", 
+        "nama": "Denis", 
         "kelamin": "P",
         "tgl_lahir": "",
         "umur": "126",
