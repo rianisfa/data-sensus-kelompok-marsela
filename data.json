@@ -1032,12 +1032,12 @@
         "status": "Anak"
     },
     {
-        "nama": "Matuh Edi Saputra",
+        "nama": "Muhammad Hisbulloh",
         "kelamin": "L",
         "tgl_lahir": "",
         "umur": "126",
-        "kategori": "Bapak - Bapak",
-        "status": "Kepala Keluarga"
+        "kategori": "Muda - Mudi",
+        "status": "Anak"
     },
     {
         "nama": "Muh Jahro",
@@ -2024,7 +2024,7 @@
         "status": "Anak"
     },
     {
-        "nama": "Azra Zakiyah",
+        "nama": "Adzra Zakiyah",
         "kelamin": "P",
         "tgl_lahir": "",
         "umur": "126",
@@ -2079,7 +2079,7 @@
         "kategori": "Muda - Mudi",
         "status": "Anak"
     },
-        {
+    {
         "nama": "Sadika",
         "kelamin": "L",
         "tgl_lahir": "",
@@ -2087,4 +2087,12 @@
         "kategori": "Muda - Mudi",
         "status": "Anak"
     }
+    {
+        "nama": "Istri Dika",
+        "kelamin": "P",
+        "tgl_lahir": "",
+        "umur": "126",
+        "kategori": "Ibu - Ibu",
+        "status": "Istri"
+    },
 ]
