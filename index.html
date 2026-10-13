@@ -82,7 +82,7 @@ clearBtn.addEventListener('click', () => {
 });
 
 // Mengambil data dari file data.json
-fetch('data.json')
+fetch('/data.json')
   .then(response => {
     if (!response.ok) {
       throw new Error('Gagal memuat file JSON');
