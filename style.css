@@ -295,3 +295,158 @@ td strong { color: #193e52; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+
+/* ===========================================================
+   MARSELA — PREMIUM MIDNIGHT & MINT (sesuai konsep preview)
+   Lapisan visual di atas tema yang kompatibel dengan kode lama.
+   =========================================================== */
+:root {
+  --ink: #203448;
+  --navy: #10283b;
+  --navy-2: #1d3a4d;
+  --mint: #8fe4d2;
+  --mint-deep: #17ad90;
+  --canvas: #eef3f4;
+  --line: #dce7e8;
+}
+body {
+  background: radial-gradient(circle at 14% 6%, rgba(24,179,148,.16), transparent 36%),
+              radial-gradient(circle at 96% 18%, rgba(32,83,110,.15), transparent 40%),
+              #edf3f5;
+  padding-top: clamp(12px, 3vw, 34px);
+}
+.card {
+  background: #10283b;
+  border: 1px solid #203e51;
+  border-radius: 26px;
+  padding: clamp(14px, 2.5vw, 32px);
+  overflow: visible; /* tabel digeser oleh wrapper, bukan oleh kartu */
+  box-shadow: 0 28px 70px rgba(13, 37, 55, .18);
+}
+.card::before {
+  height: 4px;
+  border-radius: 24px 24px 0 0;
+  background: linear-gradient(90deg, #27b99a, #9af0d8, #2c7f98);
+}
+.card > h2 {
+  margin: 22px auto 21px;
+  color: #fff;
+  font-size: clamp(1.3rem, 3.2vw, 2.35rem);
+  font-weight: 800;
+  letter-spacing: -.045em;
+  line-height: 1.35;
+  text-shadow: 0 2px 18px rgba(0,0,0,.1);
+}
+.card > h2::before {
+  content: 'MARSELA DASHBOARD';
+  display: block;
+  margin-bottom: 9px;
+  font: 800 10px/1.5 'DM Sans',sans-serif;
+  letter-spacing: .25em;
+  color: #8fe4d2;
+}
+.main-tabs {
+  margin: 0 auto 25px;
+  padding: 6px;
+  background: #244256;
+  border: 1px solid #31546a;
+  border-radius: 14px;
+  gap: 5px;
+}
+.tab-btn { color: #d4e4e9; font-weight: 800; }
+.tab-btn:hover:not(.active) { background: #345467; color: #fff; }
+.tab-btn.active, .tab-btn[aria-selected='true'] {
+  color: #10283b;
+  background: #26b99a;
+  box-shadow: 0 5px 16px rgba(7, 25, 30, .26);
+}
+/* The white content panel creates the same split as the color mock. */
+#sensus-section, #presensi-section {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  background: #fbfdfd;
+  border: 1px solid #e4eeee;
+  border-radius: 19px;
+  padding: clamp(14px, 2.8vw, 30px);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .11);
+}
+#sensus-section .intro, #presensi-section .intro {
+  margin: 0 0 21px;
+  color: #607887;
+}
+.stats-grid { gap: 12px; }
+.stat-card, .small-stats .stat-card {
+  background: linear-gradient(140deg, #1a3b4e, #24485b);
+  border: 1px solid #305a68;
+  border-radius: 15px;
+  color: #d1e5eb;
+  padding: 21px 14px;
+  font-weight: 800;
+  box-shadow: 0 9px 21px rgba(18, 52, 69, .12);
+}
+.stat-card::before { width: 3px; background: #8fe4d2; }
+.stat-card:hover { background: linear-gradient(140deg, #1d4255, #2b5364); border-color: #65bbae; }
+#stats .stat-card { font-size: clamp(.88rem,1.35vw,1.08rem); }
+#stats .stat-card::first-letter { color: #8fe4d2; }
+.subcard {
+  border: 1px solid #dbe8e8;
+  border-radius: 16px;
+  box-shadow: 0 9px 28px rgba(15, 45, 57, .045);
+}
+h3 { color: #153348; }
+.subcard h3::before { background: #26b99a; box-shadow: 0 0 0 4px #e1f8ef; }
+input[type='text'], input[type='search'], input[type='date'], select, textarea {
+  background: #fff;
+  border-color: #cedfe3;
+}
+input:focus, select:focus, textarea:focus { border-color: #17ad90; box-shadow: 0 0 0 4px rgba(38,185,154,.14); }
+button, .export-btn { background: #1ba98d; color: #fff; }
+button:hover:not(:disabled), .export-btn:hover { background: #128c75; }
+.btn-muted { background: #eef6f5; color: #235266; border: 1px solid #d7e6e6; }
+.btn-muted:hover:not(:disabled) { background: #dcefeb; color: #163c48; }
+/* Table scroll is isolated to the corresponding wrapper. */
+.sensus-table-scroll, .table-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid #d7e5e6;
+  border-radius: 13px;
+  background: #fff;
+}
+.sensus-table-scroll > table { width: 100%; }
+th {
+  background: #173b4e;
+  color: #c2f1e5;
+  border-bottom: 1px solid #335468;
+  letter-spacing: .055em;
+}
+tbody tr:nth-child(2n) td { background: #f6faf9; }
+tbody tr:hover td { background: #eaf9f4; }
+.kk { background: #e4f5ee !important; color: #11664f; }
+.notice { border-left-color: #e0b056; }
+/* Ensure single-table horizontal scrolling on mobile, never whole section. */
+@media (max-width: 720px) {
+  body { padding: 9px 7px 32px; overflow-x: clip; }
+  .container, .card, #sensus-section, #presensi-section { min-width: 0; max-width: 100%; }
+  .card { padding: 13px 9px 12px; border-radius: 17px; }
+  .card > h2 { font-size: clamp(1.24rem, 5.2vw, 1.7rem); margin: 22px 6px 18px; }
+  .card > h2::before { font-size: 9px; letter-spacing: .18em; }
+  #sensus-section, #presensi-section { padding: 16px 10px 20px; border-radius: 14px; }
+  .main-tabs { width: 100%; margin-bottom: 15px; }
+  .tab-btn { padding: 12px 6px; font-size: 11.5px; }
+  .stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+  .stats-grid.small-stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .stats-grid.small-stats > .stat-card:last-child { grid-column: 1 / -1; }
+  .stat-card { padding: 17px 8px; }
+  .filters { max-width: 100%; }
+  .sensus-table-scroll > table { min-width: 820px; }
+  .table-scroll table { min-width: 520px; }
+  .sensus-table-scroll, .table-scroll { overscroll-behavior-x: contain; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
