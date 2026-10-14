@@ -836,3 +836,141 @@ tbody tr:hover td { background: #eef9f5; }
 @media (prefers-reduced-motion: reduce) {
   .dash-stat, .schedule-item, .chart-fill { transition: none !important; }
 }
+
+
+/* ===========================================================
+   MARSELA MOBILE APP — bottom navigation & polished dashboard
+   Tambahan khusus visual. Tidak mengubah fungsi JS / Supabase.
+   =========================================================== */
+:root { --safe-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* Desktop/tablet: menu tetap seperti semula; spacing lebih konsisten */
+.main-tabs { box-sizing: border-box; }
+.main-tabs .tab-btn { min-height: 51px; }
+.dash-summary, .stats-grid, .dash-panels { min-width: 0; }
+.dash-stat, .stat-card, .dash-panel, .subcard { min-width: 0; }
+.dash-panel, .subcard { overflow-wrap: anywhere; }
+button:focus-visible, .tab-btn:focus-visible, select:focus-visible, input:focus-visible {
+  outline: 3px solid #6bdbc0;
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  html { scroll-padding-bottom: calc(108px + var(--safe-bottom)); }
+  body {
+    padding-bottom: calc(104px + var(--safe-bottom));
+    overflow-x: clip;
+  }
+  .card { overflow: visible; }
+  .card > h2 { padding-inline: 3px; }
+
+  /* Navigation ala aplikasi: tetap di bawah saat halaman digulir */
+  .main-tabs {
+    position: fixed;
+    z-index: 500;
+    inset: auto 9px calc(9px + var(--safe-bottom)) 9px;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 3px;
+    margin: 0;
+    padding: 7px;
+    border-radius: 20px;
+    border: 1px solid rgba(120, 160, 169, .32);
+    background: rgba(15, 36, 53, .97);
+    box-shadow: 0 12px 38px rgba(9, 30, 44, .32), 0 1px 0 rgba(255,255,255,.06) inset;
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+  }
+  .main-tabs .tab-btn {
+    min-width: 0;
+    min-height: 61px;
+    padding: 8px 2px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border-radius: 14px;
+    background: transparent;
+    border: 0;
+    color: #cadce2;
+    font-size: clamp(9px, 2.38vw, 11px);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -.025em;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: normal;
+    box-shadow: none;
+    flex-basis: auto;
+    transition: background .18s ease, color .18s ease, transform .18s ease;
+  }
+  .main-tabs .tab-btn::before {
+    content: '';
+    display: block;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+  .main-tabs .tab-btn.active,
+  .main-tabs .tab-btn[aria-selected='true'] {
+    background: #46c4a9;
+    color: #0d2b35;
+    box-shadow: 0 3px 12px rgba(5, 19, 29, .2);
+  }
+  .main-tabs .tab-btn:hover:not(.active) {
+    background: rgba(255,255,255,.08);
+    color: #fff;
+  }
+
+  /* Tab dan isi dibuat tidak melebar ketika tabel sensus digeser */
+  #sensus-section, #presensi-section, .dash-section,
+  .stats-grid, .dash-summary, .dash-panel, .subcard,
+  .filters, .form-grid, .search-container {
+    min-width: 0;
+    max-width: 100%;
+  }
+  #sensus-section, #presensi-section, .dash-section {
+    padding: 17px 12px 20px;
+  }
+  .sensus-table-scroll, .table-scroll {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sensus-table-scroll > table { min-width: 820px; }
+
+  /* Ringkasan dan jadwal punya ritme visual yang senada */
+  .dash-heading { gap: 10px; }
+  .dash-summary { gap: 10px; }
+  .dash-panel, .subcard { border-radius: 16px; }
+  .dash-stat, .stat-card { border-radius: 15px; }
+  .schedule-item { border-radius: 13px; }
+  .chart-track { border-radius: 999px; }
+}
+@media (max-width: 360px) {
+  .main-tabs { inset-inline: 5px; padding: 5px; gap: 1px; }
+  .main-tabs .tab-btn { font-size: 9px; padding-inline: 1px; }
+  .main-tabs .tab-btn::before { width: 18px; height: 18px; }
+}
+@media (min-width: 761px) { .main-tabs .tab-btn::before { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .main-tabs .tab-btn { transition: none !important; }
+}
+@media (max-width: 760px) { .main-tabs .tab-btn[data-tab="beranda"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m3%2010%209-7%209%207v10a1%201%200%200%201-1%201h-5v-7H9v7H4a1%201%200%200%201-1-1z%22%2F%3E%3C%2Fsvg%3E"); mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m3%2010%209-7%209%207v10a1%201%200%200%201-1%201h-5v-7H9v7H4a1%201%200%200%201-1-1z%22%2F%3E%3C%2Fsvg%3E"); } }
+@media (max-width: 760px) { .main-tabs .tab-btn[data-tab="sensus"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M16%2021v-2a4%204%200%200%200-4-4H6a4%204%200%200%200-4%204v2%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%227%22%20r%3D%224%22%2F%3E%3Cpath%20d%3D%22M22%2021v-2a4%204%200%200%200-3-3.87M16%203.13a4%204%200%200%201%200%207.75%22%2F%3E%3C%2Fsvg%3E"); mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M16%2021v-2a4%204%200%200%200-4-4H6a4%204%200%200%200-4%204v2%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%227%22%20r%3D%224%22%2F%3E%3Cpath%20d%3D%22M22%2021v-2a4%204%200%200%200-3-3.87M16%203.13a4%204%200%200%201%200%207.75%22%2F%3E%3C%2Fsvg%3E"); } }
+@media (max-width: 760px) { .main-tabs .tab-btn[data-tab="presensi"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2216%22%20height%3D%2217%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M9%202v4m6-4v4M4%2010h16m-11%205%202%202%204-4%22%2F%3E%3C%2Fsvg%3E"); mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2216%22%20height%3D%2217%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M9%202v4m6-4v4M4%2010h16m-11%205%202%202%204-4%22%2F%3E%3C%2Fsvg%3E"); } }
+@media (max-width: 760px) { .main-tabs .tab-btn[data-tab="jadwal"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%225%22%20width%3D%2218%22%20height%3D%2216%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M16%203v4M8%203v4M3%2010h18M8%2014h2m4%200h2m-8%204h2%22%2F%3E%3C%2Fsvg%3E"); mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%225%22%20width%3D%2218%22%20height%3D%2216%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M16%203v4M8%203v4M3%2010h18M8%2014h2m4%200h2m-8%204h2%22%2F%3E%3C%2Fsvg%3E"); } }
+@media (max-width: 760px) { .main-tabs .tab-btn[data-tab="statistik"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020V10m5%2010V4m5%2016v-7m5%207V8M2%2020h20%22%2F%3E%3C%2Fsvg%3E"); mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020V10m5%2010V4m5%2016v-7m5%207V8M2%2020h20%22%2F%3E%3C%2Fsvg%3E"); } }
