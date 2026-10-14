@@ -1152,3 +1152,63 @@ button:focus-visible, .tab-btn:focus-visible, select:focus-visible, input:focus-
   .main-tabs .tab-btn { padding: 7px 1px; }
   .main-tabs .tab-btn::after { font-size: 9px; }
 }
+
+/* ============================================================
+   FIX PRESENSI MOBILE — cegah halaman mengecil saat memilih acara
+   ============================================================ */
+@media (max-width: 760px) {
+  html, body { width: 100%; max-width: 100%; }
+  .container, .card, #presensi-section, #presensi-section .subcard,
+  #presensi-section .form-grid, #attendance-form,
+  #attendance-form > label, #attendance-form > button,
+  #presensi-section .action-row,
+  #presensi-section .stats-grid {
+    min-width: 0;
+    max-width: 100%;
+  }
+  #presensi-section .form-grid,
+  #attendance-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+  #attendance-form > label,
+  #presensi-section .form-grid > label {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+  #presensi-section select,
+  #presensi-section input,
+  #presensi-section textarea {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    font-size: 16px; /* mencegah auto-zoom saat fokus pada Safari iPhone */
+  }
+  #public-event, #public-member, #public-category {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #presensi-section .table-scroll,
+  #presensi-section #public-roster {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #presensi-section .small-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+  #presensi-section .small-stats > :last-child { grid-column: 1 / -1; }
+  #presensi-section .stat-card { min-width: 0; overflow-wrap: anywhere; }
+}
