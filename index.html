@@ -16,7 +16,6 @@
     
     <nav class="main-tabs" aria-label="Navigasi utama"><button class="tab-btn active" data-tab="sensus">Data Sensus</button><button class="tab-btn" data-tab="presensi">Presensi Pengajian</button></nav>
     <section id="sensus-section">
-    <p class="intro">Data sensus diperbarui melalui Table Editor Supabase. Muat ulang halaman untuk melihat perubahan terbaru.</p>
     <!-- 📊 STATISTICS -->
     <div class="stats-grid" id="stats"></div>
     
@@ -61,15 +60,14 @@
     </table>
     </section>
     <section id="presensi-section" hidden>
-      <p class="intro">Presensi Pengajian Kelompok Marsela • Terbuka untuk umum • Tanpa login</p>
       <div id="configuration-warning" class="notice" hidden>Database belum terhubung. Isi <code>config.js</code> sesuai panduan.</div>
-      <div class="notice">Pilih nama sendiri dengan teliti. Setelah menekan <strong>Kirim Presensi</strong>, status <strong>tidak dapat diubah ataupun dikirim ulang</strong>, termasuk oleh admin melalui website. Jangan mewakili nama orang lain.</div>
+      <div class="notice">Pilih nama sendiri dengan teliti. Setelah menekan <strong>Kirim Presensi</strong>, status <strong>tidak dapat diubah ataupun dikirim ulang</strong>, termasuk oleh admin melalui website.</div>
       <div class="subcard">
         <h3>Isi Presensi</h3>
         <form id="attendance-form" class="form-grid">
           <label>Kegiatan<select id="public-event" required></select></label>
-          <label>Cari nama anggota<input id="member-search" type="search" placeholder="Ketik nama untuk menyaring daftar" autocomplete="off"></label>
-          <label>Nama anggota<select id="public-member" required></select></label>
+          <label>Cari Nama Anggota<input id="member-search" type="search" placeholder="Ketik nama untuk menyaring daftar" autocomplete="off"></label>
+          <label>Nama Anggota<select id="public-member" required></select></label>
           <label>Status<select id="public-status" required><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option></select></label>
           <button type="submit" id="submit-attendance">Kirim Presensi</button>
         </form>
@@ -77,9 +75,9 @@
       </div>
       <div class="subcard">
         <h3>Rekap Presensi Pengajian</h3>
-        <div class="form-grid"><label>Filter kategori<select id="public-category"><option value="">Semua kategori</option></select></label></div>
+        <div class="form-grid"><label>Filter Kategori<select id="public-category"><option value="">Semua Kategori</option></select></label></div>
         <div id="public-summary" class="stats-grid small-stats"></div>
-        <div class="action-row"><button id="refresh-attendance" class="btn-muted" type="button">Muat ulang</button><button id="export-csv" class="btn-muted" type="button">Unduh Rekap CSV</button></div>
+        <div class="action-row"><button id="refresh-attendance" class="btn-muted" type="button">Muat Ulang</button><button id="export-csv" class="btn-muted" type="button">Unduh Rekap CSV</button></div>
         <div class="table-scroll" id="public-roster"></div>
       </div>
       <p id="presensi-message" class="message" role="status" aria-live="polite"></p>
