@@ -13,14 +13,14 @@ const eligibility = {
   'Muda-Mudi': ['Muda - Mudi'],
   'Kelompok': ['Bapak - Bapak','Ibu - Ibu','Duda','Janda']
 };
-const eligibleMembers = () => {
-  const allowed = [...(eligibility[selected?.jenis_pengajian] || [])];
-  if (selected?.jenis_pengajian === 'Kelompok' && selected?.include_mudamudi) allowed.push('Muda - Mudi');
+const eligibleMembers = (event = selected) => {
+  const allowed = [...(eligibility[event?.jenis_pengajian] || [])];
+  if (event?.jenis_pengajian === 'Kelompok' && event?.include_mudamudi) allowed.push('Muda - Mudi');
   return members.filter(m => allowed.includes(m.kategori));
 };
 function setCategoryOptions(){
   const prev=el('public-category').value;
-  const cats=[...new Set(eligibleMembers().map(m=>m.kategori).filter(Boolean))].sort();
+  const cats=[...new Set(eligibleMembers(recapEvent).map(m=>m.kategori).filter(Boolean))].sort();
   el('public-category').innerHTML=option('','Semua kategori')+cats.map(c=>option(c,c)).join('');
   if(cats.includes(prev))el('public-category').value=prev;
 }
@@ -30,18 +30,51 @@ const jakartaToday = () => {
   return `${val('year')}-${val('month')}-${val('day')}`;
 };
 const read = r => {if(r.error) throw r.error; return r.data;};
-let db, members=[], events=[], presence=new Map(), selected=null, rows=[];
+let db, members=[], events=[], presence=new Map(), selected=null, recapEvent=null, recapPresence=new Map(), rows=[];
 const message = s => {el('presensi-message').textContent=s;};
 function tabs(){document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.tab-btn').forEach(x=>x.classList.toggle('active',x===b));
   el('sensus-section').hidden=b.dataset.tab!=='sensus';
   el('presensi-section').hidden=b.dataset.tab!=='presensi';
 }));}
+const eventText = e => `${dateLabel(e.event_date)} — [${e.jenis_pengajian}] ${e.title}${e.is_open?' (Dibuka)':' (Ditutup)'}`;
 async function loadInitial(){
   members=read(await db.from('marsela_members').select('id,nama,kategori,is_active').eq('is_active',true).order('nama').limit(1000));
-  events=read(await db.from('marsela_events').select('id,title,event_date,notes,is_open,jenis_pengajian,include_mudamudi').order('event_date',{ascending:false}).order('id',{ascending:false}).limit(150));
-  el('public-event').innerHTML=events.length?events.map(x=>option(x.id,`${dateLabel(x.event_date)} — [${x.jenis_pengajian}] ${x.title}${x.is_open?' (Dibuka)':' (Ditutup)'}`)).join(''):option('','Belum ada kegiatan');
+  // Kegiatan mendatang tidak ditampilkan. Arsip adalah kegiatan sebelum hari ini (WIB).
+  events=read(await db.from('marsela_events').select('id,title,event_date,notes,is_open,jenis_pengajian,include_mudamudi').lte('event_date',jakartaToday()).order('event_date',{ascending:false}).order('id',{ascending:false}).limit(1000));
+  const today=jakartaToday();
+  const todaysEvents=events.filter(e=>e.event_date===today);
+  const pastEvents=events.filter(e=>e.event_date<today);
+  el('public-event').innerHTML=option('','— Pilih pengajian hari ini —')+todaysEvents.map(e=>option(e.id,eventText(e))).join('');
+  const archive=el('public-archive');
+  archive.innerHTML=option('','— Pilih kegiatan yang sudah lewat —')+pastEvents.map(e=>option(e.id,eventText(e))).join('');
   await changeEvent();
+}
+function createArchiveSelector(){
+  const container=el('public-category').closest('.form-grid');
+  const label=document.createElement('label');
+  label.textContent='Arsip rekap kegiatan yang sudah lewat';
+  const select=document.createElement('select');
+  select.id='public-archive';
+  select.addEventListener('change',()=>changeRecap().catch(handleError));
+  label.appendChild(select);
+  container.insertBefore(label,container.firstChild);
+  const note=document.createElement('p');
+  note.className='message';
+  note.id='recap-source';
+  container.parentElement.insertBefore(note,container.nextSibling);
+}
+async function getPresence(event){
+  if(!event)return new Map();
+  const items=read(await db.from('marsela_attendance').select('member_id,status').eq('event_id',event.id).limit(1000));
+  return new Map(items.map(r=>[Number(r.member_id),r.status]));
+}
+async function changeRecap(){
+  const id=el('public-archive').value;
+  recapEvent=id?events.find(e=>String(e.id)===id):selected;
+  recapPresence=(recapEvent?.id===selected?.id)?presence:await getPresence(recapEvent);
+  el('recap-source').textContent=recapEvent?`Rekap: ${eventText(recapEvent)}`:'Belum ada kegiatan yang dipilih untuk rekap.';
+  setCategoryOptions();renderRoster();
 }
 function setMemberOptions(){
   const before=el('public-member').value, term=fmt(el('member-search').value);
@@ -51,13 +84,10 @@ function setMemberOptions(){
   showSelected();
 }
 async function changeEvent(){
-  selected=events.find(e=>String(e.id)===el('public-event').value)||null;
-  presence=new Map();
-  if(selected){
-    const items=read(await db.from('marsela_attendance').select('member_id,status').eq('event_id',selected.id).limit(1000));
-    presence=new Map(items.map(r=>[Number(r.member_id),r.status]));
-  }
-  setCategoryOptions(); setMemberOptions(); renderRoster();
+  selected=events.find(e=>String(e.id)===el('public-event').value && e.event_date===jakartaToday())||null;
+  presence=await getPresence(selected);
+  setMemberOptions();
+  await changeRecap();
 }
 function showSelected(){
   const id=Number(el('public-member').value);
@@ -68,18 +98,18 @@ function showSelected(){
   el('selected-info').textContent=!selected?'Belum ada jadwal pengajian.':!id?'Pilih nama Anda terlebih dahulu.':existing?`Nama ini sudah tercatat: ${existing}. Presensi terkunci dan tidak dapat diubah.`:!open?'Kegiatan ini tidak membuka presensi hari ini.':`Siap mengisi untuk ${members.find(m=>m.id===id)?.nama||''}. Pastikan status sudah benar.`;
 }
 function renderRoster(){
-  rows=eligibleMembers().filter(m=>!el('public-category').value||m.kategori===el('public-category').value).map(m=>({...m,status:presence.get(m.id)||'Belum'}));
+  rows=eligibleMembers(recapEvent).filter(m=>!el('public-category').value||m.kategori===el('public-category').value).map(m=>({...m,status:recapPresence.get(m.id)||'Belum'}));
   const count=s=>rows.filter(m=>m.status===s).length;
   el('public-summary').innerHTML=['Total: '+rows.length,'Hadir: '+count('Hadir'),'Izin: '+count('Izin'),'Sakit: '+count('Sakit'),'Belum: '+count('Belum')].map(s=>`<div class="stat-card">${clean(s)}</div>`).join('');
-  el('public-roster').innerHTML=selected?`<table><thead><tr><th>No.</th><th>Nama</th><th>Kategori</th><th>Status</th></tr></thead><tbody>${rows.map((m,i)=>`<tr><td>${i+1}</td><td>${clean(m.nama)}</td><td>${clean(m.kategori)}</td><td>${clean(m.status)}</td></tr>`).join('')}</tbody></table>`:'<p>Belum ada kegiatan.</p>';
+  el('public-roster').innerHTML=recapEvent?`<table><thead><tr><th>No.</th><th>Nama</th><th>Kategori</th><th>Status</th></tr></thead><tbody>${rows.map((m,i)=>`<tr><td>${i+1}</td><td>${clean(m.nama)}</td><td>${clean(m.kategori)}</td><td>${clean(m.status)}</td></tr>`).join('')}</tbody></table>`:'<p>Belum ada kegiatan.</p>';
 }
 function exportCsv(){
-  if(!selected)return;
+  if(!recapEvent)return;
   const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-  const lines=[['Nama','Kategori','Kegiatan','Tanggal','Status'],...rows.map(m=>[m.nama,m.kategori,selected.title,selected.event_date,m.status])];
+  const lines=[['Nama','Kategori','Kegiatan','Tanggal','Status'],...rows.map(m=>[m.nama,m.kategori,recapEvent.title,recapEvent.event_date,m.status])];
   const csv='﻿'+lines.map(r=>r.map(q).join(',')).join('\r\n');
   const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
-  const a=document.createElement('a');a.href=url;a.download=`rekap-marsela-${selected.jenis_pengajian}-${selected.event_date}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  const a=document.createElement('a');a.href=url;a.download=`rekap-marsela-${recapEvent.jenis_pengajian}-${recapEvent.event_date}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 async function submit(ev){
   ev.preventDefault();
@@ -100,6 +130,7 @@ async function submit(ev){
 }
 async function init(){
   tabs();
+  createArchiveSelector();
   if(!configured||!window.supabase){el('configuration-warning').hidden=false;el('attendance-form').hidden=true;return;}
   db=window.supabase.createClient(config.supabaseUrl,config.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
   el('public-event').addEventListener('change',()=>changeEvent().catch(handleError));
@@ -107,7 +138,7 @@ async function init(){
   el('public-member').addEventListener('change',showSelected);
   el('public-category').addEventListener('change',renderRoster);
   el('attendance-form').addEventListener('submit',submit);
-  el('refresh-attendance').addEventListener('click',()=>changeEvent().then(()=>message('Rekap diperbarui.')).catch(handleError));
+  el('refresh-attendance').addEventListener('click',()=>changeRecap().then(()=>message('Rekap diperbarui.')).catch(handleError));
   el('export-csv').addEventListener('click',exportCsv);
   await loadInitial();
 }
