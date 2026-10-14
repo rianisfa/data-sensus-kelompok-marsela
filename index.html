@@ -14,6 +14,9 @@
   <div class="card">
     <h2>DATA SENSUS KELOMPOK MARSELA</h2>
     
+    <nav class="main-tabs" aria-label="Navigasi utama"><button class="tab-btn active" data-tab="sensus">Data Sensus</button><button class="tab-btn" data-tab="presensi">Presensi Pengajian</button></nav>
+    <section id="sensus-section">
+    <p class="intro">Data sensus diperbarui melalui Table Editor Supabase. Muat ulang halaman untuk melihat perubahan terbaru.</p>
     <!-- 📊 STATISTICS -->
     <div class="stats-grid" id="stats"></div>
     
@@ -56,9 +59,36 @@
       </thead>
       <tbody id="hasil"></tbody>
     </table>
+    </section>
+    <section id="presensi-section" hidden>
+      <p class="intro">Presensi Pengajian Kelompok Marsela • Terbuka untuk umum • Tanpa login</p>
+      <div id="configuration-warning" class="notice" hidden>Database belum terhubung. Isi <code>config.js</code> sesuai panduan.</div>
+      <div class="notice">Pilih nama sendiri dengan teliti. Setelah menekan <strong>Kirim Presensi</strong>, status <strong>tidak dapat diubah ataupun dikirim ulang</strong>, termasuk oleh admin melalui website. Jangan mewakili nama orang lain.</div>
+      <div class="subcard">
+        <h3>Isi Presensi</h3>
+        <form id="attendance-form" class="form-grid">
+          <label>Kegiatan<select id="public-event" required></select></label>
+          <label>Cari nama anggota<input id="member-search" type="search" placeholder="Ketik nama untuk menyaring daftar" autocomplete="off"></label>
+          <label>Nama anggota<select id="public-member" required></select></label>
+          <label>Status<select id="public-status" required><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option></select></label>
+          <button type="submit" id="submit-attendance">Kirim Presensi</button>
+        </form>
+        <p id="selected-info" class="message" aria-live="polite"></p>
+      </div>
+      <div class="subcard">
+        <h3>Rekap Presensi Pengajian</h3>
+        <div class="form-grid"><label>Filter kategori<select id="public-category"><option value="">Semua kategori</option></select></label></div>
+        <div id="public-summary" class="stats-grid small-stats"></div>
+        <div class="action-row"><button id="refresh-attendance" class="btn-muted" type="button">Muat ulang</button><button id="export-csv" class="btn-muted" type="button">Unduh Rekap CSV</button></div>
+        <div class="table-scroll" id="public-roster"></div>
+      </div>
+      <p id="presensi-message" class="message" role="status" aria-live="polite"></p>
+    </section>
   </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="presensi.js" defer></script>
 <script>
 
 let data = [];
@@ -81,35 +111,42 @@ clearBtn.addEventListener('click', () => {
   applyFilters();
 });
 
-// Mengambil data dari file data.json
-fetch('data.json')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Gagal memuat file JSON');
+// Sensus dan presensi menggunakan SATU sumber data: public.marsela_members di Supabase.
+async function loadSensusFromSupabase() {
+  const cfg = window.MARSeLA_CONFIG || {};
+  const tbody = document.getElementById('hasil');
+  tbody.innerHTML = '<tr><td colspan="7">Memuat data sensus dari Supabase...</td></tr>';
+  try {
+    if (!window.supabase || !/^https:\/\/.+\.supabase\.co$/.test(cfg.supabaseUrl || '') || !cfg.supabaseAnonKey || cfg.supabaseAnonKey.includes('GANTI')) {
+      throw new Error('Isi Project URL dan publishable key pada config.js terlebih dahulu.');
     }
-    return response.json();
-  })
-  .then(jsonData => {
-    // Masukkan data dari JSON ke dalam variabel global 'data'
-    data = jsonData.sort((a, b) => a.nama.localeCompare(b.nama)); 
+    const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+      auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false}
+    });
+    // Batas default PostgREST 1000 baris per permintaan: gunakan pagination agar data lengkap.
+    const all = [];
+    for (let from = 0; ; from += 1000) {
+      const {data: page, error} = await client.from('marsela_members')
+        .select('id,nama,kelamin,tgl_lahir,kategori,status,is_active')
+        .order('id', {ascending: true}).range(from, from + 999);
+      if (error) throw error;
+      all.push(...page);
+      if (page.length < 1000) break;
+    }
+    data = all.filter(m => m.is_active !== false).sort((a,b) => (a.nama || '').localeCompare(b.nama || ''));
     isLoaded = true;
-
-    // Jalankan fungsi inisialisasi SETELAH data berhasil dimuat
     preprocessData();
     populateFilters();
-    tampilSemua();
-    
-    // Perbarui statistik berdasarkan data yang baru dimuat
-    if(typeof updateStatsFiltered === "function") {
-      updateStatsFiltered(data);
-    } else {
-      updateStats();
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    document.getElementById('hasil').innerHTML = '<tr><td colspan="7" class="no-data">⚠️ Gagal memuat data. Pastikan buka lewat Live Server.</td></tr>';
-  });
+    applyFilters();
+  } catch (error) {
+    console.error('Gagal memuat data sensus:', error);
+    tbody.innerHTML = '<tr><td colspan="7" class="no-data">Gagal memuat sensus dari database. Periksa config.js dan migrasi database. Detail: ' + escapeHtml(error.message || String(error)) + '</td></tr>';
+  }
+}
+function escapeHtml(v) {
+  return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+loadSensusFromSupabase();
 
 // ⚡ PREPROCESSING DATA
 function preprocessData() {
@@ -161,7 +198,7 @@ function populateFilters() {
 
   // Add new options for kategori
   Array.from(allKategori).sort().forEach(kat => {
-    katSelect.innerHTML += `<option value="${kat}">${kat}</option>`;
+    katSelect.innerHTML += `<option value="${escapeHtml(kat)}">${escapeHtml(kat)}</option>`;
   });
 }
 
@@ -208,12 +245,12 @@ const sortedList = [...dataList].sort((a,b) => a.nama.localeCompare(b.nama))
     html += `
       <tr>
         <td>${i + 1}</td>
-        <td><strong>${d.nama || '-'}</strong></td>
-        <td>${d.kelamin || '-'}</td>
-        <td>${d.tgl_lahir || '-'}</td>
+        <td><strong>${escapeHtml(d.nama || '-')}</strong></td>
+        <td>${escapeHtml(d.kelamin || '-')}</td>
+        <td>${escapeHtml(d.tgl_lahir || '-')}</td>
         <td>${umur}</td>
-        <td>${d.kategori || '-'}</td>
-        <td>${d.status || '-'}</td>
+        <td>${escapeHtml(d.kategori || '-')}</td>
+        <td>${escapeHtml(d.status || '-')}</td>
       </tr>
     `;
   });
@@ -234,12 +271,12 @@ function updateStatsFiltered(dataList) {
   const totalPerempuan = data.filter(d => d.kelamin === 'P').length;
 
   const kepalaKeluargaUniqueFiltered = new Set(
-    dataList.filter(d => d.status.toLowerCase() === 'kepala keluarga').map(d => d.nama.toLowerCase())
+    dataList.filter(d => (d.status || '').toLowerCase() === 'kepala keluarga').map(d => d.nama.toLowerCase())
   );
   const filteredKK = kepalaKeluargaUniqueFiltered.size;
 
   const kepalaKeluargaUniqueTotal = new Set(
-    data.filter(d => d.status.toLowerCase() === 'kepala keluarga').map(d => d.nama.toLowerCase())
+    data.filter(d => (d.status || '').toLowerCase() === 'kepala keluarga').map(d => d.nama.toLowerCase())
   );
   const totalKK = kepalaKeluargaUniqueTotal.size;
 

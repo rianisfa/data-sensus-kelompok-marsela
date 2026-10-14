@@ -310,3 +310,27 @@ tr:last-child td {
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8; /* Warna saat scrollbar ditahan/di-hover */
 }
+/* Modul presensi: tambahan, gaya sensus lama dipertahankan */
+[hidden] { display:none !important; }
+.main-tabs {display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:-16px 0 26px}
+.tab-btn, #presensi-section button {font:inherit;cursor:pointer;border:1px solid var(--border);background:#edf2f7;color:#334155;padding:11px 17px;border-radius:10px;font-weight:600}
+.tab-btn.active,#presensi-section button:not(.btn-muted){background:#475569;color:white}
+#presensi-section .subcard {padding:23px;border:1px solid var(--border);border-radius:14px;margin:18px 0;background:#fff}
+#presensi-section h3{margin:0 0 8px;font-size:1.25rem}
+#presensi-section h4{margin-bottom:8px}.intro {text-align:center;color:#64748b}
+#presensi-section .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;align-items:end}
+#presensi-section label{display:grid;gap:5px;font-weight:600;font-size:.9rem}
+#presensi-section input,#presensi-section select{width:100%;padding:11px;border:1px solid var(--border);border-radius:9px;font:inherit;background:#fff;color:var(--text-main)}
+#presensi-section .inline-form{display:flex;flex-wrap:wrap;gap:10px}
+#presensi-section .inline-form input{flex:1;min-width:200px}
+#presensi-section .user-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#user-role{margin-left:8px;color:#64748b}.notice{padding:15px;background:#fff8e4;border:1px solid #ebd39c;border-radius:10px}
+#presensi-section .message{min-height:24px;color:#334155}.action-row{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+#presensi-section .table-scroll{overflow-x:auto;margin-top:14px}
+#presensi-section table{width:100%;border-collapse:collapse;min-width:600px}
+#presensi-section th,#presensi-section td{padding:11px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+#presensi-section select.status-input{min-width:125px}.event-tile{padding:15px;border:1px solid var(--border);border-radius:12px;margin:10px 0}
+#presensi-section .small-stats{margin:16px 0;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+#presensi-section .small-stats .stat-card{padding:12px;font-size:.95rem}
+#presensi-section .compact{margin-top:17px}
+@media(max-width:600px){#presensi-section .subcard{padding:14px}}
