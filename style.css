@@ -974,3 +974,107 @@ button:focus-visible, .tab-btn:focus-visible, select:focus-visible, input:focus-
 @media (max-width: 760px) { .main-tabs .tab-btn[data-tab="presensi"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2216%22%20height%3D%2217%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M9%202v4m6-4v4M4%2010h16m-11%205%202%202%204-4%22%2F%3E%3C%2Fsvg%3E"); mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2216%22%20height%3D%2217%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M9%202v4m6-4v4M4%2010h16m-11%205%202%202%204-4%22%2F%3E%3C%2Fsvg%3E"); } }
 @media (max-width: 760px) { .main-tabs .tab-btn[data-tab="jadwal"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%225%22%20width%3D%2218%22%20height%3D%2216%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M16%203v4M8%203v4M3%2010h18M8%2014h2m4%200h2m-8%204h2%22%2F%3E%3C%2Fsvg%3E"); mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%225%22%20width%3D%2218%22%20height%3D%2216%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M16%203v4M8%203v4M3%2010h18M8%2014h2m4%200h2m-8%204h2%22%2F%3E%3C%2Fsvg%3E"); } }
 @media (max-width: 760px) { .main-tabs .tab-btn[data-tab="statistik"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020V10m5%2010V4m5%2016v-7m5%207V8M2%2020h20%22%2F%3E%3C%2Fsvg%3E"); mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020V10m5%2010V4m5%2016v-7m5%207V8M2%2020h20%22%2F%3E%3C%2Fsvg%3E"); } }
+
+/* ==============================================================
+   PATCH NAVIGASI HP — 5 kolom simetris, label singkat, safe area
+   Khusus tampilan; label HTML dan event JavaScript tidak berubah.
+   ============================================================== */
+@media (max-width: 760px) {
+  :root { --marsela-nav-height: 78px; }
+  html { scroll-padding-bottom: calc(var(--marsela-nav-height) + 38px + env(safe-area-inset-bottom, 0px)); }
+  body { padding-bottom: calc(var(--marsela-nav-height) + 34px + env(safe-area-inset-bottom, 0px)); }
+
+  .main-tabs {
+    position: fixed;
+    z-index: 999;
+    top: auto;
+    left: max(8px, env(safe-area-inset-left, 0px));
+    right: max(8px, env(safe-area-inset-right, 0px));
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    inset-block-start: auto;
+    width: auto;
+    max-width: 520px;
+    min-width: 0;
+    height: var(--marsela-nav-height);
+    margin: 0 auto;
+    padding: 7px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 3px;
+    border-radius: 19px;
+    background: rgba(16, 40, 59, .98);
+    border: 1px solid rgba(133, 182, 189, .26);
+    box-shadow: 0 12px 38px rgba(8, 30, 44, .32);
+  }
+
+  .main-tabs > .tab-btn,
+  .main-tabs .tab-btn {
+    display: flex;
+    flex: initial;
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 9px 1px 7px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 0;
+    border-radius: 13px;
+    box-shadow: none;
+    line-height: 1;
+    font-size: 0; /* Sembunyikan label panjang secara visual, tetap ada di HTML */
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    overflow-wrap: normal;
+    word-break: normal;
+    letter-spacing: 0;
+  }
+  .main-tabs .tab-btn::before {
+    display: block;
+    flex: 0 0 21px;
+    width: 21px;
+    height: 21px;
+    margin: 0;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+  .main-tabs .tab-btn::after {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    font: 700 clamp(9px, 2.5vw, 11px)/1.15 'DM Sans', system-ui, sans-serif;
+    letter-spacing: -.012em;
+    white-space: nowrap;
+    text-overflow: clip;
+  }
+  .main-tabs .tab-btn[data-tab='beranda']::after { content: 'Beranda'; }
+  .main-tabs .tab-btn[data-tab='sensus']::after { content: 'Sensus'; }
+  .main-tabs .tab-btn[data-tab='presensi']::after { content: 'Presensi'; }
+  .main-tabs .tab-btn[data-tab='jadwal']::after { content: 'Jadwal'; }
+  .main-tabs .tab-btn[data-tab='statistik']::after { content: 'Statistik'; }
+
+  .main-tabs .tab-btn.active,
+  .main-tabs .tab-btn[aria-selected='true'] {
+    background: #46c4a9;
+    color: #10283b;
+    box-shadow: 0 4px 13px rgba(5, 19, 29, .18);
+  }
+}
+
+@media (max-width: 360px) {
+  :root { --marsela-nav-height: 72px; }
+  .main-tabs { left: 5px; right: 5px; padding: 5px; gap: 1px; }
+  .main-tabs .tab-btn { padding: 7px 0 5px; gap: 5px; }
+  .main-tabs .tab-btn::before { flex-basis: 19px; width: 19px; height: 19px; }
+  .main-tabs .tab-btn::after { font-size: 9px; }
+}
+
+@media (min-width: 761px) {
+  .main-tabs .tab-btn::after { content: none; }
+}
