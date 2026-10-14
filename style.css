@@ -196,6 +196,16 @@ button:focus-visible, .clear-icon:focus-visible { outline: 3px solid #8aa5d2; ou
 .message { color: #536680; font-size: 13px; line-height: 1.6; margin: 10px 0 0; }
 .message:empty { display: none; }
 
+/* Area scroll khusus daftar anggota sensus; panel lain tidak ikut bergeser. */
+#sensus-section { min-width: 0; }
+#sensus-section .sensus-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: 13px;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* Tabel modern — scroll hanya bila diperlukan */
 .table-scroll { max-width: 100%; overflow-x: auto; border-radius: 13px; }
 table {
@@ -283,8 +293,18 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--primary); curs
   #attendance-form button { width: 100%; }
   .form-grid, .subcard > .form-grid { grid-template-columns: 1fr; }
   /* Tabel sensus bisa digeser ke samping di HP */
-  #sensus-section { overflow-x: auto; }
-  #sensus-section > table { min-width: 820px; }
+  /* Hanya tabel sensus yang scroll secara horizontal, bukan seluruh tab. */
+  #sensus-section { min-width: 0; overflow-x: visible; }
+  #sensus-section .sensus-table-scroll {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  #sensus-section .sensus-table-scroll > table { min-width: 820px; }
   #public-roster table { min-width: 510px; }
   th, td { padding: 12px 11px; }
   .action-row button { flex: 1 1 auto; }
