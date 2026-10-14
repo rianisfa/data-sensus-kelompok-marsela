@@ -149,7 +149,7 @@ function renderRoster(){
   const count=s=>rows.filter(m=>m.status===s).length;
   const percent=rows.length?(100*count('Hadir')/rows.length).toFixed(1).replace(/\.0$/,''):'0';
   el('public-summary').innerHTML=['Total: '+rows.length,'Hadir: '+count('Hadir'),'Izin: '+count('Izin'),'Sakit: '+count('Sakit'),'Kehadiran: '+percent+'%'].map(s=>`<div class="stat-card">${clean(s)}</div>`).join('');
-  el('public-roster').innerHTML=chosenEvents().length?`<table><thead><tr><th>No.</th><th>Tanggal</th><th>Kegiatan</th><th>Nama</th><th>Kategori</th><th>Status</th></tr></thead><tbody>${rows.map((m,i)=>`<tr><td>${i+1}</td><td>${clean(dateLabel(m.date))}</td><td>${clean(m.title)}</td><td>${clean(m.nama)}</td><td>${clean(m.kategori)}</td><td>${clean(m.status)}</td></tr>`).join('')}</tbody></table>`:'<p>Centang satu atau beberapa kegiatan untuk melihat rekap.</p>';
+  el('public-roster').innerHTML=chosenEvents().length?`<table><thead><tr><th>No.</th><th>Nama</th><th>Kategori</th><th>Status</th></tr></thead><tbody>${rows.map((m,i)=>`<tr><td>${i+1}</td><td>${clean(m.nama)}</td><td>${clean(m.kategori)}</td><td>${clean(m.status)}</td></tr>`).join('')}</tbody></table>`:'<p>Centang satu atau beberapa kegiatan untuk melihat rekap.</p>';
 }
 const q = v => '"'+String(v??'').replace(/"/g,'""')+'"';
 function downloadCsv(data,filename){
