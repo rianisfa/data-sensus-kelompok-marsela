@@ -1263,3 +1263,54 @@ button:focus-visible, .tab-btn:focus-visible, select:focus-visible, input:focus-
   .marsela-confirm-details span { flex-basis: 92px; }
 }
 @media(prefers-reduced-motion:reduce) { .marsela-confirm-card { animation: none; } }
+
+/* ========= MARSELA · KALENDER PENGAJIAN PREMIUM ========= */
+.marsela-calendar { width:100%;min-width:0;display:grid;gap:16px; }
+.cal-toolbar {display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;}
+.cal-toolbar-title h3 {margin:0;color:#173548;font-size:clamp(1.18rem,2.4vw,1.55rem);text-transform:capitalize;}
+.cal-eyebrow {display:block;color:#148f78;font-size:.68rem;font-weight:800;letter-spacing:.15em;margin-bottom:5px;}
+.cal-toolbar-actions {display:flex;gap:8px;align-items:center;}
+.cal-toolbar-actions button {min-height:40px;}
+.cal-icon-btn {width:42px;padding:8px!important;display:grid!important;place-items:center;border-radius:12px!important;}
+.cal-legend {display:flex;gap:11px 16px;align-items:center;flex-wrap:wrap;color:#51697b;font-size:.8rem;}
+.cal-legend span {display:inline-flex;align-items:center;gap:7px;}
+.cal-dot {display:inline-block;flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:#2cb69a;}
+.cal-dot.caberawit {background:#26b99a;}
+.cal-dot.mudamudi {background:#6489dd;}
+.cal-dot.kelompok {background:#e8ad57;}
+.cal-scroller {width:100%;min-width:0;overflow:hidden;border:1px solid #d9e7e9;border-radius:18px;background:#fff;box-shadow:0 10px 26px rgba(14,43,58,.045);padding:12px;}
+.cal-grid {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;min-width:0;}
+.cal-weekday {text-align:center;color:#728897;font-size:.76rem;font-weight:800;padding:11px 0 6px;}
+.cal-pad {min-width:0;}
+.cal-day {appearance:none;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:76px;padding:9px 3px!important;background:#f7fafb!important;color:#29495c!important;border:1px solid #edf2f3!important;border-radius:13px!important;box-shadow:none!important;transform:none!important;cursor:pointer;transition:background .18s,border-color .18s,box-shadow .18s!important;}
+.cal-day:hover {background:#ebf8f4!important;border-color:#9bdcc9!important;}
+.cal-day.today {box-shadow:inset 0 0 0 2px #a7ddce!important;}
+.cal-day.selected {background:#17394d!important;color:white!important;border-color:#17394d!important;box-shadow:0 5px 16px rgba(18,56,75,.18)!important;}
+.cal-day-num {font-size:.95rem;font-weight:800;line-height:1.1;}
+.cal-day-dots {display:flex;justify-content:center;gap:3px;height:8px;align-items:center;}
+.cal-day-dots .cal-dot {width:7px;height:7px;}
+.cal-day:not(.has-event) .cal-day-dots {opacity:0;}
+.cal-status {font-size:.78rem;color:#6b818d;min-height:1.1rem;margin-top:-7px;}
+.cal-details-head {display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid #e0ebed;padding-top:18px;}
+.cal-details-head h3 {margin:0;font-size:1.04rem;}
+.cal-count {border-radius:30px;background:#e7f8f3;color:#166e5b;font-weight:800;padding:7px 11px;font-size:.75rem;}
+.cal-details {display:grid;gap:10px;min-width:0;}
+.cal-details .schedule-item {margin:0;}
+@media(max-width:760px) {
+  .marsela-calendar {gap:13px;}
+  .cal-toolbar {align-items:flex-end;}
+  .cal-toolbar-title h3 {font-size:1.15rem;}
+  .cal-toolbar-actions {gap:5px;}
+  .cal-toolbar-actions button {min-height:36px;padding:8px 10px;font-size:.76rem;}
+  .cal-icon-btn {width:35px;}
+  .cal-scroller {padding:7px;border-radius:13px;}
+  .cal-grid {gap:3px;}
+  .cal-weekday {font-size:.65rem;padding:7px 0 5px;}
+  .cal-day {min-height:53px;padding:6px 0!important;gap:5px;border-radius:8px!important;}
+  .cal-day-num {font-size:.78rem;}
+  .cal-day-dots {gap:2px;height:6px;}
+  .cal-day-dots .cal-dot {width:5px;height:5px;}
+  .cal-legend {font-size:.69rem;gap:8px 12px;}
+}
+@media(max-width:360px) {.cal-grid{gap:2px}.cal-day{min-height:46px}.cal-scroller{padding:5px}}
+@media(prefers-reduced-motion:reduce){.cal-day{transition:none!important}}

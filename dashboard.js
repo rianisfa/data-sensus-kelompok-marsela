@@ -18,6 +18,67 @@
     return members.filter(m=>cats.includes(m.kategori));
   };
   let db, members=[], recentEvents=[], upcomingEvents=[], isReady=false;
+  // Kalender memuat jadwal per bulan langsung dari database, bukan hanya rentang 60 hari di Beranda.
+  const [thisYear,thisMonth]=dateWIB().slice(0,7).split('-').map(Number);
+  let calendarYear=thisYear, calendarMonth=thisMonth, calendarSelected=dateWIB();
+  let calendarEvents=[], calendarRequest=0;
+  const isoDay=(y,m,d)=>`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const monthName=(y,m)=>new Intl.DateTimeFormat('id-ID',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,1)));
+  const shortDay=['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+  const eventClass=e=> e.jenis_pengajian==='Caberawit'?'caberawit':e.jenis_pengajian==='Muda-Mudi'?'mudamudi':'kelompok';
+  const labelType=e=>e.jenis_pengajian||'Pengajian';
+  function ensureCalendar(){
+    if($('marsela-calendar'))return;
+    const root=$('schedule-list');
+    root.innerHTML=`<div id="marsela-calendar" class="marsela-calendar">
+      <div class="cal-toolbar">
+        <div class="cal-toolbar-title"><span class="cal-eyebrow">KALENDER BULANAN</span><h3 id="cal-month-title"></h3></div>
+        <div class="cal-toolbar-actions"><button id="cal-prev" type="button" class="cal-icon-btn" aria-label="Bulan sebelumnya">&#10094;</button><button id="cal-today" type="button" class="btn-muted">Bulan ini</button><button id="cal-next" type="button" class="cal-icon-btn" aria-label="Bulan berikutnya">&#10095;</button></div>
+      </div>
+      <div class="cal-legend" aria-label="Legenda jenis pengajian"><span><i class="cal-dot caberawit"></i>Caberawit</span><span><i class="cal-dot mudamudi"></i>Muda-Mudi</span><span><i class="cal-dot kelompok"></i>Kelompok</span></div>
+      <div class="cal-scroller"><div id="cal-grid" class="cal-grid" role="group" aria-label="Tanggal kegiatan"></div></div>
+      <div id="cal-status" class="cal-status" role="status" aria-live="polite"></div>
+      <div class="cal-details-head"><h3 id="cal-selected-title">Detail Kegiatan</h3><span id="cal-selected-count" class="cal-count"></span></div>
+      <div id="cal-details" class="cal-details"></div>
+    </div>`;
+    $('cal-prev').addEventListener('click',()=>moveCalendar(-1));
+    $('cal-next').addEventListener('click',()=>moveCalendar(1));
+    $('cal-today').addEventListener('click',()=>{[calendarYear,calendarMonth]=dateWIB().slice(0,7).split('-').map(Number);calendarSelected=dateWIB();loadSchedule().catch(showError);});
+    $('cal-grid').addEventListener('click',ev=>{
+      const button=ev.target.closest('button[data-date]');if(!button)return;
+      calendarSelected=button.dataset.date;renderCalendar();
+    });
+  }
+  function moveCalendar(delta){
+    const d=new Date(Date.UTC(calendarYear, calendarMonth-1+delta,1));
+    calendarYear=d.getUTCFullYear(); calendarMonth=d.getUTCMonth()+1;
+    calendarSelected=isoDay(calendarYear,calendarMonth,1);
+    loadSchedule().catch(showError);
+  }
+  function renderCalendar(){
+    const filter=$('schedule-filter').value;
+    const shown=calendarEvents.filter(e=>!filter||e.jenis_pengajian===filter);
+    const group=new Map();for(const e of shown){const list=group.get(e.event_date)||[];list.push(e);group.set(e.event_date,list);}
+    $('cal-month-title').textContent=monthName(calendarYear,calendarMonth);
+    const offset=(new Date(Date.UTC(calendarYear,calendarMonth-1,1)).getUTCDay()+6)%7;
+    const days=new Date(Date.UTC(calendarYear,calendarMonth,0)).getUTCDate();
+    const cells=shortDay.map(d=>`<span class="cal-weekday">${d}</span>`);
+    for(let i=0;i<offset;i++)cells.push('<span class="cal-pad" aria-hidden="true"></span>');
+    for(let d=1;d<=days;d++){
+      const date=isoDay(calendarYear,calendarMonth,d), dayEvents=group.get(date)||[];
+      const selected=date===calendarSelected, today=date===dateWIB();
+      const dots=[...new Set(dayEvents.map(eventClass))].map(cls=>`<i class="cal-dot ${cls}"></i>`).join('');
+      const description=dayEvents.length?`${dayEvents.length} kegiatan`:'Tidak ada kegiatan';
+      cells.push(`<button type="button" data-date="${date}" class="cal-day${selected?' selected':''}${today?' today':''}${dayEvents.length?' has-event':''}" aria-pressed="${selected}" aria-label="${dateID(date)}, ${description}"><span class="cal-day-num">${d}</span><span class="cal-day-dots" aria-hidden="true">${dots}</span></button>`);
+    }
+    $('cal-grid').innerHTML=cells.join('');
+    const selected=group.get(calendarSelected)||[];
+    $('cal-selected-title').textContent=`Kegiatan · ${dateID(calendarSelected)}`;
+    $('cal-selected-count').textContent=`${selected.length} kegiatan`;
+    $('cal-details').innerHTML=selected.length? selected.map(scheduleCard).join(''):'<p class="dash-empty">Tidak ada kegiatan untuk tanggal dan filter yang dipilih.</p>';
+    $('cal-status').textContent=`${shown.length} kegiatan ditampilkan pada ${monthName(calendarYear,calendarMonth)}.`;
+  }
+
   const read = result => { if(result.error)throw result.error;return result.data||[]; };
   function navigate(tab){
     for (const btn of document.querySelectorAll('.tab-btn')) {
@@ -80,11 +141,24 @@
     $('dash-message').textContent='';
   }
   async function loadSchedule(){
-    if(!db){$('schedule-list').textContent='Hubungkan Supabase terlebih dahulu.';return;}
-    if(!isReady)await refreshData();
-    const type=$('schedule-filter').value;
-    const list=upcomingEvents.filter(e=>!type||e.jenis_pengajian===type);
-    $('schedule-list').innerHTML=list.length?list.map(scheduleCard).join(''):'<p class="dash-empty">Belum ada jadwal untuk pilihan ini.</p>';
+    ensureCalendar();
+    if(!db){$('cal-status').textContent='Supabase belum terhubung. Periksa config.js.';return;}
+    const request=++calendarRequest;
+    const first=isoDay(calendarYear,calendarMonth,1);
+    const last=isoDay(calendarYear,calendarMonth,new Date(Date.UTC(calendarYear,calendarMonth,0)).getUTCDate());
+    $('cal-status').textContent='Memuat jadwal dari Supabase…';
+    try{
+      const list=await pageAll('marsela_events','id,title,event_date,notes,is_open,jenis_pengajian,include_mudamudi',q=>q.gte('event_date',first).lte('event_date',last).order('event_date',{ascending:true}).order('id',{ascending:true}));
+      if(request!==calendarRequest)return;
+      calendarEvents=list;
+      if(!calendarSelected.startsWith(first.slice(0,7)))calendarSelected=first;
+      renderCalendar();
+    }catch(e){
+      if(request!==calendarRequest)return;
+      $('cal-status').textContent='Jadwal gagal dimuat: '+(e.message||String(e));
+      $('cal-details').innerHTML='<p class="dash-empty">Gagal memuat jadwal. Coba tombol Muat ulang.</p>';
+      throw e;
+    }
   }
   async function attendanceFor(e){
     const records=await pageAll('marsela_attendance','member_id,status',q=>q.eq('event_id',e.id).order('member_id'));

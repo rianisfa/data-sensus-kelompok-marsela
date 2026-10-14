@@ -22,7 +22,7 @@
       <button class="tab-btn" data-tab="statistik" type="button">Statistik Kehadiran</button>
     </nav>
     <section id="beranda-section" class="dash-section">
-      <div class="dash-heading"><div><p class="dash-eyebrow">RINGKASAN KELOMPOK</p><h3>Selamat Datang di Kelompok Marsela</h3><p>Data sensus, jadwal pengajian, pengamalan maupun olahraga di Kelompok Marsela.</p></div><span id="dash-updated" class="dash-updated">Memuat…</span></div>
+      <div class="dash-heading"><div><p class="dash-eyebrow">RINGKASAN KELOMPOK</p><h3>Selamat Datang di Kelompok Marsela</h3><p>Data sensus, jadwal pengajian, maupun olahraga di Kelompok Marsela.</p></div><span id="dash-updated" class="dash-updated">Memuat…</span></div>
       <div id="dash-summary" class="dash-summary" aria-live="polite"><p>Memuat ringkasan dashboard…</p></div>
       <div class="dash-panels">
         <div class="dash-panel"><h3>Pengajian Hari Ini</h3><div id="dash-today"><p>Memuat kegiatan…</p></div></div>
@@ -100,13 +100,13 @@
       <p id="presensi-message" class="message" role="status" aria-live="polite"></p>
     </section>
     <section id="jadwal-section" class="dash-section" hidden>
-      <div class="dash-heading"><div><p class="dash-eyebrow">KALENDER KEGIATAN</p><h3>Jadwal Pengajian</h3><p>Jadwal mendatang dan hari ini, termasuk kegiatan yang belum dibuka untuk presensi.</p></div></div>
+      <div class="dash-heading"><div><p class="dash-eyebrow">KALENDER KEGIATAN</p><h3>Jadwal Pengajian</h3><p>Pilih bulan dan tanggal untuk melihat rincian pengajian. Jadwal dibaca langsung dari Supabase.</p></div></div>
       <div class="dash-toolbar">
-        <label>Jenis pengajian<select id="schedule-filter"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label>
+        <label>Jenis Pengajian<select id="schedule-filter"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label>
         <button class="btn-muted" id="schedule-refresh" type="button">Muat ulang</button>
       </div>
       <div id="schedule-list" class="schedule-list" aria-live="polite">Memuat jadwal…</div>
-      <p class="dash-footnote">Jadwal berikutnya boleh terlihat lebih awal di menu ini, tetapi pilihan Isi Presensi hanya menampilkan kegiatan hari ini.</p>
+      <p class="dash-footnote">Kalender menampilkan jadwal setiap bulan, termasuk kegiatan yang sudah lewat. Pilihan Isi Presensi tetap khusus kegiatan hari ini.</p>
     </section>
     <section id="statistik-section" class="dash-section" hidden>
       <div class="dash-heading"><div><p class="dash-eyebrow">ANALISIS KEHADIRAN</p><h3>Statistik Kehadiran</h3><p>Perbandingan kehadiran berdasarkan kegiatan pengajian.</p></div></div>
