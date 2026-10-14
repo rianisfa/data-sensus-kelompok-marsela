@@ -14,7 +14,8 @@ const eligibility = {
   'Kelompok': ['Bapak - Bapak','Ibu - Ibu','Duda','Janda']
 };
 const eligibleMembers = () => {
-  const allowed = eligibility[selected?.jenis_pengajian] || [];
+  const allowed = [...(eligibility[selected?.jenis_pengajian] || [])];
+  if (selected?.jenis_pengajian === 'Kelompok' && selected?.include_mudamudi) allowed.push('Muda - Mudi');
   return members.filter(m => allowed.includes(m.kategori));
 };
 function setCategoryOptions(){
@@ -38,7 +39,7 @@ function tabs(){document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListe
 }));}
 async function loadInitial(){
   members=read(await db.from('marsela_members').select('id,nama,kategori,is_active').eq('is_active',true).order('nama').limit(1000));
-  events=read(await db.from('marsela_events').select('id,title,event_date,notes,is_open,jenis_pengajian').order('event_date',{ascending:false}).order('id',{ascending:false}).limit(150));
+  events=read(await db.from('marsela_events').select('id,title,event_date,notes,is_open,jenis_pengajian,include_mudamudi').order('event_date',{ascending:false}).order('id',{ascending:false}).limit(150));
   el('public-event').innerHTML=events.length?events.map(x=>option(x.id,`${dateLabel(x.event_date)} — [${x.jenis_pengajian}] ${x.title}${x.is_open?' (Dibuka)':' (Ditutup)'}`)).join(''):option('','Belum ada kegiatan');
   await changeEvent();
 }
