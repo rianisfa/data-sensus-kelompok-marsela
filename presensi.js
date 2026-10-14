@@ -100,7 +100,7 @@ function showSelected(){
 function renderRoster(){
   rows=eligibleMembers(recapEvent).filter(m=>!el('public-category').value||m.kategori===el('public-category').value).map(m=>({...m,status:recapPresence.get(m.id)||'Belum'}));
   const count=s=>rows.filter(m=>m.status===s).length;
-  el('public-summary').innerHTML=['Total: '+rows.length,'Hadir: '+count('Hadir'),'Izin: '+count('Izin'),'Sakit: '+count('Sakit'),'Belum: '+count('Belum')].map(s=>`<div class="stat-card">${clean(s)}</div>`).join('');
+  el('public-summary').innerHTML=['Total: '+rows.length,'Hadir: '+count('Hadir'),'Izin: '+count('Izin'),'Sakit: '+count('Sakit'),'Kehadiran: '+(rows.length ? (100*count('Hadir')/rows.length).toFixed(1).replace(/\.0$/,'') : '0')+'%'].map(s=>`<div class="stat-card">${clean(s)}</div>`).join('');
   el('public-roster').innerHTML=recapEvent?`<table><thead><tr><th>No.</th><th>Nama</th><th>Kategori</th><th>Status</th></tr></thead><tbody>${rows.map((m,i)=>`<tr><td>${i+1}</td><td>${clean(m.nama)}</td><td>${clean(m.kategori)}</td><td>${clean(m.status)}</td></tr>`).join('')}</tbody></table>`:'<p>Belum ada kegiatan.</p>';
 }
 function exportCsv(){
@@ -110,6 +110,43 @@ function exportCsv(){
   const csv='﻿'+lines.map(r=>r.map(q).join(',')).join('\r\n');
   const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
   const a=document.createElement('a');a.href=url;a.download=`rekap-marsela-${recapEvent.jenis_pengajian}-${recapEvent.event_date}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+// Gabungkan semua kegiatan pada tanggal rekap yang sedang dipilih.
+// Tidak mengikuti filter kategori supaya tidak ada peserta dari kegiatan lain yang terlewat.
+async function exportAllCsv(){
+  if (!recapEvent) { message('Pilih kegiatan untuk menentukan tanggal rekap terlebih dahulu.'); return; }
+  const button=el('export-all-csv');
+  button.disabled=true;
+  try {
+    const onDate=events.filter(e=>e.event_date===recapEvent.event_date);
+    const lines=[['Tanggal','Jenis Pengajian','Kegiatan','Nama','Kategori','Status Presensi']];
+    for (const event of onDate) {
+      const eventPresence=await getPresence(event);
+      const participants=eligibleMembers(event);
+      for (const m of participants) {
+        lines.push([event.event_date,event.jenis_pengajian,event.title,m.nama,m.kategori,eventPresence.get(Number(m.id))||'Belum']);
+      }
+    }
+    const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+    const csv='\uFEFF'+lines.map(row=>row.map(q).join(',')).join('\r\n');
+    const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+    const a=document.createElement('a');a.href=url;
+    a.download=`rekap-semua-pengajian-marsela-${recapEvent.event_date}.csv`;
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    message(`CSV gabungan ${onDate.length} kegiatan pada ${dateLabel(recapEvent.event_date)} berhasil disiapkan.`);
+  } catch(err) {handleError(err);}
+  finally {button.disabled=false;}
+}
+function createExportAllButton(){
+  const single=el('export-csv');
+  const button=document.createElement('button');
+  button.id='export-all-csv';
+  button.type='button';
+  button.className=single.className;
+  button.textContent='Unduh Semua Kegiatan';
+  single.insertAdjacentElement('afterend',button);
+  button.addEventListener('click',exportAllCsv);
 }
 async function submit(ev){
   ev.preventDefault();
@@ -131,6 +168,7 @@ async function submit(ev){
 async function init(){
   tabs();
   createArchiveSelector();
+  createExportAllButton();
   if(!configured||!window.supabase){el('configuration-warning').hidden=false;el('attendance-form').hidden=true;return;}
   db=window.supabase.createClient(config.supabaseUrl,config.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
   el('public-event').addEventListener('change',()=>changeEvent().catch(handleError));
