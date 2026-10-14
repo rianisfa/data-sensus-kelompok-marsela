@@ -1212,3 +1212,54 @@ button:focus-visible, .tab-btn:focus-visible, select:focus-visible, input:focus-
   #presensi-section .small-stats > :last-child { grid-column: 1 / -1; }
   #presensi-section .stat-card { min-width: 0; overflow-wrap: anywhere; }
 }
+
+
+/* ========== Konfirmasi presensi — Midnight Navy & Mint ========== */
+.marsela-modal[hidden] { display: none !important; }
+.marsela-modal { position: fixed; inset: 0; z-index: 20000; display: grid; place-items: center; padding: 18px; }
+.marsela-modal-backdrop { position: absolute; inset: 0; background: rgba(8, 28, 43, .72); backdrop-filter: blur(6px); }
+.marsela-modal-open { overflow: hidden; }
+.marsela-confirm-card {
+  position: relative; z-index: 1; width: min(100%, 460px); max-height: min(90dvh, 760px);
+  overflow-y: auto; padding: 30px 26px 24px; text-align: center;
+  border-radius: 24px; border: 1px solid rgba(126, 225, 201, .23);
+  background: linear-gradient(155deg, #193d50 0%, #10283b 75%);
+  box-shadow: 0 30px 100px rgba(3, 17, 27, .4);
+  color: #ecf9f7; animation: marsela-confirm-in .28s cubic-bezier(.2,.8,.2,1) both;
+}
+.marsela-confirm-close {
+  position: absolute; top: 13px; right: 15px; border: 0; padding: 0; width: 33px; height: 33px;
+  border-radius: 10px; color: #cce4e5; background: rgba(255,255,255,.09);
+  font-size: 24px; line-height: 1; cursor: pointer;
+}
+.marsela-confirm-close:hover { color: #fff; background: rgba(255,255,255,.17); }
+.marsela-confirm-icon {
+  display: grid; place-items: center; margin: 7px auto 14px; width: 65px; height: 65px;
+  border-radius: 50%; font-size: 35px; line-height: 1; font-weight: 800;
+  background: #2cb99b; color: #0c2a35; box-shadow: 0 0 0 8px rgba(104,222,192,.12);
+}
+.marsela-confirm-eyebrow { font-size: 10px; letter-spacing: .23em; font-weight: 800; color: #9cebd6; margin: 0 0 8px; }
+.marsela-confirm-card h3 { color: #fff; font-size: clamp(1.4rem, 4.8vw, 1.8rem); margin: 0 0 8px; }
+.marsela-confirm-card h3::before { display: none !important; }
+#marsela-confirm-desc { color: #c0d5da; font-size: .92rem; margin: 0 0 21px; }
+.marsela-confirm-details { border: 1px solid rgba(178,226,220,.21); border-radius: 15px; padding: 5px 16px; background: rgba(255,255,255,.055); text-align: left; }
+.marsela-confirm-details > div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 12px 0; }
+.marsela-confirm-details > div + div { border-top: 1px solid rgba(178,226,220,.13); }
+.marsela-confirm-details span { color: #b6cdd4; font-size: .83rem; flex: 0 0 105px; }
+.marsela-confirm-details strong { color: #f5fffd; text-align: right; font-size: .86rem; overflow-wrap: anywhere; }
+#marsela-confirm-status { color: #9cebd6; }
+#marsela-confirm-status[data-status='Izin'] { color: #f7d596; }
+#marsela-confirm-status[data-status='Sakit'] { color: #ffb6ac; }
+.marsela-confirm-lock { margin: 17px 0; font-size: .81rem; color: #bed8dd; }
+.marsela-confirm-done { width: 100%; min-height: 46px; border: 0; border-radius: 12px; background: #37c0a3; color: #10283b; font-weight: 800; cursor: pointer; }
+.marsela-confirm-done:hover { background: #76e4cb; }
+.marsela-confirm-card button:focus-visible { outline: 3px solid #b4ffee; outline-offset: 3px; }
+@keyframes marsela-confirm-in { from { opacity: 0; transform: translateY(15px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media(max-width:480px) {
+  .marsela-modal { padding: 12px; }
+  .marsela-confirm-card { border-radius: 19px; padding: 26px 16px 18px; }
+  .marsela-confirm-details { padding: 4px 10px; }
+  .marsela-confirm-details > div { gap: 9px; }
+  .marsela-confirm-details span { flex-basis: 92px; }
+}
+@media(prefers-reduced-motion:reduce) { .marsela-confirm-card { animation: none; } }

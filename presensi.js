@@ -177,18 +177,86 @@ function createExportAllButton(){
   const button=document.createElement('button');button.id='export-all-csv';button.type='button';button.className=single.className;button.textContent='Unduh Semua Kegiatan';
   single.insertAdjacentElement('afterend',button);button.addEventListener('click',exportAllCsv);
 }
+// Dialog konfirmasi hanya dibuat pada saat diperlukan; tidak mengubah struktur tab.
+let confirmationPreviousFocus = null;
+function closeConfirmation(){
+  const dialog=el('marsela-confirmation');
+  if(!dialog)return;
+  dialog.hidden=true;
+  document.body.classList.remove('marsela-modal-open');
+  if(confirmationPreviousFocus?.isConnected)confirmationPreviousFocus.focus({preventScroll:true});
+}
+function showConfirmation({nama,kegiatan,status,tanggal}){
+  let dialog=el('marsela-confirmation');
+  if(!dialog){
+    dialog=document.createElement('div');
+    dialog.id='marsela-confirmation';
+    dialog.className='marsela-modal';
+    dialog.hidden=true;
+    dialog.innerHTML=`<div class="marsela-modal-backdrop" data-close-confirmation></div>
+      <div class="marsela-confirm-card" role="dialog" aria-modal="true" aria-labelledby="marsela-confirm-title" aria-describedby="marsela-confirm-desc" tabindex="-1">
+        <button type="button" class="marsela-confirm-close" data-close-confirmation aria-label="Tutup konfirmasi">×</button>
+        <div class="marsela-confirm-icon" aria-hidden="true">✓</div>
+        <p class="marsela-confirm-eyebrow">MARSELA DASHBOARD</p>
+        <h3 id="marsela-confirm-title">Presensi Berhasil!</h3>
+        <p id="marsela-confirm-desc">Presensi telah tersimpan di database.</p>
+        <div class="marsela-confirm-details">
+          <div><span>Nama anggota</span><strong id="marsela-confirm-name"></strong></div>
+          <div><span>Kegiatan</span><strong id="marsela-confirm-event"></strong></div>
+          <div><span>Tanggal</span><strong id="marsela-confirm-date"></strong></div>
+          <div><span>Status</span><strong id="marsela-confirm-status"></strong></div>
+        </div>
+        <p class="marsela-confirm-lock">🔒 Presensi sudah terkunci dan tidak dapat diubah.</p>
+        <button type="button" class="marsela-confirm-done" data-close-confirmation>Selesai</button>
+      </div>`;
+    document.body.append(dialog);
+    dialog.addEventListener('click',e=>{if(e.target.closest('[data-close-confirmation]'))closeConfirmation();});
+    dialog.addEventListener('keydown',e=>{
+      if(e.key==='Escape'){e.preventDefault();closeConfirmation();}
+      if(e.key==='Tab'){
+        const focusable=[...dialog.querySelectorAll('button:not(:disabled)')];
+        const first=focusable[0],last=focusable[focusable.length-1];
+        if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+        else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+      }
+    });
+  }
+  confirmationPreviousFocus=document.activeElement;
+  el('marsela-confirm-name').textContent=nama;
+  el('marsela-confirm-event').textContent=kegiatan;
+  el('marsela-confirm-date').textContent=dateLabel(tanggal);
+  el('marsela-confirm-status').textContent=status;
+  el('marsela-confirm-status').dataset.status=status;
+  dialog.hidden=false;
+  document.body.classList.add('marsela-modal-open');
+  dialog.querySelector('.marsela-confirm-done').focus({preventScroll:true});
+}
 async function submit(ev){
   ev.preventDefault();
   const id=Number(el('public-member').value),status=el('public-status').value;
   if(!selected||!id||!eligibleMembers(selected).some(m=>m.id===id)||!['Hadir','Izin','Sakit'].includes(status))return;
   const member=members.find(m=>m.id===id);
   if(!window.confirm(`Kirim presensi ${status} untuk ${member?.nama}? Setelah dikirim TIDAK BISA DIUBAH.`))return;
+  const submitted={nama:member.nama,kegiatan:selected.title,status,tanggal:selected.event_date};
   const button=el('submit-attendance');button.disabled=true;
+  let saved=false;
   try{
     read(await db.rpc('marsela_submit_attendance',{p_event_id:selected.id,p_member_id:id,p_status:status}));
+    saved=true;
     message(`Berhasil! Presensi ${member.nama}: ${status}. Data sudah terkunci.`);
-    await changeEvent();
-  }catch(err){console.error(err);message('Presensi gagal: '+(err.message||String(err))+'. Jika sudah tercatat, tidak dapat diubah lagi.');await changeEvent().catch(()=>{});}finally{showSelected();}
+    showConfirmation(submitted);
+    try{await changeEvent();}catch(refreshErr){
+      console.error('Presensi tersimpan tetapi rekap belum diperbarui:',refreshErr);
+      message('Presensi berhasil tersimpan, namun rekap belum termuat ulang. Silakan tekan Muat ulang.');
+    }
+  }catch(err){
+    console.error(err);
+    message('Presensi gagal: '+(err.message||String(err))+'. Jika sudah tercatat, tidak dapat diubah lagi.');
+    await changeEvent().catch(()=>{});
+  }finally{
+    if(!saved)button.disabled=false;
+    showSelected();
+  }
 }
 function handleError(err){console.error(err);message('Gagal memuat data: '+(err.message||String(err)));}
 async function init(){
