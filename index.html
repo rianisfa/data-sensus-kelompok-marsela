@@ -22,7 +22,7 @@
       <button class="tab-btn" data-tab="statistik" type="button">Statistik Kehadiran</button>
     </nav>
     <section id="beranda-section" class="dash-section">
-      <div class="dash-heading"><div><p class="dash-eyebrow">RINGKASAN KELOMPOK</p><h3>Selamat Datang di Kelompok Marsela</h3><p>Data sensus, jadwal pengajian, maupun olahraga di Kelompok Marsela.</p></div><span id="dash-updated" class="dash-updated">Memuat…</span></div>
+      <div class="dash-heading"><div><p class="dash-eyebrow">RINGKASAN KELOMPOK</p><h3>Selamat Datang di Kelompok Marsela</h3><p>Data sensus, jadwal pengajian maupun olahraga di Kelompok Marsela.</p></div><span id="dash-updated" class="dash-updated">Memuat…</span></div>
       <div id="dash-summary" class="dash-summary" aria-live="polite"><p>Memuat ringkasan dashboard…</p></div>
       <div class="dash-panels">
         <div class="dash-panel"><h3>Pengajian Hari Ini</h3><div id="dash-today"><p>Memuat kegiatan…</p></div></div>
@@ -100,9 +100,9 @@
       <p id="presensi-message" class="message" role="status" aria-live="polite"></p>
     </section>
     <section id="jadwal-section" class="dash-section" hidden>
-      <div class="dash-heading"><div><p class="dash-eyebrow">KALENDER KEGIATAN</p><h3>Jadwal Pengajian</h3><p>Pilih bulan dan tanggal untuk melihat rincian pengajian. Jadwal dibaca langsung dari Supabase.</p></div></div>
+      <div class="dash-heading"><div><p class="dash-eyebrow">KALENDER KEGIATAN</p><h3>Jadwal Pengajian</h3><p>Pilih bulan dan tanggal untuk melihat rincian pengajian.</p></div></div>
       <div class="dash-toolbar">
-        <label>Jenis Pengajian<select id="schedule-filter"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label>
+        <label>Jenis pengajian<select id="schedule-filter"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label>
         <button class="btn-muted" id="schedule-refresh" type="button">Muat ulang</button>
       </div>
       <div id="schedule-list" class="schedule-list" aria-live="polite">Memuat jadwal…</div>
@@ -119,6 +119,25 @@
       <div class="dash-panel"><h3>Persentase Kehadiran per Pertemuan</h3><div id="chart-bars" class="chart-bars" role="img" aria-label="Grafik persentase kehadiran per kegiatan"></div></div>
       <p class="dash-footnote">Persentase = jumlah Hadir ÷ total kesempatan hadir × 100%. Izin, Sakit, dan Belum tidak dihitung Hadir. Statistik historis memakai kategori anggota aktif saat ini; perubahan kategori/nonaktif dapat memengaruhi perhitungan periode lampau.</p>
       <p id="chart-message" class="message" role="status"></p>
+      <div class="insights-grid">
+        <article class="insight-panel" id="monthly-trend-panel">
+          <div class="insight-header"><div><p class="insight-eyebrow">ANALISIS BULANAN</p><h3>Tren Kehadiran Bulanan</h3><p>Perbandingan persentase kehadiran dari bulan ke bulan.</p></div></div>
+          <div class="insight-tools"><label>Jenis pengajian<select id="insight-trend-type"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label><label>Rentang<select id="insight-trend-months"><option value="3">3 bulan</option><option value="6" selected>6 bulan</option><option value="12">12 bulan</option></select></label><button type="button" id="insight-trend-refresh" class="btn-muted">Perbarui</button></div>
+          <div id="insight-trend-chart" class="insight-trend" aria-live="polite">Memuat tren…</div>
+        </article>
+        <article class="insight-panel" id="member-history-panel">
+          <div class="insight-header"><div><p class="insight-eyebrow">RIWAYAT INDIVIDUAL</p><h3>Riwayat Presensi Anggota</h3><p>Cari anggota dan lihat catatan kehadirannya.</p></div></div>
+          <div class="insight-tools"><label>Cari anggota<input id="insight-member-search" type="search" placeholder="Ketik nama anggota…" autocomplete="off"></label><label>Pilih anggota<select id="insight-member-select"><option value="">— Pilih anggota —</option></select></label><label>Periode<select id="insight-member-months"><option value="3">3 bulan terakhir</option><option value="6" selected>6 bulan terakhir</option><option value="12">12 bulan terakhir</option></select></label></div>
+          <div id="insight-member-results" aria-live="polite" class="insight-results">Pilih anggota untuk melihat riwayat.</div>
+        </article>
+      </div>
+      <article class="insight-panel insight-report" id="monthly-report-panel">
+        <div class="insight-header"><div><p class="insight-eyebrow">LAPORAN PENGURUS</p><h3>Laporan Bulanan Otomatis</h3><p>Ringkasan setiap pertemuan, tingkat kehadiran, dan cetak sebagai PDF.</p></div></div>
+        <div class="insight-tools"><label>Bulan laporan<input id="insight-report-month" type="month"></label><label>Jenis pengajian<select id="insight-report-type"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label><button id="insight-report-load" type="button" class="btn-muted">Tampilkan Laporan</button><button id="insight-report-print" type="button" disabled>Cetak / Simpan PDF</button></div>
+        <div id="insight-report-results" aria-live="polite" class="insight-results">Pilih bulan lalu klik Tampilkan Laporan.</div>
+      </article>
+      <p class="insight-note">Catatan: untuk pertemuan lama, total peserta dihitung berdasarkan kategori dan status anggota saat ini, bukan daftar peserta yang dibekukan pada tanggal pengajian. Riwayat ini belum sepenuhnya akurat jika terjadi perubahan anggota. Karena website publik, riwayat individual juga dapat dilihat pengunjung.</p>
+
     </section>
   </div>
 </div>
@@ -126,6 +145,7 @@
 <script src="config.js"></script>
 <script src="presensi.js" defer></script>
 <script src="dashboard.js" defer></script>
+<script src="insights.js" defer></script>
 <script>
 
 let data = [];
