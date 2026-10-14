@@ -41,10 +41,10 @@ function createRecapControls(){
   const container=el('public-category').closest('.form-grid');
   const group=document.createElement('div');group.id='recap-multi-controls';
   group.style.cssText='grid-column:1 / -1;display:grid;gap:10px';
-  group.innerHTML=`<label>Jenis pengajian untuk rekap
-    <select id="recap-type"><option value="">Semua jenis pengajian</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label>
+  group.innerHTML=`<label>Jenis Pengajian untuk Rekap
+    <select id="recap-type"><option value="">Semua Jenis Pengajian</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label>
     <div><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
-    <strong style="font-size:.93rem">Pilih kegiatan (boleh lebih dari satu)</strong>
+    <strong style="font-size:.93rem">Pilih Pengajian</strong>
     <label style="display:flex;align-items:center;gap:6px;font-weight:normal;font-size:.88rem"><input type="checkbox" id="recap-check-all" style="width:auto"> Pilih semua yang ditampilkan</label>
     </div><div id="recap-event-list" style="border:1px solid #cbd5e1;border-radius:12px;padding:12px;max-height:230px;overflow:auto;display:grid;gap:8px"></div>
     <p class="message" id="recap-range" style="margin:8px 0 0"></p></div>`;
@@ -74,7 +74,7 @@ function renderRecapChecks(){
   const shown=visibleRecapEvents();
   el('recap-event-list').innerHTML=shown.length?shown.map(e=>`<label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:.9rem;font-weight:normal"><input type="checkbox" data-event-id="${clean(e.id)}" ${selectedRecapIds.has(String(e.id))?'checked':''} style="width:auto;margin-top:3px;flex:none"><span>${clean(eventText(e))}</span></label>`).join(''):'<span>Tidak ada kegiatan dalam periode ini.</span>';
   updateCheckAll();
-  el('recap-range').textContent=`Hanya kegiatan ${dateLabel(monthAgo(jakartaToday()))} s.d. ${dateLabel(jakartaToday())} (WIB) ditampilkan. Data lebih lama tetap tersimpan di Supabase.`;
+  el('recap-range').textContent=`Hanya Pengajian ${dateLabel(monthAgo(jakartaToday()))} s.d. ${dateLabel(jakartaToday())} (WIB) ditampilkan. Data lebih lama tetap tersimpan di Supabase.`;
 }
 async function getPresence(event){
   if(!event)return new Map();
@@ -125,7 +125,7 @@ function showSelected(){
 function updateCategoryOptions(){
   const select=el('public-category'),prev=select.value;
   const cats=[...new Set(chosenEvents().flatMap(e=>eligibleMembers(e).map(m=>m.kategori)))].filter(Boolean).sort();
-  select.innerHTML=option('','Semua kategori')+cats.map(c=>option(c,c)).join('');
+  select.innerHTML=option('','Semua Kategori')+cats.map(c=>option(c,c)).join('');
   if(cats.includes(prev))select.value=prev;
 }
 async function refreshRecap(){
