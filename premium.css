@@ -389,3 +389,81 @@ button:not(:disabled),a,select { touch-action:manipulation; }
 @media (max-width: 380px) {
   #sensus-section .stat-card { font-size: .76rem; padding: 11px 7px; }
 }
+
+
+/* Tahap 4 — Jadwal, Statistik, Rekap & Laporan; visual only. */
+#jadwal-section, #statistik-section, #rekap-section, #analisis-section,
+#riwayat-section, #laporan-section { min-width:0; overflow-wrap:break-word; }
+#jadwal-section .dash-toolbar, #statistik-section .dash-toolbar,
+#rekap-section .action-row { gap:12px; margin-bottom:20px; }
+#jadwal-section .dash-toolbar select, #statistik-section .dash-toolbar select,
+#rekap-section select, #analisis-section select, #riwayat-section select,
+#laporan-section select, #laporan-section input[type=month] {
+  min-height:48px; max-width:100%; border-radius:13px; border-color:#cbdedc;
+  background:#fff; color:#183a4c; font-size:16px;
+}
+#jadwal-section .schedule-list { gap:13px; min-width:0; }
+#jadwal-section .schedule-item {
+  min-width:0; border:1px solid #d8e9e5; border-radius:17px;
+  background:#fbfefd; box-shadow:0 6px 18px rgba(12,44,58,.045);
+}
+#jadwal-section .schedule-item.today { background:#eaf8f3; border-color:#a9dece; }
+#jadwal-section .schedule-date { border-radius:12px; }
+#jadwal-section .schedule-detail { min-width:0; overflow-wrap:anywhere; }
+#jadwal-section .schedule-pill { border-radius:999px; }
+#statistik-section .dash-summary { gap:12px; }
+#statistik-section .dash-panel, #rekap-section .subcard,
+#analisis-section .insight-panel, #riwayat-section .insight-panel,
+#laporan-section .insight-panel {
+  min-width:0; border-radius:19px; border-color:#d7e8e5;
+  box-shadow:0 10px 28px rgba(12,43,58,.07);
+}
+#statistik-section .chart-bars, #analisis-section .insight-trend { min-width:0; }
+#statistik-section .chart-row-top, #analisis-section .insight-chart-label { flex-wrap:wrap; }
+#statistik-section .chart-track, #analisis-section .insight-chart-track { border-radius:999px; }
+#statistik-section .chart-fill, #analisis-section .insight-chart-fill {
+  background:linear-gradient(90deg,#087f70,#5bd0b6);
+}
+#rekap-section .table-scroll, #laporan-section .insight-scroll,
+#riwayat-section .insight-scroll {
+  max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  border-radius:14px; border:1px solid #d8e8e6;
+}
+#rekap-section .table-scroll th, #laporan-section .insight-scroll th,
+#riwayat-section .insight-scroll th { background:#173b50; color:#e6f8f3; }
+#analisis-section .insight-tools, #riwayat-section .insight-tools,
+#laporan-section .insight-tools { gap:12px; }
+#analisis-section .insight-tools label, #riwayat-section .insight-tools label,
+#laporan-section .insight-tools label { min-width:0; }
+#laporan-section #insight-report-print:not(:disabled) {
+  background:linear-gradient(145deg,#138b77,#087f70); color:white;
+  border-radius:13px; box-shadow:0 7px 18px rgba(8,127,112,.16);
+}
+#laporan-section #insight-report-print:disabled { opacity:.55; box-shadow:none; }
+#statistik-section .dash-footnote, #jadwal-section .dash-footnote,
+#statistik-section .insight-note { line-height:1.65; }
+@media (max-width:760px) {
+  #jadwal-section, #statistik-section, #rekap-section, #analisis-section,
+  #riwayat-section, #laporan-section { padding:17px 12px 22px; }
+  #jadwal-section .dash-toolbar, #statistik-section .dash-toolbar,
+  #analisis-section .insight-tools, #riwayat-section .insight-tools,
+  #laporan-section .insight-tools { display:grid; grid-template-columns:minmax(0,1fr); gap:11px; }
+  #jadwal-section .dash-toolbar > *, #statistik-section .dash-toolbar > *,
+  #analisis-section .insight-tools > *, #riwayat-section .insight-tools > *,
+  #laporan-section .insight-tools > * { min-width:0; width:100%; }
+  #jadwal-section .dash-toolbar button, #statistik-section .dash-toolbar button,
+  #analisis-section .insight-tools button, #laporan-section .insight-tools button { min-height:48px; }
+  #jadwal-section .schedule-item { padding:12px; gap:10px; }
+  #jadwal-section .schedule-date { flex-shrink:0; }
+  #statistik-section .dash-summary { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+  #statistik-section .dash-panel, #rekap-section .subcard,
+  #analisis-section .insight-panel, #riwayat-section .insight-panel,
+  #laporan-section .insight-panel { padding:15px 12px; }
+  #rekap-section .action-row { display:flex; flex-wrap:wrap; gap:9px; }
+  #rekap-section .action-row button { flex:1 1 150px; min-height:47px; }
+  #laporan-section #insight-report-print { width:100%; }
+}
+@media print {
+  #laporan-section .insight-panel { box-shadow:none; border-color:#cdd8d8; }
+  #laporan-section .insight-tools { display:none !important; }
+}
