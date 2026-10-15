@@ -467,3 +467,37 @@ button:not(:disabled),a,select { touch-action:manipulation; }
   #laporan-section .insight-panel { box-shadow:none; border-color:#cdd8d8; }
   #laporan-section .insight-tools { display:none !important; }
 }
+
+/* Tahap 5 — final UI polish & responsive hardening.
+   Additive presentation rules; preserve stage 1E mobile dock and desktop dropdown. */
+:root { color-scheme: light; }
+html { scroll-behavior: smooth; }
+body { min-width: 0; }
+.card, .dash-panel, .subcard, .insight-panel { min-width: 0; }
+:where(.dash-panel,.subcard,.insight-panel,.schedule-item) { transition: box-shadow .18s ease, border-color .18s ease; }
+:where(input,select,textarea,button) { max-width: 100%; }
+:where(input,select,textarea):focus-visible { border-color: #087f70; box-shadow: 0 0 0 3px rgba(8,127,112,.12); }
+:where(.table-scroll,.sensus-table-scroll,.insight-scroll) { overscroll-behavior-x: contain; scrollbar-color: #a3cfc5 #edf5f2; }
+:where(.table-scroll,.sensus-table-scroll,.insight-scroll) table { border-collapse: separate; border-spacing: 0; }
+:where(.dash-panel,.subcard,.insight-panel) h3 { overflow-wrap: anywhere; }
+:where(.message,.notice,.dash-footnote,.insight-note) { overflow-wrap: anywhere; }
+.utility-menu[hidden] { display: none !important; }
+@media (hover: hover) and (pointer: fine) {
+  :where(.dash-panel,.subcard,.insight-panel):hover { box-shadow: 0 13px 32px rgba(12,43,58,.09); }
+}
+@media (min-width: 761px) and (max-width: 1050px) {
+  .main-tabs { max-width: 100%; }
+  .main-tabs .tab-btn { min-width: 0; }
+}
+@media (max-width: 760px) {
+  html { scroll-behavior: auto; }
+  .card, .dash-panel, .subcard, .insight-panel { max-width: 100%; }
+  :where(.dash-panel,.subcard,.insight-panel) { overflow-wrap: break-word; }
+  :where(.table-scroll,.sensus-table-scroll,.insight-scroll) { max-width: 100%; -webkit-overflow-scrolling: touch; }
+  :where(input,select,textarea) { font-size: 16px; }
+  .main-tabs .tab-btn { -webkit-tap-highlight-color: transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  :where(.dash-panel,.subcard,.insight-panel,.schedule-item) { transition: none; }
+}
