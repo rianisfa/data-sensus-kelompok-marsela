@@ -161,3 +161,116 @@ button:not(:disabled),a,select { touch-action:manipulation; }
     overflow-wrap: anywhere;
   }
 }
+
+
+/* ================================================================
+   MARSELA — TAHAP 2: BERANDA & AGENDA POLISH
+   Scoped to Beranda, no changes to navigation, JS, or Supabase.
+   ================================================================ */
+#beranda-section {
+  --home-accent: #087f70;
+  --home-soft: #e9f7f2;
+}
+#beranda-section .dash-heading {
+  align-items: center;
+  gap: 16px 22px;
+  margin-bottom: 22px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e3ecec;
+}
+#beranda-section .dash-heading > div { min-width: 0; flex: 1 1 280px; }
+#beranda-section .dash-heading h3 {
+  max-width: 740px;
+  font-size: clamp(1.45rem, 2.3vw, 2rem);
+  line-height: 1.25;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+#beranda-section .dash-heading > div > p:not(.dash-eyebrow) {
+  max-width: 58ch;
+  line-height: 1.65;
+}
+#beranda-section .dash-updated {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  max-width: 100%;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: var(--home-soft);
+  border: 1px solid #cce8dd;
+  color: #176956;
+  font-size: .79rem;
+  line-height: 1.4;
+  white-space: normal;
+}
+#beranda-section .dash-summary {
+  gap: clamp(10px, 1.5vw, 16px);
+  margin-bottom: 24px;
+}
+#beranda-section .dash-stat {
+  min-width: 0;
+  min-height: 145px;
+  padding: clamp(14px, 1.65vw, 21px);
+  border: 1px solid rgba(124, 187, 189, .26);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #17374a 0%, #21485c 100%);
+  box-shadow: 0 10px 24px rgba(12, 43, 58, .11);
+}
+#beranda-section .dash-stat span {
+  font-size: clamp(.77rem, .98vw, .88rem);
+  line-height: 1.45;
+  font-weight: 700;
+}
+#beranda-section .dash-stat strong {
+  font-size: clamp(1.9rem, 3vw, 2.65rem);
+  line-height: 1.08;
+  color: #9cebd6;
+  font-variant-numeric: tabular-nums;
+}
+#beranda-section .dash-stat small {
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+#beranda-section .dash-panels { gap: clamp(12px, 1.6vw, 18px); }
+#beranda-section .dash-panel {
+  min-width: 0;
+  padding: clamp(15px, 1.8vw, 22px);
+  border: 1px solid #dce9e9;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 9px 23px rgba(15, 44, 60, .055);
+}
+#beranda-section .dash-panel > h3 {
+  font-size: clamp(.98rem, 1.15vw, 1.12rem);
+  line-height: 1.4;
+}
+#beranda-section .schedule-item {
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 13px;
+}
+#beranda-section .schedule-date { flex: 0 1 118px; min-width: 92px; }
+#beranda-section .schedule-detail { min-width: 0; flex: 1 1 130px; }
+#beranda-section .schedule-detail b { overflow-wrap: anywhere; }
+#beranda-section .schedule-pill { margin-left: 0; }
+@media (max-width: 760px) {
+  #beranda-section .dash-heading { gap: 12px; margin-bottom: 18px; padding-bottom: 17px; }
+  #beranda-section .dash-heading h3 { font-size: clamp(1.24rem, 5.1vw, 1.55rem); }
+  #beranda-section .dash-heading > div > p:not(.dash-eyebrow) { font-size: .88rem; }
+  #beranda-section .dash-updated { font-size: .75rem; }
+  #beranda-section .dash-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+  #beranda-section .dash-stat { min-height: 120px; padding: 14px 12px; gap: 7px; border-radius: 15px; }
+  #beranda-section .dash-stat strong { font-size: clamp(1.65rem, 7vw, 2.1rem); }
+  #beranda-section .dash-stat span { font-size: .76rem; }
+  #beranda-section .dash-stat small { font-size: .7rem; }
+  #beranda-section .dash-panels { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  #beranda-section .dash-panel { padding: 15px 12px; }
+  #beranda-section .schedule-item { gap: 10px; }
+}
+@media (max-width: 380px) {
+  #beranda-section .dash-stat { min-height: 112px; padding: 12px 10px; }
+  #beranda-section .dash-stat strong { font-size: 1.6rem; }
+  #beranda-section .schedule-date { flex-basis: 100%; max-width: none; }
+}
