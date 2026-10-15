@@ -32,11 +32,25 @@ const eligibleMembers = event => {
 };
 const eventText = e => `${dateLabel(e.event_date)} — [${e.jenis_pengajian}] ${e.title}${e.is_open?' (Dibuka)':' (Ditutup)'}`;
 const chosenEvents = () => events.filter(e=>selectedRecapIds.has(String(e.id)));
-function tabs(){document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.toggle('active',x===b));
-  el('sensus-section').hidden=b.dataset.tab!=='sensus';
-  el('presensi-section').hidden=b.dataset.tab!=='presensi';
-}));}
+function tabs(){
+  const map={beranda:'beranda-section',sensus:'sensus-section',presensi:'presensi-section',jadwal:'jadwal-section',statistik:'statistik-section'};
+  window.showMarselaSection=function(id){
+    document.querySelectorAll('#beranda-section,#sensus-section,#presensi-section,#jadwal-section,#statistik-section,#rekap-section,#analisis-section,#riwayat-section,#laporan-section').forEach(s=>s.hidden=s.id!==id);
+    document.querySelectorAll('.tab-btn').forEach(b=>{const active=map[b.dataset.tab]===id;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+    document.querySelectorAll('.utility-link').forEach(b=>b.classList.toggle('active',b.dataset.section===id));
+    const menu=el('utility-menu'),toggle=el('menu-toggle');
+    if(menu)menu.hidden=true;if(toggle)toggle.setAttribute('aria-expanded','false');
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>window.showMarselaSection(map[b.dataset.tab]||'beranda-section')));
+  const toggle=el('menu-toggle'),menu=el('utility-menu');
+  if(toggle&&menu){
+    toggle.addEventListener('click',()=>{const open=menu.hidden;menu.hidden=!open;toggle.setAttribute('aria-expanded',String(open));});
+    document.querySelectorAll('.utility-link').forEach(b=>b.addEventListener('click',()=>window.showMarselaSection(b.dataset.section)));
+    document.addEventListener('click',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!toggle.contains(e.target)){menu.hidden=true;toggle.setAttribute('aria-expanded','false');}});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){menu.hidden=true;toggle.setAttribute('aria-expanded','false');}});
+  }
+}
 function createRecapControls(){
   const container=el('public-category').closest('.form-grid');
   const group=document.createElement('div');group.id='recap-multi-controls';
@@ -260,6 +274,7 @@ async function submit(ev){
 }
 function handleError(err){console.error(err);message('Gagal memuat data: '+(err.message||String(err)));}
 async function init(){
+  tabs();
   createRecapControls();createExportAllButton();
   if(!configured||!window.supabase){el('configuration-warning').hidden=false;el('attendance-form').hidden=true;return;}
   db=window.supabase.createClient(config.supabaseUrl,config.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});

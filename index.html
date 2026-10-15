@@ -14,6 +14,17 @@
   <div class="card">
     <h2>DATA SENSUS KELOMPOK MARSELA</h2>
     
+    <div class="top-navigation">
+      <div class="brand-mark"><span class="brand-symbol">M</span><div><strong>MARSELA</strong><small>Community portal</small></div></div>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="utility-menu" aria-label="Buka menu"><span></span><span></span><span></span><b>Menu</b></button>
+      <div class="utility-menu" id="utility-menu" hidden>
+        <div class="utility-menu-heading"><span>MENU PENGELOLAAN</span><small>Akses presensi & laporan</small></div>
+        <button type="button" class="utility-link" data-section="rekap-section"><span class="utility-icon">▤</span><span><strong>Rekap Presensi Pengajian</strong><small>Daftar kehadiran setiap kegiatan</small></span><span class="utility-arrow">↗</span></button>
+        <button type="button" class="utility-link" data-section="analisis-section"><span class="utility-icon">◫</span><span><strong>Analisis Bulanan</strong><small>Tren dan statistik kehadiran</small></span><span class="utility-arrow">↗</span></button>
+        <button type="button" class="utility-link" data-section="riwayat-section"><span class="utility-icon">◎</span><span><strong>Riwayat Individual</strong><small>Riwayat presensi anggota</small></span><span class="utility-arrow">↗</span></button>
+        <button type="button" class="utility-link" data-section="laporan-section"><span class="utility-icon">▧</span><span><strong>Laporan Pengurus</strong><small>Ringkasan bulanan dan cetak PDF</small></span><span class="utility-arrow">↗</span></button>
+      </div>
+    </div>
     <nav class="main-tabs" aria-label="Navigasi utama">
       <button class="tab-btn active" data-tab="beranda" type="button">Beranda</button>
       <button class="tab-btn" data-tab="sensus" type="button">Data Sensus</button>
@@ -90,6 +101,10 @@
         </form>
         <p id="selected-info" class="message" aria-live="polite"></p>
       </div>
+      <p id="presensi-message" class="message" role="status" aria-live="polite"></p>
+    </section>
+    <section id="rekap-section" class="dash-section utility-section" hidden>
+      <div class="dash-heading"><div><p class="dash-eyebrow">DATA KEHADIRAN</p><h3>Rekap Presensi Pengajian</h3><p>Pantau kehadiran anggota dan unduh rekap kegiatan.</p></div></div>
       <div class="subcard">
         <h3>Rekap Presensi Pengajian</h3>
         <div class="form-grid"><label>Filter kategori<select id="public-category"><option value="">Semua kategori</option></select></label></div>
@@ -97,7 +112,6 @@
         <div class="action-row"><button id="refresh-attendance" class="btn-muted" type="button">Muat ulang</button><button id="export-csv" class="btn-muted" type="button">Unduh Rekap CSV</button></div>
         <div class="table-scroll" id="public-roster"></div>
       </div>
-      <p id="presensi-message" class="message" role="status" aria-live="polite"></p>
     </section>
     <section id="jadwal-section" class="dash-section" hidden>
       <div class="dash-heading"><div><p class="dash-eyebrow">KALENDER KEGIATAN</p><h3>Jadwal Pengajian</h3><p>Pilih bulan dan tanggal untuk melihat rincian pengajian.</p></div></div>
@@ -120,24 +134,33 @@
       <p class="dash-footnote">Persentase = jumlah Hadir ÷ total kesempatan hadir × 100%. Izin, Sakit, dan Belum tidak dihitung Hadir. Statistik historis memakai kategori anggota aktif saat ini; perubahan kategori/nonaktif dapat memengaruhi perhitungan periode lampau.</p>
       <p id="chart-message" class="message" role="status"></p>
       <div class="insights-grid">
+      </div>
+      <p class="insight-note">Catatan: untuk pertemuan lama, total peserta dihitung berdasarkan kategori dan status anggota saat ini, bukan daftar peserta yang dibekukan pada tanggal pengajian. Riwayat ini belum sepenuhnya akurat jika terjadi perubahan anggota. Karena website publik, riwayat individual juga dapat dilihat pengunjung.</p>
+
+    </section>
+    <section id="analisis-section" class="dash-section utility-section" hidden>
+      <div class="dash-heading"><div><p class="dash-eyebrow">INSIGHT & TREN</p><h3>Analisis Bulanan</h3><p>Bandingkan tingkat kehadiran dari bulan ke bulan.</p></div></div>
         <article class="insight-panel" id="monthly-trend-panel">
           <div class="insight-header"><div><p class="insight-eyebrow">ANALISIS BULANAN</p><h3>Tren Kehadiran Bulanan</h3><p>Perbandingan persentase kehadiran dari bulan ke bulan.</p></div></div>
           <div class="insight-tools"><label>Jenis pengajian<select id="insight-trend-type"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label><label>Rentang<select id="insight-trend-months"><option value="3">3 bulan</option><option value="6" selected>6 bulan</option><option value="12">12 bulan</option></select></label><button type="button" id="insight-trend-refresh" class="btn-muted">Perbarui</button></div>
           <div id="insight-trend-chart" class="insight-trend" aria-live="polite">Memuat tren…</div>
         </article>
+    </section>
+    <section id="riwayat-section" class="dash-section utility-section" hidden>
+      <div class="dash-heading"><div><p class="dash-eyebrow">PROFIL KEHADIRAN</p><h3>Riwayat Individual</h3><p>Telusuri catatan presensi masing-masing anggota.</p></div></div>
         <article class="insight-panel" id="member-history-panel">
           <div class="insight-header"><div><p class="insight-eyebrow">RIWAYAT INDIVIDUAL</p><h3>Riwayat Presensi Anggota</h3><p>Cari anggota dan lihat catatan kehadirannya.</p></div></div>
           <div class="insight-tools"><label>Cari anggota<input id="insight-member-search" type="search" placeholder="Ketik nama anggota…" autocomplete="off"></label><label>Pilih anggota<select id="insight-member-select"><option value="">— Pilih anggota —</option></select></label><label>Periode<select id="insight-member-months"><option value="3">3 bulan terakhir</option><option value="6" selected>6 bulan terakhir</option><option value="12">12 bulan terakhir</option></select></label></div>
           <div id="insight-member-results" aria-live="polite" class="insight-results">Pilih anggota untuk melihat riwayat.</div>
         </article>
-      </div>
+    </section>
+    <section id="laporan-section" class="dash-section utility-section" hidden>
+      <div class="dash-heading"><div><p class="dash-eyebrow">UNTUK PENGURUS</p><h3>Laporan Pengurus</h3><p>Susun ringkasan pertemuan bulanan dan cetak ke PDF.</p></div></div>
       <article class="insight-panel insight-report" id="monthly-report-panel">
         <div class="insight-header"><div><p class="insight-eyebrow">LAPORAN PENGURUS</p><h3>Laporan Bulanan Otomatis</h3><p>Ringkasan setiap pertemuan, tingkat kehadiran, dan cetak sebagai PDF.</p></div></div>
         <div class="insight-tools"><label>Bulan laporan<input id="insight-report-month" type="month"></label><label>Jenis pengajian<select id="insight-report-type"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label><button id="insight-report-load" type="button" class="btn-muted">Tampilkan Laporan</button><button id="insight-report-print" type="button" disabled>Cetak / Simpan PDF</button></div>
         <div id="insight-report-results" aria-live="polite" class="insight-results">Pilih bulan lalu klik Tampilkan Laporan.</div>
       </article>
-      <p class="insight-note">Catatan: untuk pertemuan lama, total peserta dihitung berdasarkan kategori dan status anggota saat ini, bukan daftar peserta yang dibekukan pada tanggal pengajian. Riwayat ini belum sepenuhnya akurat jika terjadi perubahan anggota. Karena website publik, riwayat individual juga dapat dilihat pengunjung.</p>
-
     </section>
   </div>
 </div>
