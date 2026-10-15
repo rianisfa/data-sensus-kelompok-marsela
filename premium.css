@@ -60,3 +60,20 @@ button:not(:disabled),a,select { touch-action:manipulation; }
   .utility-link { min-height:62px; padding:10px 8px; }
 }
 @media(prefers-reduced-motion:reduce) { .menu-toggle { transition:none; } }
+
+/* Tahap 1C: mobile layout stabilization. Overrides only presentation. */
+@media (max-width: 760px) {
+  html { overflow-x: clip; scroll-padding-bottom: 120px; }
+  body { margin:0; overflow-x:clip; padding: 12px 10px calc(124px + env(safe-area-inset-bottom,0px)) !important; }
+  .container { width:100%; min-width:0; margin:0 auto; }
+  .card { overflow:visible !important; min-width:0; padding:16px 12px 28px !important; }
+  .card > h2 { position:relative; margin:4px auto 20px !important; padding:0 4px !important; max-width:100%; font-size:clamp(1.1rem,5vw,1.55rem) !important; line-height:1.35; letter-spacing:-.025em; overflow-wrap:break-word; }
+  .card > h2::before { font-size:.62rem; letter-spacing:.14em; margin-bottom:9px; }
+  .top-navigation { position:relative; z-index:20; margin-bottom:20px; }
+  .utility-menu { position:absolute; z-index:50; left:auto; right:0; top:calc(100% + 8px); width:min(360px,calc(100vw - 44px)); max-height:min(62dvh,460px); overflow-y:auto; box-shadow:0 18px 46px rgba(4,23,38,.28); }
+  .utility-menu[hidden] { display:none !important; }
+  .main-tabs { z-index:40 !important; height:74px !important; bottom:calc(8px + env(safe-area-inset-bottom,0px)) !important; }
+  .dash-section, #sensus-section, #presensi-section, #jadwal-section, #statistik-section { min-width:0; }
+  .dash-summary, .dash-panels, .stats-grid { min-width:0; }
+  .dash-summary > *, .dash-panels > *, .stats-grid > * { min-width:0; }
+}
