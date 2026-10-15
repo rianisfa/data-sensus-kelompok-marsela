@@ -501,3 +501,66 @@ body { min-width: 0; }
   html { scroll-behavior: auto; }
   :where(.dash-panel,.subcard,.insight-panel,.schedule-item) { transition: none; }
 }
+
+/* TAHAP 6 — Premium Visual Experience (CSS-only).
+   Uses existing real Supabase-backed metrics and charts. No DOM/JS changes.
+   Do not override the stage 1E desktop menu or iOS dock positioning. */
+:root {
+  --marsela-champagne:#d5b77c;
+  --marsela-emerald:#087f70;
+  --marsela-deep:#10283b;
+}
+/* Champagne is a restrained accent, not a status color. */
+.card { border-top:3px solid rgba(213,183,124,.55); }
+.dash-eyebrow, .insight-eyebrow { letter-spacing:.13em; }
+#beranda-section .dash-heading h3 { letter-spacing:-.035em; line-height:1.22; }
+#beranda-section .dash-heading p { line-height:1.65; }
+#beranda-section .dash-summary { gap:14px; }
+#beranda-section .dash-stat,
+#statistik-section .dash-stat {
+  border-radius:17px;
+  border:1px solid rgba(118,187,176,.24);
+  box-shadow:0 8px 22px rgba(7,30,46,.11);
+  min-width:0;
+}
+#beranda-section .dash-stat::before,
+#statistik-section .dash-stat::before {
+  background:linear-gradient(90deg,#3dbda3,#d5b77c 78%,transparent);
+}
+#beranda-section .dash-stat strong,
+#statistik-section .dash-stat strong { font-variant-numeric:tabular-nums; letter-spacing:-.045em; }
+#beranda-section .dash-stat span,
+#statistik-section .dash-stat span { line-height:1.4; }
+#beranda-section .dash-stat small,
+#statistik-section .dash-stat small { line-height:1.45; }
+#beranda-section .dash-panel { border-radius:19px; border:1px solid #dce8e6; }
+#beranda-section .dash-panel > h3 { letter-spacing:-.02em; }
+/* Preserve real bar widths supplied by dashboard.js / insights.js. */
+#statistik-section .chart-track,
+#analisis-section .insight-chart-track { overflow:hidden; background:#e7f1ef; }
+#statistik-section .chart-fill,
+#analisis-section .insight-chart-fill { background:linear-gradient(90deg,#087f70,#40bda4); }
+#statistik-section .chart-row-top b,
+#analisis-section .insight-chart-label b { font-variant-numeric:tabular-nums; }
+#statistik-section .chart-row,
+#analisis-section .insight-chart-row { border-color:#e0ebe9; }
+@media (hover:hover) and (pointer:fine) {
+  #beranda-section .dash-stat:hover { box-shadow:0 12px 28px rgba(7,30,46,.15); }
+}
+@media (max-width:760px) {
+  #beranda-section .dash-summary { gap:10px; }
+  #beranda-section .dash-stat,
+  #statistik-section .dash-stat { border-radius:15px; padding:15px 12px; }
+  #beranda-section .dash-stat strong,
+  #statistik-section .dash-stat strong { font-size:clamp(1.5rem,6vw,2.1rem); }
+  #beranda-section .dash-panel { border-radius:16px; }
+}
+@media (max-width:360px) {
+  #beranda-section .dash-stat span,
+  #statistik-section .dash-stat span { font-size:.76rem; }
+  #beranda-section .dash-stat small,
+  #statistik-section .dash-stat small { font-size:.7rem; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #beranda-section .dash-stat { transition:none; }
+}
