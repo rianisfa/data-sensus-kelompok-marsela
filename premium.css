@@ -564,3 +564,15 @@ body { min-width: 0; }
 @media (prefers-reduced-motion:reduce) {
   #beranda-section .dash-stat { transition:none; }
 }
+
+/* Tahap 7: read-only analytics enhancements */
+.premium-analytics-kpis,.premium-compare-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 18px}
+.premium-analytics-kpis>div,.premium-compare-card{border:1px solid #d8e8e4;border-radius:16px;padding:16px;background:#f8fcfa;min-width:0}
+.premium-analytics-kpis span,.premium-compare-card span{display:block;color:#57717b;font-size:.83rem;line-height:1.45}
+.premium-analytics-kpis strong,.premium-compare-card strong{display:block;color:#0f3344;font-size:clamp(1.1rem,2vw,1.55rem);margin:8px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.premium-analytics-kpis small,.premium-compare-card small{color:#607987;line-height:1.5}
+.premium-compare{border-top:1px solid #dce9e7;margin-top:22px;padding-top:20px}
+.premium-compare h4{margin:0 0 6px;color:#12384b}
+.premium-compare>p{margin:0 0 15px;color:#647d86;line-height:1.6}
+.premium-compare-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin:0}
+@media(max-width:760px){.premium-analytics-kpis,.premium-compare-grid{grid-template-columns:1fr}.premium-analytics-kpis>div,.premium-compare-card{padding:13px}}
