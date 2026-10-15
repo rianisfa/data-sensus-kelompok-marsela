@@ -77,3 +77,50 @@ button:not(:disabled),a,select { touch-action:manipulation; }
   .dash-summary, .dash-panels, .stats-grid { min-width:0; }
   .dash-summary > *, .dash-panels > *, .stats-grid > * { min-width:0; }
 }
+
+
+/* Tahap 1D — mobile dock: satu aturan akhir, tanpa mengubah fungsi. */
+@media (max-width: 760px) {
+  :root { --marsela-mobile-dock: 70px; }
+  html { scroll-padding-bottom: calc(var(--marsela-mobile-dock) + 22px + env(safe-area-inset-bottom, 0px)); }
+  body {
+    padding-bottom: calc(var(--marsela-mobile-dock) + 32px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .main-tabs {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    inset: auto 0 0 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: calc(var(--marsela-mobile-dock) + env(safe-area-inset-bottom, 0px)) !important;
+    margin: 0 !important;
+    padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)) !important;
+    border: 0 !important;
+    border-top: 1px solid rgba(143, 228, 210, .25) !important;
+    border-radius: 16px 16px 0 0 !important;
+    background: #10283b !important;
+    box-shadow: 0 -5px 24px rgba(8, 30, 44, .22) !important;
+    z-index: 900 !important;
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    grid-template-rows: minmax(0, 1fr) !important;
+    gap: 3px !important;
+  }
+  .main-tabs .tab-btn {
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 5px 1px !important;
+    gap: 4px !important;
+    border-radius: 11px !important;
+  }
+  .main-tabs .tab-btn::before { width: 20px; height: 20px; flex-basis: 20px; }
+  .main-tabs .tab-btn::after { font-size: clamp(9px, 2.5vw, 11px); }
+  .top-navigation { z-index: 1000; }
+  .utility-menu { z-index: 1001; }
+}
+@media (max-width: 360px) {
+  :root { --marsela-mobile-dock: 66px; }
+}
