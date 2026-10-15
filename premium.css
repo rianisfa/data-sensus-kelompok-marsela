@@ -40,3 +40,23 @@ button:not(:disabled),a,select { touch-action:manipulation; }
   html { scroll-behavior:auto; }
   *,*::before,*::after { animation-duration:.01ms!important;transition-duration:.01ms!important; }
 }
+
+/* Tahap 1B: premium top-right utility launcher; five bottom tabs unchanged. */
+.top-navigation { isolation:isolate; }
+.menu-toggle { position:relative; flex:0 0 auto; min-width:46px; min-height:46px; border-radius:15px; border:1px solid rgba(106,212,188,.38); background:linear-gradient(145deg,rgba(24,85,89,.72),rgba(18,55,76,.88)); box-shadow:0 7px 20px rgba(0,14,29,.18); transition:background .2s,border-color .2s,box-shadow .2s,transform .2s; }
+.menu-toggle::before { content:'☰'; font-size:1.3rem; line-height:1; color:#9be7d3; }
+.menu-toggle:hover,.menu-toggle[aria-expanded="true"] { background:linear-gradient(145deg,#117e72,#155568); border-color:#6bd5bb; box-shadow:0 8px 24px rgba(0,16,31,.28); }
+.menu-toggle[aria-expanded="true"]::before { content:'×'; font-size:1.65rem; font-weight:400; }
+.utility-menu { z-index:100; overflow:hidden; padding:12px; border:1px solid #d7e8e5; border-radius:20px; background:#fbfdfc; box-shadow:0 22px 55px rgba(5,25,40,.24); }
+.utility-link { min-height:58px; }
+.utility-link:focus-visible { outline-offset:-3px!important; }
+.utility-icon { background:#e2f4ee; color:#087f70; }
+@media(max-width:760px) {
+  .top-navigation { position:relative; padding:10px 11px; gap:8px; }
+  .brand-mark { min-width:0; }
+  .menu-toggle { width:46px; height:46px; padding:0; }
+  .menu-toggle b { display:none; }
+  .utility-menu { right:0; top:calc(100% + 8px); width:min(370px,calc(100vw - 34px)); max-height:min(72vh,530px); overflow-y:auto; overscroll-behavior:contain; }
+  .utility-link { min-height:62px; padding:10px 8px; }
+}
+@media(prefers-reduced-motion:reduce) { .menu-toggle { transition:none; } }
