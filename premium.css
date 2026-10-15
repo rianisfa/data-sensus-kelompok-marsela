@@ -576,3 +576,29 @@ body { min-width: 0; }
 .premium-compare>p{margin:0 0 15px;color:#647d86;line-height:1.6}
 .premium-compare-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin:0}
 @media(max-width:760px){.premium-analytics-kpis,.premium-compare-grid{grid-template-columns:1fr}.premium-analytics-kpis>div,.premium-compare-card{padding:13px}}
+
+/* TAHAP 8 — koreksi spesifik formulir Laporan Pengurus di iOS.
+   Tidak mengubah dock, navigasi, atau perilaku Supabase. */
+#laporan-section .insight-report,
+#laporan-section .insight-tools,
+#laporan-section .insight-tools label { min-width:0; max-width:100%; }
+#laporan-section .insight-tools label { box-sizing:border-box; }
+#laporan-section #insight-report-month,
+#laporan-section #insight-report-type {
+  display:block; box-sizing:border-box; width:100%; min-width:0; max-width:100%;
+  margin:0; background-color:#fff; color:#183a4c !important;
+  -webkit-text-fill-color:#183a4c; opacity:1; font-size:16px;
+}
+#laporan-section #insight-report-type {
+  -webkit-appearance:menulist; appearance:auto;
+  padding-inline:12px; color-scheme:light;
+}
+#laporan-section #insight-report-type option { background:#fff; color:#183a4c; }
+#laporan-section #insight-report-month { color-scheme:light; }
+@media(max-width:760px) {
+  #laporan-section .insight-report { overflow:hidden; }
+  #laporan-section .insight-tools { display:grid; grid-template-columns:minmax(0,1fr); width:100%; }
+  #laporan-section .insight-tools > * { width:100%; max-width:100%; min-width:0; }
+  #laporan-section #insight-report-month,
+  #laporan-section #insight-report-type { min-height:52px; }
+}
