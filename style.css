@@ -1379,3 +1379,41 @@ button:focus-visible, .tab-btn:focus-visible, select:focus-visible, input:focus-
  .utility-link{padding:11px 8px;gap:9px}
  .utility-icon{flex-basis:36px;width:36px;height:36px}
 }
+
+/* RESTORE: fixed bottom navigation on mobile, as in the previous version */
+@media (max-width: 760px) {
+  :root { --marsela-nav-height: 78px; }
+  html { scroll-padding-bottom: calc(118px + env(safe-area-inset-bottom, 0px)); }
+  body { padding-bottom: calc(118px + env(safe-area-inset-bottom, 0px)) !important; }
+  .main-tabs {
+    position: fixed !important;
+    top: auto !important;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+    left: max(8px, env(safe-area-inset-left, 0px)) !important;
+    right: max(8px, env(safe-area-inset-right, 0px)) !important;
+    inset-block-start: auto !important;
+    width: auto !important;
+    max-width: 520px !important;
+    min-width: 0 !important;
+    height: var(--marsela-nav-height) !important;
+    margin: 0 auto !important;
+    z-index: 9999 !important;
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    grid-template-rows: minmax(0, 1fr) !important;
+    gap: 3px !important;
+    padding: 7px !important;
+    border-radius: 19px !important;
+    background: rgba(16, 40, 59, .98) !important;
+    border: 1px solid rgba(133, 182, 189, .26) !important;
+    box-shadow: 0 12px 38px rgba(8, 30, 44, .32) !important;
+  }
+  .main-tabs > .tab-btn,
+  .main-tabs .tab-btn {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+  }
+}
