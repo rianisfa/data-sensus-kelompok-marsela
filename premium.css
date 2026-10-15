@@ -1,0 +1,42 @@
+/* MARSELA — Navy Emerald Premium / tahap 1.
+   Lapisan visual saja: tidak mengubah ID, event handler, atau integrasi Supabase. */
+:root {
+  --bg:#eef3f5; --bg-soft:#f8fafb; --surface:#fff; --surface-2:#f4f8f8;
+  --navy-900:#0c2035; --navy-800:#122d46; --navy-700:#1c4056;
+  --navy-600:#355b6d; --mint-500:#087f70; --mint-400:#39b49a;
+  --mint-100:#e6f5f0; --text:#183044; --text-soft:#607789;
+  --line:#dce8e9; --line-strong:#cbdcde;
+  --shadow:0 22px 65px rgba(8,31,49,.12);
+  --shadow-soft:0 10px 28px rgba(8,31,49,.07);
+}
+html { -webkit-text-size-adjust:100%; }
+body { background:radial-gradient(circle at 10% 0%,rgba(8,127,112,.10),transparent 34%),radial-gradient(circle at 95% 10%,rgba(18,45,70,.08),transparent 30%),var(--bg); }
+.card { background:linear-gradient(160deg,#102b43,#0b2034); border-color:rgba(120,177,180,.25); }
+button,input,select,textarea { font:inherit; }
+button { -webkit-tap-highlight-color:transparent; }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:3px solid #c7a466!important;outline-offset:3px; }
+button:not(:disabled),a,select { touch-action:manipulation; }
+.brand-symbol { background:linear-gradient(145deg,#0c8e79,#076253)!important;box-shadow:0 8px 24px rgba(0,0,0,.16); }
+.dash-eyebrow,.utility-menu-heading span { color:#40bfa5; }
+.dash-panel,.insight-panel { box-shadow:var(--shadow-soft); }
+.utility-menu { border-color:#d7e5e3;box-shadow:0 24px 60px rgba(4,25,38,.22); }
+.utility-link:hover { background:#eaf5f1; }
+@media(max-width:760px) {
+  body { padding:8px 8px calc(112px + env(safe-area-inset-bottom,0px)); }
+  .container { max-width:100%; }
+  .card { border-radius:20px;padding:clamp(12px,3.5vw,20px); }
+  .main-tabs { background:#10283b!important;bottom:calc(9px + env(safe-area-inset-bottom,0px))!important; }
+  .utility-menu { max-width:calc(100vw - 28px); }
+  .dash-heading { gap:12px; }
+  input,select,textarea { max-width:100%; }
+  input,select,textarea { font-size:16px; }
+  .table-scroll,.insight-scroll { max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch; }
+}
+@media(max-width:380px) {
+  .card { padding:11px; }
+  .main-tabs { gap:2px!important;padding:6px!important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  html { scroll-behavior:auto; }
+  *,*::before,*::after { animation-duration:.01ms!important;transition-duration:.01ms!important; }
+}
