@@ -630,3 +630,38 @@ body { min-width: 0; }
     padding:0;
   }
 }
+
+
+/* TAHAP 8C — iOS month input: actual inset, not another 100% override.
+   Only the report month control; no JS or data changes. */
+@media (max-width: 760px) {
+  #laporan-section #monthly-report-panel .insight-tools > label:has(> #insight-report-month) {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible;
+  }
+  #laporan-section #monthly-report-panel #insight-report-month {
+    display: block !important;
+    box-sizing: border-box !important;
+    position: relative;
+    flex: 0 0 auto !important;
+    width: calc(100% - 24px) !important;
+    inline-size: calc(100% - 24px) !important;
+    min-width: 0 !important;
+    min-inline-size: 0 !important;
+    max-width: calc(100% - 24px) !important;
+    max-inline-size: calc(100% - 24px) !important;
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 13px;
+    background-color: #fff;
+    color: #183a4c;
+  }
+}
