@@ -602,3 +602,31 @@ body { min-width: 0; }
   #laporan-section #insight-report-month,
   #laporan-section #insight-report-type { min-height:52px; }
 }
+
+/* Tahap 8B — perbaikan overflow input bulan pada Safari iOS.
+   Hanya tata letak; kontrol pemilih bulan native tetap dipertahankan. */
+@media (max-width:760px) {
+  #laporan-section .insight-report,
+  #laporan-section .insight-tools,
+  #laporan-section .insight-tools > label {
+    box-sizing:border-box !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+  }
+  #laporan-section #insight-report-month {
+    display:block !important;
+    box-sizing:border-box !important;
+    inline-size:100% !important;
+    min-inline-size:0 !important;
+    max-inline-size:100% !important;
+    margin-inline:0 !important;
+    padding-inline:12px !important;
+    font-size:16px !important;
+    text-align:left;
+  }
+  #laporan-section #insight-report-month::-webkit-datetime-edit {
+    min-width:0;
+    padding:0;
+  }
+}
