@@ -124,3 +124,40 @@ button:not(:disabled),a,select { touch-action:manipulation; }
 @media (max-width: 360px) {
   :root { --marsela-mobile-dock: 66px; }
 }
+
+/* Tahap 1E — desktop only: dropdown layering and five-tab alignment.
+   Mobile <=760px is intentionally unchanged. */
+@media (min-width: 761px) {
+  .card { overflow: visible; }
+  .top-navigation {
+    position: relative;
+    z-index: 100;
+    isolation: auto;
+  }
+  .utility-menu {
+    position: absolute;
+    z-index: 110;
+    top: calc(100% + 8px);
+    right: 8px;
+    left: auto;
+    width: min(390px, calc(100vw - 48px));
+    max-height: min(70vh, 560px);
+    overflow-y: auto;
+  }
+  .main-tabs {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 850px;
+  }
+  .main-tabs > .tab-btn {
+    min-width: 0;
+    width: 100%;
+    flex: none;
+    padding-inline: 8px;
+    overflow-wrap: anywhere;
+  }
+}
