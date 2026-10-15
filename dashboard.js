@@ -120,7 +120,10 @@
   }
   function scheduleCard(e){
     const cls=e.event_date===dateWIB()?'today':'';
-    return `<article class="schedule-item ${cls}"><div class="schedule-date"><strong>${escape(dateID(e.event_date))}</strong><span>${escape(e.jenis_pengajian||'Pengajian')}</span></div><div class="schedule-detail"><b>${escape(e.title)}</b><small>${escape(e.notes||'Waktu/tempat belum dicantumkan')}</small></div><span class="schedule-pill">${e.event_date===dateWIB()?(e.is_open?'Presensi dibuka':'Hari ini'):'Akan datang'}</span></article>`;
+    const qrAction=e.event_date===dateWIB()&&e.is_open
+      ? `<button type="button" class="marsela-qr-open" data-event-id="${escape(e.id)}" data-event-title="${escape(e.title)}"><span aria-hidden="true">▦</span> Tampilkan QR</button>`
+      : '';
+    return `<article class="schedule-item ${cls}"><div class="schedule-date"><strong>${escape(dateID(e.event_date))}</strong><span>${escape(e.jenis_pengajian||'Pengajian')}</span></div><div class="schedule-detail"><b>${escape(e.title)}</b><small>${escape(e.notes||'Waktu/tempat belum dicantumkan')}</small></div><span class="schedule-pill">${e.event_date===dateWIB()?(e.is_open?'Presensi dibuka':'Hari ini'):'Akan datang'}</span>${qrAction}</article>`;
   }
   async function loadDashboard(){
     if(!db){$('dash-message').textContent='Koneksi Supabase belum tersedia. Pastikan config.js sudah diisi.';return;}

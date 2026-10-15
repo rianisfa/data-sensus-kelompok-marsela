@@ -286,6 +286,22 @@ async function init(){
   el('refresh-attendance').addEventListener('click',()=>loadInitial().then(()=>message('Jadwal dan rekap diperbarui.')).catch(handleError));
   el('export-csv').addEventListener('click',exportCsv);
   await loadInitial();
+  await handleQrDeepLink();
+}
+async function handleQrDeepLink(){
+  const params=new URLSearchParams(window.location.search);
+  const eventId=params.get('presensiEvent');
+  if(!eventId)return;
+  const event=events.find(e=>String(e.id)===String(eventId)&&e.event_date===jakartaToday()&&e.is_open===true);
+  if(!event){
+    window.showMarselaSection?.('presensi-section');
+    message('QR tidak aktif atau bukan untuk kegiatan hari ini. Silakan minta tautan QR terbaru kepada pengurus.');
+    return;
+  }
+  el('public-event').value=String(event.id);
+  await changeEvent();
+  window.showMarselaSection?.('presensi-section');
+  message(`Kegiatan “${event.title}” terbuka dari QR. Pilih nama Anda sendiri untuk melanjutkan presensi.`);
 }
 document.addEventListener('DOMContentLoaded',()=>init().catch(handleError));
 })();
