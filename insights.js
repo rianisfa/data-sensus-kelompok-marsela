@@ -41,7 +41,7 @@
   $('insight-report-load').addEventListener('click',report);$('insight-report-print').addEventListener('click',printReport);
   const valid=/^https:\/\/.+\.supabase\.co$/.test(cfg.supabaseUrl||'')&&cfg.supabaseAnonKey&&window.supabase;
   if(!valid){statusMsg('insight-trend-chart','Supabase belum terhubung. Periksa config.js.');return;}
-  db=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+  db=window.MARSeLA_DB || (window.MARSeLA_DB=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}}));
   try{await initMembers();await Promise.all([trend(),report()]);}catch(e){statusMsg('insight-trend-chart','Gagal memuat data: '+e.message);}
  });
 })();

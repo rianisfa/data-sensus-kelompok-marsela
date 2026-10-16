@@ -98,7 +98,15 @@
           <label>Cari nama anggota<input id="member-search" type="search" placeholder="Ketik nama untuk menyaring daftar" autocomplete="off"></label>
           <label>Nama anggota<select id="public-member" required></select></label>
           <label>Status<select id="public-status" required><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option></select></label>
-          <label id="manual-admin-pin-wrap">Kunci pengurus untuk presensi manual<input id="manual-admin-pin" type="password" autocomplete="current-password" placeholder="Masukkan kunci pengurus" required /></label>
+          <label hidden style="display:none !important">Metode presensi
+            <select id="attendance-mode">
+              <option value="self">Presensi Mandiri (Tanpa PIN)</option>
+              <option value="manual">Presensi Manual Pengurus (Dengan PIN)</option>
+            </select>
+          </label>
+          <label id="manual-admin-pin-wrap" hidden>Kunci pengurus untuk presensi manual
+            <input id="manual-admin-pin" type="password" autocomplete="current-password" placeholder="Masukkan kunci pengurus" />
+          </label>
           <button type="submit" id="submit-attendance">Kirim Presensi</button>
         </form>
         <p id="selected-info" class="message" aria-live="polite"></p>
@@ -232,9 +240,19 @@ async function loadSensusFromSupabase() {
     if (!window.supabase || !/^https:\/\/.+\.supabase\.co$/.test(cfg.supabaseUrl || '') || !cfg.supabaseAnonKey || cfg.supabaseAnonKey.includes('GANTI')) {
       throw new Error('Isi Project URL dan publishable key pada config.js terlebih dahulu.');
     }
-    const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
-      auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false}
-    });
+        const client = window.MARSeLA_DB || (
+      window.MARSeLA_DB = window.supabase.createClient(
+        cfg.supabaseUrl,
+        cfg.supabaseAnonKey,
+        {
+          auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+            detectSessionInUrl: false
+          }
+        }
+      )
+    );
     // Batas default PostgREST 1000 baris per permintaan: gunakan pagination agar data lengkap.
     const all = [];
     for (let from = 0; ; from += 1000) {

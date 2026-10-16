@@ -201,7 +201,7 @@
     $('chart-refresh').addEventListener('click',async()=>{try{await refreshData();await loadStatistics();}catch(e){showError(e);}});
     const c=window.MARSeLA_CONFIG||{};
     if(window.supabase&&/^https:\/\/.+\.supabase\.co$/.test(c.supabaseUrl||'')&&c.supabaseAnonKey){
-      db=window.supabase.createClient(c.supabaseUrl,c.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+      db=window.MARSeLA_DB || (window.MARSeLA_DB=window.supabase.createClient(c.supabaseUrl,c.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}}));
       try{await refreshData();await loadDashboard();}catch(e){showError(e);}
     }else{$('dash-message').textContent='Periksa config.js: Supabase belum terhubung.';}
   });

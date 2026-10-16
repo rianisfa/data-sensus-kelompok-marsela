@@ -24,6 +24,7 @@ function monthAgo(dateISO){
 }
 const read = r => {if(r.error) throw r.error;return r.data;};
 let db, members=[],events=[],selected=null,presence=new Map(),selectedRecapIds=new Set(),recapPresence=new Map(),rows=[];
+let qrValidation='none',qrValidatedEventId=null;
 const message = txt => {el('presensi-message').textContent=txt;};
 const qrFunctionUrl = () => `${String(config.supabaseUrl||'').replace(/\/$/,'')}/functions/v1/marsela-qr`;
 async function callQrFunction(payload){
@@ -136,14 +137,32 @@ async function changeEvent(){
   setMemberOptions();
   await refreshRecap();
 }
+function attendanceMode(){
+  return new URLSearchParams(window.location.search).has('presensiToken') ? 'qr' : (el('attendance-mode')?.value || 'self');
+}
+function updateAttendanceMode(){
+  const mode=attendanceMode();
+  const selector=el('attendance-mode');
+  const wrap=el('manual-admin-pin-wrap');
+  const pin=el('manual-admin-pin');
+  if(selector){
+    selector.disabled=mode==='qr';
+    const label=selector.closest('label');
+    if(label)label.hidden=mode==='qr';
+  }
+  if(wrap)wrap.hidden=mode!=='manual';
+  if(pin){pin.required=mode==='manual';if(mode!=='manual')pin.value='';}
+  showSelected();
+}
 function showSelected(){
   const id=Number(el('public-member').value),existing=presence.get(id);
   const open=selected?.is_open&&selected.event_date===jakartaToday();
   const allowed=eligibleMembers(selected).some(m=>m.id===id);
-  const qrToken=new URLSearchParams(window.location.search).get('presensiToken');
-  const manualPin=el('manual-admin-pin')?.value.trim()||'';
-  el('submit-attendance').disabled=!selected||!id||!allowed||!!existing||!open||(!qrToken&&!manualPin);
-  el('selected-info').textContent=!selected?'Belum ada jadwal pengajian hari ini.':!id?'Pilih nama Anda terlebih dahulu.':existing?`Nama ini sudah tercatat: ${existing}. Presensi terkunci dan tidak dapat diubah.`:!open?'Kegiatan ini tidak membuka presensi hari ini.':`Siap mengisi untuk ${members.find(m=>m.id===id)?.nama||''}. Pastikan status sudah benar.`;
+  const mode=attendanceMode();
+  const pinReady=mode!=='manual'||!!el('manual-admin-pin')?.value.trim();
+  const qrReady=mode!=='qr'||(qrValidation==='valid'&&String(selected?.id)===String(qrValidatedEventId));
+  el('submit-attendance').disabled=!selected||!id||!allowed||!!existing||!open||!pinReady||!qrReady;
+  el('selected-info').textContent=mode==='qr'&&qrValidation==='invalid'?'QR tidak valid atau sudah kedaluwarsa. Minta QR baru kepada pengurus.':!selected?'Belum ada jadwal pengajian hari ini.':!id?'Pilih nama Anda terlebih dahulu.':existing?`Nama ini sudah tercatat: ${existing}. Presensi terkunci dan tidak dapat diubah.`:!open?'Kegiatan ini tidak membuka presensi hari ini.':mode==='qr'&&!qrReady?'Memvalidasi tautan QR…':`Siap mengisi untuk ${members.find(m=>m.id===id)?.nama||''}. Pastikan status sudah benar.`;
 }
 function updateCategoryOptions(){
   const select=el('public-category'),prev=select.value;
@@ -258,22 +277,29 @@ async function submit(ev){
   ev.preventDefault();
   const id=Number(el('public-member').value),status=el('public-status').value;
   if(!selected||!id||!eligibleMembers(selected).some(m=>m.id===id)||!['Hadir','Izin','Sakit'].includes(status))return;
+  if(!selected.is_open||selected.event_date!==jakartaToday()){message('Presensi hanya tersedia untuk kegiatan hari ini yang masih dibuka.');return;}
+  if(presence.has(id)){message('Nama ini sudah tercatat dan presensi tidak dapat diubah.');return;}
+  const mode=attendanceMode();
+  if(mode==='qr'&&(qrValidation!=='valid'||String(selected.id)!==String(qrValidatedEventId))){message('QR belum valid. Minta QR baru kepada pengurus.');return;}
+  const adminPin=mode==='manual'?(el('manual-admin-pin')?.value.trim()||''):'';
+  if(mode==='manual'&&!adminPin){message('Masukkan kunci pengurus untuk presensi manual.');return;}
   const member=members.find(m=>m.id===id);
-  if(!window.confirm(`Kirim presensi ${status} untuk ${member?.nama}? Setelah dikirim TIDAK BISA DIUBAH.`))return;
+  if(!member)return;
+  if(!window.confirm(`Kirim presensi ${status} untuk ${member.nama}? Setelah dikirim TIDAK BISA DIUBAH.`))return;
   const submitted={nama:member.nama,kegiatan:selected.title,status,tanggal:selected.event_date};
   const button=el('submit-attendance');button.disabled=true;
   let saved=false;
   try{
-    const qrToken=new URLSearchParams(window.location.search).get('presensiToken');
-    if(qrToken){
-      await callQrFunction({action:'submit',token:qrToken,memberId:id,status});
-    }else{
-      const adminPin=el('manual-admin-pin')?.value.trim()||'';
-      if(!adminPin){message('Masukkan kunci pengurus untuk presensi manual.');return;}
+    if(mode==='qr'){
+      const token=new URLSearchParams(window.location.search).get('presensiToken');
+      await callQrFunction({action:'submit',token,memberId:id,status});
+    }else if(mode==='manual'){
       await callQrFunction({action:'submit_manual',adminPin,eventId:selected.id,memberId:id,status});
+    }else{
+      await callQrFunction({action:'submit_self',eventId:selected.id,memberId:id,status});
     }
     saved=true;
-    if(!qrToken && el('manual-admin-pin')) el('manual-admin-pin').value='';
+    if(mode==='manual'&&el('manual-admin-pin'))el('manual-admin-pin').value='';
     message(`Berhasil! Presensi ${member.nama}: ${status}. Data sudah terkunci.`);
     showConfirmation(submitted);
     try{await changeEvent();}catch(refreshErr){
@@ -294,11 +320,13 @@ async function init(){
   tabs();
   createRecapControls();createExportAllButton();
   if(!configured||!window.supabase){el('configuration-warning').hidden=false;el('attendance-form').hidden=true;return;}
-  db=window.supabase.createClient(config.supabaseUrl,config.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+  db=window.MARSeLA_DB || (window.MARSeLA_DB=window.supabase.createClient(config.supabaseUrl,config.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}}));
   el('public-event').addEventListener('change',()=>changeEvent().catch(handleError));
   el('member-search').addEventListener('input',setMemberOptions);
   el('public-member').addEventListener('change',showSelected);
   el('manual-admin-pin')?.addEventListener('input',showSelected);
+  el('attendance-mode')?.addEventListener('change',updateAttendanceMode);
+  updateAttendanceMode();
   el('public-category').addEventListener('change',renderRoster);
   el('attendance-form').addEventListener('submit',submit);
   el('refresh-attendance').addEventListener('click',()=>loadInitial().then(()=>message('Jadwal dan rekap diperbarui.')).catch(handleError));
@@ -311,28 +339,28 @@ async function handleQrDeepLink(){
   const eventId=params.get('presensiEvent');
   const token=params.get('presensiToken');
   if(!eventId&&!token)return;
-  const manualPinWrap=el('manual-admin-pin-wrap');
-  const manualPin=el('manual-admin-pin');
-  if(manualPinWrap)manualPinWrap.hidden=!!token;
-  if(manualPin){manualPin.required=!token;if(token)manualPin.value='';}
   window.showMarselaSection?.('presensi-section');
+  if(token){qrValidation='pending';qrValidatedEventId=null;updateAttendanceMode();}
   let validatedEventId=eventId;
   if(token){
     try{
       const session=await callQrFunction({action:'validate',token});
       validatedEventId=String(session.eventId);
     }catch(error){
+      qrValidation='invalid';
       message(`QR tidak aktif atau sudah kedaluwarsa: ${error.message||'minta QR baru kepada pengurus.'}`);
-      el('submit-attendance').disabled=true;
+      showSelected();
       return;
     }
   }
   const event=events.find(e=>String(e.id)===String(validatedEventId)&&e.event_date===jakartaToday()&&e.is_open===true);
   if(!event){
-    message('QR tidak aktif atau bukan untuk kegiatan hari ini. Silakan minta tautan QR terbaru kepada pengurus.');
-    el('submit-attendance').disabled=true;
+    if(token)qrValidation='invalid';
+    message('Tautan tidak aktif atau bukan untuk kegiatan hari ini. Silakan minta tautan terbaru kepada pengurus.');
+    showSelected();
     return;
   }
+  if(token){qrValidation='valid';qrValidatedEventId=String(event.id);el('public-event').disabled=true;}
   el('public-event').value=String(event.id);
   await changeEvent();
   window.showMarselaSection?.('presensi-section');
