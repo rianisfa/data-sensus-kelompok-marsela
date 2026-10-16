@@ -58,8 +58,11 @@ body {
 .card::before {
   content: '';
   position: absolute;
-  inset: 0 0 auto;
-  height: 4px;
+  top: 0;
+  left: 26px;
+  right: 26px;
+  height: 3px;
+  border-radius: 0 0 8px 8px;
   background: linear-gradient(90deg, var(--mint-500), #9ae8d7 42%, #3e7995 100%);
 }
 
@@ -537,6 +540,7 @@ tbody tr:hover td { background: #eef9f5; }
 @media (max-width: 760px) {
   body { padding: 8px 6px 28px; overflow-x: clip; }
   .card { border-radius: 20px; padding: 12px 10px 16px; }
+  .card::before { left: 20px; right: 20px; }
   .card > h2 { font-size: clamp(1.26rem, 6vw, 1.75rem); margin: 18px auto 18px; }
   .card > h2::before { font-size: .63rem; letter-spacing: .2em; }
 
@@ -861,7 +865,7 @@ button:focus-visible, .tab-btn:focus-visible, select:focus-visible, input:focus-
     padding-bottom: calc(104px + var(--safe-bottom));
     overflow-x: clip;
   }
-  .card { overflow: visible; }
+  .card { overflow: hidden; }
   .card > h2 { padding-inline: 3px; }
 
   /* Navigation ala aplikasi: tetap di bawah saat halaman digulir */
