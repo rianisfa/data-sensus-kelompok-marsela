@@ -138,7 +138,7 @@
       summaryCard('Pengajian Hari Ini',todayEvents.length,'Sesuai jadwal WIB'),
       summaryCard('Jadwal Mendatang',upcomingEvents.filter(e=>e.event_date>today).length,'60 hari ke depan')
     ].join('');
-    $('dash-today').innerHTML=todayEvents.length?todayEvents.map(scheduleCard).join(''):'<p class="dash-empty">Tidak ada pengajian terjadwal hari ini.</p>';
+    $('dash-today').innerHTML=todayEvents.length?todayEvents.map(scheduleCard).join(''):'<p class="dash-empty">Tidak ada jadwal pengajian hari ini.</p>';
     $('dash-upcoming').innerHTML=other.length?other.map(scheduleCard).join(''):'<p class="dash-empty">Belum ada jadwal berikutnya.</p>';
     $('dash-updated').textContent=`Diperbarui ${dateID(today)} · WIB`;
     $('dash-message').textContent='';
@@ -182,7 +182,7 @@
       const total=details.reduce((n,x)=>n+x.total,0), hadir=details.reduce((n,x)=>n+x.hadir,0);
       const pct=total?100*hadir/total:0;
       $('chart-summary').innerHTML=summaryCard('Jumlah Pertemuan',details.length)+summaryCard('Kesempatan Hadir',total)+summaryCard('Tercatat Hadir',hadir)+summaryCard('Persentase Kehadiran',`${pct.toFixed(1)}%`);
-      $('chart-bars').innerHTML=details.length?'<div class="chart-legend"><span class="chart-legend-item"><i class="chart-legend-dot" aria-hidden="true"></i>Hadir</span><span class="chart-legend-item"><i class="chart-legend-dot remaining" aria-hidden="true"></i>Sisa kesempatan hadir</span></div>'+details.map(d=>{
+      $('chart-bars').innerHTML=details.length?'<div class="chart-legend"><span class="chart-legend-item"><i class="chart-legend-dot" aria-hidden="true"></i>Hadir</span><span class="chart-legend-item"><i class="chart-legend-dot remaining" aria-hidden="true"></i>Tidak Hadir</span></div>'+details.map(d=>{
         const p=d.total?d.hadir/d.total*100:0;
         const label=`${dateID(d.event.event_date)} · ${d.event.title}`;
         return `<div class="chart-row"><div class="chart-row-top"><span title="${escape(label)}">${escape(label)}</span><b>${p.toFixed(1)}%</b></div><div class="chart-track"><div class="chart-fill" style="width:${Math.min(100,Math.max(0,p)).toFixed(2)}%"></div></div><small>${d.hadir} dari ${d.total} peserta</small></div>`;
@@ -201,7 +201,7 @@
     $('chart-refresh').addEventListener('click',async()=>{try{await refreshData();await loadStatistics();}catch(e){showError(e);}});
     const c=window.MARSeLA_CONFIG||{};
     if(window.supabase&&/^https:\/\/.+\.supabase\.co$/.test(c.supabaseUrl||'')&&c.supabaseAnonKey){
-      db=window.MARSeLA_DB || (window.MARSeLA_DB=window.supabase.createClient(c.supabaseUrl,c.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}}));
+      db=window.supabase.createClient(c.supabaseUrl,c.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
       try{await refreshData();await loadDashboard();}catch(e){showError(e);}
     }else{$('dash-message').textContent='Periksa config.js: Supabase belum terhubung.';}
   });

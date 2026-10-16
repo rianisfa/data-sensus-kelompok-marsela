@@ -16,10 +16,11 @@
     <h2>DATA SENSUS KELOMPOK MARSELA</h2>
     
     <div class="top-navigation">
-      <div class="brand-mark"><span class="brand-symbol">M</span><div><strong>MARSELA</strong><small>Community portal</small></div></div>
+      <div class="brand-mark"><span class="brand-symbol">M</span><div><strong>MARSELA</strong><small>Community Portal</small></div></div>
       <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="utility-menu" aria-label="Buka menu"><span></span><span></span><span></span><b>Menu</b></button>
       <div class="utility-menu" id="utility-menu" hidden>
         <div class="utility-menu-heading"><span>MENU PENGELOLAAN</span><small>Akses presensi & laporan</small></div>
+        <button type="button" class="utility-link" data-section="presensi-section" data-action="historical"><span class="utility-icon">✎</span><span><strong>Input Presensi Historis (Pengurus)</strong><small>Input kehadiran lampau dari buku presensi</small></span><span class="utility-arrow">↗</span></button>
         <button type="button" class="utility-link" data-section="rekap-section"><span class="utility-icon">▤</span><span><strong>Rekap Presensi Pengajian</strong><small>Daftar kehadiran setiap kegiatan</small></span><span class="utility-arrow">↗</span></button>
         <button type="button" class="utility-link" data-section="analisis-section"><span class="utility-icon">◫</span><span><strong>Analisis Bulanan</strong><small>Tren dan statistik kehadiran</small></span><span class="utility-arrow">↗</span></button>
         <button type="button" class="utility-link" data-section="riwayat-section"><span class="utility-icon">◎</span><span><strong>Riwayat Individual</strong><small>Riwayat presensi anggota</small></span><span class="utility-arrow">↗</span></button>
@@ -90,25 +91,40 @@
     </section>
     <section id="presensi-section" hidden>
       <div id="configuration-warning" class="notice" hidden>Database belum terhubung. Isi <code>config.js</code> sesuai panduan.</div>
-      <div class="notice">Pilih nama sendiri dengan teliti. Setelah menekan <strong>Kirim Presensi</strong>, status <strong>tidak dapat diubah ataupun dikirim ulang</strong>, termasuk oleh admin melalui website.</div>
+      <div class="notice">
+        Pilih nama sendiri dengan teliti. Setelah menekan
+        <strong>Kirim Presensi</strong>, status
+        <strong>tidak dapat diubah ataupun dikirim ulang</strong>,
+        termasuk oleh admin melalui website.
+      </div>
       <div class="subcard">
         <h3>Isi Presensi</h3>
         <form id="attendance-form" class="form-grid">
+          <label>Mode presensi<select id="attendance-mode"><option value="self">Presensi anggota (hari ini)</option><option value="manual">Input pengurus dari buku presensi</option></select></label>
           <label>Kegiatan<select id="public-event" required></select></label>
-          <label>Cari nama anggota<input id="member-search" type="search" placeholder="Ketik nama untuk menyaring daftar" autocomplete="off"></label>
-          <label>Nama anggota<select id="public-member" required></select></label>
+          <div id="member-picker-wrap" style="position:relative;min-width:0">
+            <label for="member-search">Nama anggota</label>
+            <input id="member-search" type="search" placeholder="Ketik untuk mencari dan pilih nama anggota" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="member-suggestions" style="width:100%">
+            <input id="public-member" type="hidden" value="">
+            <div id="member-suggestions" role="listbox" hidden style="position:absolute;z-index:30;top:100%;left:0;right:0;max-height:240px;overflow-y:auto;background:#fff;border:1px solid #cbd5e1;border-radius:10px;box-shadow:0 12px 26px #0002"></div>
+          </div>
           <label>Status<select id="public-status" required><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option></select></label>
-          <label hidden style="display:none !important">Metode presensi
-            <select id="attendance-mode">
-              <option value="self">Presensi Mandiri (Tanpa PIN)</option>
-              <option value="manual">Presensi Manual Pengurus (Dengan PIN)</option>
-            </select>
-          </label>
-          <label id="manual-admin-pin-wrap" hidden>Kunci pengurus untuk presensi manual
-            <input id="manual-admin-pin" type="password" autocomplete="current-password" placeholder="Masukkan kunci pengurus" />
-          </label>
+          <label id="manual-admin-pin-wrap">Kunci pengurus (wajib untuk input manual)<input id="manual-admin-pin" type="password" autocomplete="current-password" placeholder="Masukkan kunci pengurus" required /></label>
           <button type="submit" id="submit-attendance">Kirim Presensi</button>
         </form>
+        <div id="historical-bulk" class="subcard" hidden style="margin-top:16px;display:none">
+          <h3>Checklist presensi dari buku tulis</h3>
+          <p class="message">Pilih kegiatan terlebih dahulu, lalu centang hanya anggota yang tercatat di buku. Anggota yang sudah memiliki presensi dikunci. Status default adalah Hadir; ubah menjadi Izin atau Sakit jika diperlukan.</p>
+          <label>Cari anggota untuk checklist<input id="historical-search" type="search" placeholder="Cari nama anggota" autocomplete="off"></label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0">
+            <button id="historical-check-visible" type="button" class="btn-muted">Centang semua hasil pencarian</button>
+            <button id="historical-clear" type="button" class="btn-muted">Kosongkan pilihan</button>
+            <span id="historical-count" class="message" aria-live="polite">0 dipilih</span>
+          </div>
+          <div id="historical-list" style="max-height:360px;overflow:auto;border:1px solid #cbd5e1;border-radius:12px;padding:10px;display:grid;gap:6px"></div>
+          <button id="historical-submit" type="button" disabled style="margin-top:12px">Simpan Semua yang Dicentang</button>
+          <p id="historical-result" class="message" role="status" aria-live="polite"></p>
+        </div>
         <p id="selected-info" class="message" aria-live="polite"></p>
       </div>
       <p id="presensi-message" class="message" role="status" aria-live="polite"></p>
@@ -240,19 +256,9 @@ async function loadSensusFromSupabase() {
     if (!window.supabase || !/^https:\/\/.+\.supabase\.co$/.test(cfg.supabaseUrl || '') || !cfg.supabaseAnonKey || cfg.supabaseAnonKey.includes('GANTI')) {
       throw new Error('Isi Project URL dan publishable key pada config.js terlebih dahulu.');
     }
-        const client = window.MARSeLA_DB || (
-      window.MARSeLA_DB = window.supabase.createClient(
-        cfg.supabaseUrl,
-        cfg.supabaseAnonKey,
-        {
-          auth: {
-            persistSession: false,
-            autoRefreshToken: false,
-            detectSessionInUrl: false
-          }
-        }
-      )
-    );
+    const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+      auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false}
+    });
     // Batas default PostgREST 1000 baris per permintaan: gunakan pagination agar data lengkap.
     const all = [];
     for (let from = 0; ; from += 1000) {
