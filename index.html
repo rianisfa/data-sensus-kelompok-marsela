@@ -98,6 +98,7 @@
           <label>Cari nama anggota<input id="member-search" type="search" placeholder="Ketik nama untuk menyaring daftar" autocomplete="off"></label>
           <label>Nama anggota<select id="public-member" required></select></label>
           <label>Status<select id="public-status" required><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option></select></label>
+          <label id="manual-admin-pin-wrap">Kunci pengurus untuk presensi manual<input id="manual-admin-pin" type="password" autocomplete="current-password" placeholder="Masukkan kunci pengurus" required /></label>
           <button type="submit" id="submit-attendance">Kirim Presensi</button>
         </form>
         <p id="selected-info" class="message" aria-live="polite"></p>
@@ -173,13 +174,23 @@
     <p class="marsela-qr-eyebrow">MARSELA · PRESENSI DIGITAL</p>
     <h2 id="marsela-qr-title">QR Presensi Pengajian</h2>
     <p id="marsela-qr-event-name" class="marsela-qr-event-name"></p>
-    <div id="marsela-qr-code" class="marsela-qr-code" aria-label="Kode QR untuk membuka presensi kegiatan"></div>
-    <p class="marsela-qr-help">Anggota dapat memindai kode ini untuk membuka halaman presensi kegiatan. Pilih nama sendiri dan konfirmasi kehadiran.</p>
-    <p class="marsela-qr-notice">Tahap 9A: QR ini berisi tautan kegiatan, belum memakai token sesi kedaluwarsa. Jangan bagikan di luar peserta kegiatan. Validasi token dan kontrol sesi akan ditambahkan pada Tahap 9B.</p>
-    <div class="marsela-qr-actions">
-      <button type="button" id="marsela-qr-copy" class="btn-muted">Salin tautan</button>
-      <button type="button" id="marsela-qr-download">Unduh QR PNG</button>
+    <div id="marsela-qr-admin-controls" class="marsela-qr-admin-controls">
+      <p class="marsela-qr-help">Masukkan PIN pengurus untuk membuat sesi QR yang berlaku terbatas. PIN diperiksa oleh Supabase Edge Function dan tidak disimpan di website.</p>
+      <label for="marsela-qr-admin-pin">PIN pengurus</label>
+      <input id="marsela-qr-admin-pin" type="password" autocomplete="current-password" inputmode="text" placeholder="Masukkan PIN pengurus" />
+      <button type="button" id="marsela-qr-create-session">Buat sesi QR</button>
     </div>
+    <div id="marsela-qr-session-view" hidden>
+      <div id="marsela-qr-code" class="marsela-qr-code" aria-label="Kode QR sesi presensi"></div>
+      <p class="marsela-qr-help">Anggota memindai QR, memilih namanya, lalu mengonfirmasi kehadiran. QR hanya berlaku sampai waktu kedaluwarsa atau ditutup pengurus.</p>
+      <p id="marsela-qr-expiry" class="marsela-qr-expiry"></p>
+      <div class="marsela-qr-actions">
+        <button type="button" id="marsela-qr-copy" class="btn-muted">Salin tautan</button>
+        <button type="button" id="marsela-qr-download">Unduh QR PNG</button>
+        <button type="button" id="marsela-qr-close-session" class="marsela-qr-close-session">Tutup sesi QR</button>
+      </div>
+    </div>
+    <p class="marsela-qr-notice">QR menggunakan token acak dan masa berlaku. Token membatasi akses ke sesi, tetapi belum membuktikan identitas orang yang memilih nama anggota. Pengurus tetap perlu memastikan kehadiran fisik.</p>
     <p id="marsela-qr-message" class="message" role="status" aria-live="polite"></p>
   </div>
 </div>

@@ -1,0 +1,20 @@
+# Cadangan data
+backup-marsela/
+
+# File SQL data lokal
+data.sql
+muda-mudi.sql
+
+# File rahasia dan konfigurasi lokal
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# File sistem
+.DS_Store
+Thumbs.db
+
+# File sementara Supabase CLI
+supabase/.temp/

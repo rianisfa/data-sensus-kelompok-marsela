@@ -702,3 +702,19 @@ body.marsela-qr-open-state { overflow:hidden; }
   .marsela-qr-open { width:100%; }
 }
 @media(prefers-reduced-motion:reduce) { .marsela-qr-open { transition:none; } }
+
+
+/* Tahap 9B — QR session controls, expiry state, and mobile-safe layout. */
+.marsela-qr-admin-controls { display:grid; gap:10px; text-align:left; margin:0 auto 14px; max-width:340px; }
+.marsela-qr-admin-controls[hidden], #marsela-qr-session-view[hidden] { display:none !important; }
+.marsela-qr-admin-controls label { color:#183044; font-size:.88rem; font-weight:750; }
+.marsela-qr-admin-controls input { box-sizing:border-box; width:100%; min-width:0; min-height:48px; padding:12px 14px; border:1px solid #cbdcde; border-radius:12px; background:#fff; color:#183044; font:inherit; }
+.marsela-qr-admin-controls input:focus-visible { outline:3px solid #d5b77c; outline-offset:2px; }
+#marsela-qr-create-session, .marsela-qr-close-session { min-height:46px; width:100%; border:1px solid #087f70; border-radius:12px; background:#087f70; color:#fff; font:inherit; font-weight:750; cursor:pointer; }
+#marsela-qr-create-session:disabled, .marsela-qr-close-session:disabled { opacity:.6; cursor:wait; }
+.marsela-qr-expiry { margin:0 0 12px; padding:10px 12px; border-radius:12px; background:#e6f5f0; color:#087f70; font-size:.82rem; font-weight:700; }
+.marsela-qr-close-session { grid-column:1 / -1; background:#fff7e8; color:#775a27; border-color:#ead5a6; }
+#marsela-qr-message[data-state="error"] { color:#a33232; }
+@media(max-width:760px) { .marsela-qr-admin-controls { width:100%; } }
+
+.form-grid label[hidden] { display:none !important; }
