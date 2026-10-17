@@ -200,7 +200,7 @@ function updateAttendanceMode(){
     // Pilihan mode tidak ditampilkan kepada anggota; mode historis hanya dibuka dari Menu Pengurus.
     if(label)label.hidden=mode!=='manual';
   }
-  if(wrap)wrap.hidden=mode!=='manual';
+  if(wrap)wrap.hidden=true; // PIN hanya diminta saat menyimpan historis
   const bulk=el('historical-bulk');
   if(bulk){bulk.hidden=mode!=='manual';bulk.style.display=mode==='manual'?'block':'none';}
   const picker=el('member-picker-wrap');if(picker)picker.hidden=mode==='manual';
@@ -208,7 +208,7 @@ function updateAttendanceMode(){
   if(mode==='manual')closeMemberSuggestions();
   const single=el('submit-attendance');if(single)single.hidden=mode==='manual';
   renderHistoricalList();
-  if(pin){pin.required=mode==='manual';if(mode!=='manual')pin.value='';}
+  if(pin){pin.required=false;pin.value='';}
   showSelected();
 }
 function showSelected(){
@@ -400,45 +400,83 @@ function renderHistoricalList(){
     </div>`;
   }).join(''):'<p class="message">Tidak ada anggota yang cocok.</p>';
   el('historical-count').textContent=`${historicalSelected.size} anggota dipilih`;
-  const pin=el('manual-admin-pin')?.value.trim();
   const today=jakartaToday();
   const allowedDate=selected&&(selected.event_date<today||(selected.event_date===today&&selected.is_open));
-  el('historical-submit').disabled=historicalBusy||!historicalSelected.size||!pin||!allowedDate;
+  el('historical-submit').disabled=historicalBusy||!historicalSelected.size||!allowedDate;
   el('historical-check-visible').disabled=historicalBusy;
   el('historical-clear').disabled=historicalBusy;
 }
+function askHistoricalPin(count, label){
+  return new Promise(resolve=>{
+    const previous=document.activeElement;
+    const modal=document.createElement('div');
+    modal.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,28,45,.68)';
+    modal.innerHTML=`<div role="dialog" aria-modal="true" aria-labelledby="hist-pin-title" style="width:min(100%,440px);background:white;border-radius:18px;padding:26px;color:#183047;box-shadow:0 20px 70px #0004"><h3 id="hist-pin-title">Konfirmasi Presensi Historis</h3><p id="hist-pin-desc"></p><form id="hist-pin-form"><label for="hist-pin-input" style="display:block;margin:12px 0 6px">Kunci pengurus</label><input id="hist-pin-input" type="password" required autocomplete="off" placeholder="Masukkan kunci pengurus" style="box-sizing:border-box;width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px"><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px"><button type="button" id="hist-pin-cancel" style="padding:10px 16px;border-radius:9px;border:1px solid #cbd5e1;background:white;color:#183047">Batal</button><button type="submit" style="padding:10px 16px;border-radius:9px;border:0;background:#16846e;color:white;font-weight:bold">Konfirmasi & Simpan</button></div></form></div>`;
+    modal.querySelector('#hist-pin-desc').textContent=`Simpan ${count} presensi untuk ${label}? Data yang tersimpan tidak dapat diubah.`;
+    document.body.append(modal);
+    const input=modal.querySelector('#hist-pin-input');
+    const finish=value=>{input.value='';modal.remove();if(previous?.isConnected)previous.focus({preventScroll:true});resolve(value);};
+    modal.querySelector('#hist-pin-cancel').addEventListener('click',()=>finish(null));
+    modal.addEventListener('click',e=>{if(e.target===modal)finish(null);});
+    modal.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();finish(null);}if(e.key==='Tab'){const buttons=[input,modal.querySelector('#hist-pin-cancel'),modal.querySelector('button[type="submit"]')];if(e.shiftKey&&document.activeElement===buttons[0]){e.preventDefault();buttons[2].focus();}else if(!e.shiftKey&&document.activeElement===buttons[2]){e.preventDefault();buttons[0].focus();}}});
+    modal.querySelector('#hist-pin-form').addEventListener('submit',e=>{e.preventDefault();if(input.value.trim())finish(input.value.trim());});
+    input.focus();
+  });
+}
+function showHistoricalNotice(success,errors,label){
+  const modal=document.createElement('div');
+  modal.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,28,45,.68)';
+  modal.innerHTML=`<div class="marsela-confirm-card" role="dialog" aria-modal="true" aria-labelledby="hist-notice-title" style="width:min(100%,470px);max-height:90vh;overflow:auto;background:white;border-radius:18px;padding:26px;color:#183047;text-align:center;box-shadow:0 20px 70px #0004"><div class="marsela-confirm-icon" aria-hidden="true"></div><p class="marsela-confirm-eyebrow">MARSELA DASHBOARD</p><h3 id="hist-notice-title"></h3><p id="hist-notice-label"></p><div class="marsela-confirm-details" style="text-align:left"><div><span>Berhasil disimpan</span><strong id="hist-notice-ok"></strong></div><div><span>Gagal / dilewati</span><strong id="hist-notice-fail"></strong></div></div><p class="marsela-confirm-lock" id="hist-notice-lock"></p><details id="hist-notice-errors" style="text-align:left;margin:12px 0"><summary>Lihat rincian kegagalan</summary><p id="hist-notice-error-text" style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:160px;overflow:auto;font-size:.85rem"></p></details><button type="button" class="marsela-confirm-done" id="hist-notice-close">Selesai</button></div>`;
+  modal.querySelector('.marsela-confirm-icon').textContent=success?'✓':'!';
+  modal.querySelector('#hist-notice-title').textContent=success?(errors.length?'Presensi Sebagian Berhasil':'Presensi Berhasil!'):'Presensi Gagal';
+  modal.querySelector('#hist-notice-label').textContent=label;
+  modal.querySelector('#hist-notice-ok').textContent=`${success} anggota`;
+  modal.querySelector('#hist-notice-fail').textContent=`${errors.length} anggota`;
+  modal.querySelector('#hist-notice-lock').textContent=success?'Presensi yang berhasil tersimpan sudah terkunci dan tidak dapat diubah.':'Tidak ada presensi baru yang berhasil disimpan.';
+  modal.querySelector('#hist-notice-errors').hidden=!errors.length;
+  modal.querySelector('#hist-notice-error-text').textContent=errors.join('\n');
+  document.body.append(modal);
+  const close=()=>modal.remove();
+  modal.querySelector('#hist-notice-close').addEventListener('click',close);
+  modal.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  modal.querySelector('#hist-notice-close').focus();
+}
 async function submitHistorical(){
   if(historicalBusy||attendanceMode()!=='manual'||!selected)return;
-  const pin=el('manual-admin-pin')?.value.trim();
   const today=jakartaToday();
-  if(!pin||!(selected.event_date<today||(selected.event_date===today&&selected.is_open)))return;
+  if(!(selected.event_date<today||(selected.event_date===today&&selected.is_open)))return;
   const permitted=new Set(eligibleMembers(selected).map(m=>m.id));
   const pending=[...historicalSelected].filter(([id,status])=>permitted.has(id)&&!presence.has(id)&&['Hadir','Izin','Sakit'].includes(status));
   if(!pending.length)return;
-  const label=`${selected.title} (${dateLabel(selected.event_date)})`;
-  if(!window.confirm(`Simpan ${pending.length} presensi untuk ${label}? Data yang berhasil disimpan tidak dapat diubah. Jika sebagian gagal, yang berhasil tetap tersimpan.`))return;
+  const event=selected,label=`${event.title} (${dateLabel(event.event_date)})`;
+  const pin=await askHistoricalPin(pending.length,label);
+  if(!pin||selected?.id!==event.id||attendanceMode()!=='manual')return;
   historicalBusy=true;renderHistoricalList();
   const result=el('historical-result');
   let success=0;const errors=[];
   try{
-    // Verifikasi ulang dari server untuk mencegah duplikasi dari tab lain.
-    presence=await getPresence(selected);
+    presence=await getPresence(event);
     for(const [id,status] of pending){
       if(presence.has(id)){historicalSelected.delete(id);errors.push(`${members.find(m=>m.id===id)?.nama||id}: sudah tercatat`);continue;}
       try{
-        await callQrFunction({action:'submit_manual',adminPin:pin,eventId:selected.id,memberId:id,status});
+        await callQrFunction({action:'submit_manual',adminPin:pin,eventId:event.id,memberId:id,status});
         presence.set(id,status);historicalSelected.delete(id);success++;
-      }catch(error){errors.push(`${members.find(m=>m.id===id)?.nama||id}: ${error.message||'gagal'}`);
-        // Salah PIN: jangan kirim sisa daftar.
-        if(/kunci pengurus salah/i.test(error.message||''))break;
+      }catch(error){
+        const reason=error.message||'gagal';
+        errors.push(`${members.find(m=>m.id===id)?.nama||id}: ${reason}`);
+        if(/kunci pengurus salah|kunci pengurus server belum|hanya tersedia untuk kegiatan yang dibuka hari ini|input manual hanya diizinkan|konfigurasi server/i.test(reason))break;
       }
       result.textContent=`Sedang menyimpan… ${success} berhasil; ${errors.length} gagal/dilewati.`;
     }
-    result.textContent=`Selesai: ${success} berhasil; ${errors.length} gagal/dilewati.${errors.length?' Periksa rincian: '+errors.join('; '):''}`;
-    if(success){await refreshRecap();}
-  }catch(error){result.textContent=`Proses terhenti: ${error.message||error}. Periksa hasil sebelum mengulang.`;}
-  finally{historicalBusy=false;el('manual-admin-pin').value='';renderHistoricalList();showSelected();}
+    result.textContent=`Selesai: ${success} berhasil; ${errors.length} gagal/dilewati.`;
+    if(success)await refreshRecap();
+    showHistoricalNotice(success,errors,label);
+  }catch(error){
+    result.textContent=`Proses terhenti: ${error.message||error}. Periksa hasil sebelum mengulang.`;
+    showHistoricalNotice(success,[...errors,`Proses terhenti: ${error.message||error}`],label);
+  }finally{historicalBusy=false;renderHistoricalList();showSelected();}
 }
+
 function bindHistorical(){
   el('historical-search')?.addEventListener('input',renderHistoricalList);
   el('historical-list')?.addEventListener('change',ev=>{
