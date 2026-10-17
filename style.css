@@ -1532,3 +1532,13 @@ button:focus-visible, .tab-btn:focus-visible, select:focus-visible, input:focus-
 .marsela-modal .marsela-confirm-card:has(#historical-pin-title) label {
   color: #344e60;
 }
+
+/* PATCH FINAL — popup hasil presensi historis berlatar putih. */
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) #historical-result-title { color: #173548 !important; display:block !important; }
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-eyebrow { color:#168772 !important; }
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-details span { color:#40596a !important; }
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-details strong { color:#173548 !important; }
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) #historical-result-success { color:#08755e !important; }
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) #historical-result-failed { color:#934b1e !important; }
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-lock { color:#465e6c !important; }
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) #historical-result-event { color:#183047 !important; }
