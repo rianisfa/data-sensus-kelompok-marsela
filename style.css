@@ -1542,3 +1542,24 @@ button:focus-visible, .tab-btn:focus-visible, select:focus-visible, input:focus-
 .marsela-modal .marsela-confirm-card:has(#historical-result-title) #historical-result-failed { color:#934b1e !important; }
 .marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-lock { color:#465e6c !important; }
 .marsela-modal .marsela-confirm-card:has(#historical-result-title) #historical-result-event { color:#183047 !important; }
+
+/* PERBAIKAN POPUP HASIL PRESENSI HISTORIS */
+
+.marsela-confirm-card:has(#hist-notice-title) h3 {
+  color: #183047 !important;
+}
+
+.marsela-confirm-card:has(#hist-notice-title)
+.marsela-confirm-details span {
+  color: #526779 !important;
+}
+
+.marsela-confirm-card:has(#hist-notice-title)
+.marsela-confirm-details strong {
+  color: #183047 !important;
+}
+
+.marsela-confirm-card:has(#hist-notice-title)
+.marsela-confirm-lock {
+  color: #526779 !important;
+}
