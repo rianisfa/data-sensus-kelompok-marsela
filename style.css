@@ -1476,3 +1476,59 @@ button:focus-visible, .tab-btn:focus-visible, select:focus-visible, input:focus-
     grid-column: 1 / -1;
   }
 }
+
+/* ============================================================
+   MARSELA — KONTRAS POPUP PRESENSI HISTORIS
+   Popup historis berlatar putih, berbeda dari popup presensi
+   reguler berlatar navy. Selector dibatasi agar popup lain aman.
+   ============================================================ */
+.marsela-modal .marsela-confirm-card:has(#historical-result-title),
+.marsela-modal .marsela-confirm-card:has(#historical-pin-title) {
+  background: #ffffff;
+  color: #183047;
+  border: 1px solid #dce9e9;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) h3,
+.marsela-modal .marsela-confirm-card:has(#historical-pin-title) h3 {
+  color: #173548;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-eyebrow {
+  color: #168772;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) #historical-result-event,
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-lock {
+  color: #526a79;
+  line-height: 1.55;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-details {
+  background: #f5faf9;
+  border: 1px solid #dbeae7;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-details > div + div {
+  border-top: 1px solid #dbeae7;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-details span {
+  color: #4d6574;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-details strong {
+  color: #173548;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) #historical-result-success {
+  color: #127b65;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) #historical-result-failed {
+  color: #9a531f;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) #historical-result-errors {
+  color: #344e60;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) #historical-result-error-list {
+  color: #526a79;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-result-title) .marsela-confirm-done {
+  background: #37c0a3;
+  color: #10283b;
+}
+.marsela-modal .marsela-confirm-card:has(#historical-pin-title) label {
+  color: #344e60;
+}
