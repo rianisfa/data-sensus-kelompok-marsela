@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Data Sensus Kelompok Marsela</title>
 
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="premium.css">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Data Sensus Kelompok Marsela</title>
+
+  <!-- Konfigurasi PWA -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#17384a">
+
+  <!-- Ikon untuk iPhone dan iPad -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="MARSELA">
+
+  <!-- CSS MARSELA -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="premium.css">
 </head>
 
 <body>
@@ -458,6 +471,22 @@ function debounce(func, wait) {
     timeout = setTimeout(() => func.apply(this, args), wait);
   };
 }
+</script>
+
+<!-- Registrasi PWA MARSELA -->
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/service-worker.js")
+        .then(() => {
+          console.log("PWA MARSELA: Service Worker aktif");
+        })
+        .catch((error) => {
+          console.error("PWA MARSELA gagal didaftarkan:", error);
+        });
+    });
+  }
 </script>
 
 </body>
