@@ -243,7 +243,35 @@
     <p>Masukkan PIN pengurus 20 digit yang sudah digunakan MARSELA.</p>
     <form id="marsela-admin-form">
       <label for="marsela-admin-pin">PIN Pengurus</label>
-      <input id="marsela-admin-pin" type="password" minlength="20" autocomplete="off" required placeholder="PIN pengurus">
+      <!-- Kolom PIN dengan tombol mata -->
+        <div style="position:relative;width:100%;">
+          <input id="marsela-admin-pin" type="password" minlength="20" autocomplete="off" required
+            placeholder="PIN pengurus" style="width:100%;box-sizing:border-box;padding-right:52px;">
+
+          <button type="button" id="marsela-admin-pin-toggle" aria-label="Tampilkan PIN" aria-pressed="false"
+            title="Tampilkan PIN"
+            style="position:absolute;right:6px;top:50%;transform:translateY(-50%);width:44px;height:44px;padding:0;border:0;background:transparent;box-shadow:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#526579;"
+            onclick="
+    const pin = document.getElementById('marsela-admin-pin');
+    const show = pin.type === 'password';
+    pin.type = show ? 'text' : 'password';
+
+    this.querySelector('svg').innerHTML = show
+      ? '<path d=&quot;m3 3 18 18&quot;/><path d=&quot;M10.58 10.59a2 2 0 0 0 2.83 2.82&quot;/><path d=&quot;M9.88 5.09A10.9 10.9 0 0 1 12 4.9c4.8 0 8.5 3.1 10 7.1a11.7 11.7 0 0 1-4.2 5.5&quot;/><path d=&quot;M6.61 6.61A11.5 11.5 0 0 0 2 12c1.5 4 5.2 7.1 10 7.1 1.2 0 2.3-.2 3.3-.5&quot;/>'
+      : '<path d=&quot;M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0&quot;/><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/>';
+
+    this.setAttribute('aria-label', show ? 'Sembunyikan PIN' : 'Tampilkan PIN');
+    this.setAttribute('title', show ? 'Sembunyikan PIN' : 'Tampilkan PIN');
+    this.setAttribute('aria-pressed', String(show));
+  ">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
+        </div>
       <p id="marsela-admin-status" role="status" aria-live="polite"></p>
       <div class="marsela-admin-actions"><button type="button" id="marsela-admin-cancel" class="btn-muted">Batal</button><button type="submit" id="marsela-admin-submit">Masuk Pengurus</button></div>
     </form>

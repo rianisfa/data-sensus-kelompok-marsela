@@ -34,3 +34,11 @@
   #sensus-section #sensus-admin-entry:not([hidden]) { justify-content: stretch; margin-bottom: 16px; }
   #sensus-section #sensus-admin-open { width: 100%; }
 }
+#marsela-admin-pin-toggle svg[hidden] {
+  display: none;
+}
+/* Sembunyikan tombol tampilkan PIN bawaan Microsoft Edge */
+#marsela-admin-pin::-ms-reveal,
+#marsela-admin-pin::-ms-clear {
+  display: none;
+}
