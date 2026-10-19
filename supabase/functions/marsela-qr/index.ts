@@ -47,7 +47,10 @@ function eligible(
 ) {
   if (event.jenis_pengajian === "Caberawit") return ["PAUD", "SD / Caberawit"].includes(category);
   if (event.jenis_pengajian === "Muda-Mudi") return category === "Muda - Mudi";
-  if (event.jenis_pengajian === "Kelompok") {
+  if (event.jenis_pengajian === "Pusat") {
+    return ["Bapak - Bapak", "Ibu - Ibu", "Duda", "Janda", "Muda - Mudi", "SMP Sederajat", "SMA Sederajat"].includes(category);
+  }
+  if (event.jenis_pengajian === "Kelompok" || event.jenis_pengajian === "Desa") {
     return ["Bapak - Bapak", "Ibu - Ibu", "Duda", "Janda"].includes(category) ||
       (event.include_mudamudi === true && category === "Muda - Mudi");
   }
@@ -177,9 +180,9 @@ Deno.serve(async (req: Request) => {
       const jenis = typeof body.jenis_pengajian === "string" ? body.jenis_pengajian : "";
       const notes = typeof body.notes === "string" ? body.notes.trim() : "";
       if (title.length < 3 || title.length > 150 || notes.length > 1000) return json({ error: "Nama kegiatan harus 3–150 karakter; keterangan maksimal 1000 karakter." }, 400);
-      if (!["Kelompok", "Caberawit", "Muda-Mudi"].includes(jenis)) return json({ error: "Jenis pengajian tidak valid." }, 400);
+      if (!["Kelompok", "Caberawit", "Muda-Mudi", "Desa", "Pusat"].includes(jenis)) return json({ error: "Jenis pengajian tidak valid." }, 400);
       if (typeof body.include_mudamudi !== "boolean" || typeof body.is_open !== "boolean") return json({ error: "Pilihan kegiatan tidak valid." }, 400);
-      if (body.include_mudamudi && jenis !== "Kelompok") return json({ error: "Menyertakan Muda-Mudi hanya untuk kegiatan Kelompok." }, 400);
+      if (body.include_mudamudi && !["Kelompok", "Desa"].includes(jenis)) return json({ error: "Menyertakan Muda-Mudi hanya untuk kegiatan Kelompok atau Desa." }, 400);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate)) return json({ error: "Format tanggal harus YYYY-MM-DD." }, 400);
       const parsedDate = new Date(`${eventDate}T00:00:00Z`);
       if (!Number.isFinite(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== eventDate) return json({ error: "Tanggal kegiatan tidak valid." }, 400);
@@ -282,9 +285,9 @@ Deno.serve(async (req: Request) => {
       const jenis = typeof body.jenis_pengajian === "string" ? body.jenis_pengajian : "";
       const notes = typeof body.notes === "string" ? body.notes.trim() : "";
       if (title.length < 3 || title.length > 150 || notes.length > 1000) return json({ error: "Nama atau keterangan kegiatan tidak valid." }, 400);
-      if (!["Kelompok", "Caberawit", "Muda-Mudi"].includes(jenis)) return json({ error: "Jenis pengajian tidak valid." }, 400);
+      if (!["Kelompok", "Caberawit", "Muda-Mudi", "Desa", "Pusat"].includes(jenis)) return json({ error: "Jenis pengajian tidak valid." }, 400);
       if (typeof body.include_mudamudi !== "boolean" || typeof body.is_open !== "boolean") return json({ error: "Pilihan kegiatan tidak valid." }, 400);
-      if (body.include_mudamudi && jenis !== "Kelompok") return json({ error: "Muda-Mudi hanya dapat disertakan pada kegiatan Kelompok." }, 400);
+      if (body.include_mudamudi && !["Kelompok", "Desa"].includes(jenis)) return json({ error: "Muda-Mudi hanya dapat disertakan pada kegiatan Kelompok atau Desa." }, 400);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate) || Number.isNaN(Date.parse(eventDate + "T00:00:00Z")) || new Date(eventDate + "T00:00:00Z").toISOString().slice(0,10) !== eventDate) return json({ error: "Tanggal kegiatan tidak valid." }, 400);
       if (body.is_open && (eventDate !== todayJakarta() || event.is_archived)) return json({ error: "Presensi hanya boleh dibuka untuk kegiatan aktif hari ini." }, 409);
       const sensitiveChanged = eventDate !== event.event_date || jenis !== event.jenis_pengajian || body.include_mudamudi !== event.include_mudamudi;

@@ -160,7 +160,7 @@
     <section id="jadwal-section" class="dash-section" hidden>
       <div class="dash-heading"><div><p class="dash-eyebrow">KALENDER KEGIATAN</p><h3>Jadwal Pengajian</h3><p>Pilih bulan dan tanggal untuk melihat rincian pengajian.</p></div></div>
       <div class="dash-toolbar">
-        <label>Jenis pengajian<select id="schedule-filter"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label>
+        <label>Jenis pengajian<select id="schedule-filter"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option><option value="Desa">Desa</option><option value="Pusat">Pusat</option></select></label>
         <button class="btn-muted" id="schedule-refresh" type="button">Muat ulang</button>
       </div>
       <div id="schedule-list" class="schedule-list" aria-live="polite">Memuat jadwal…</div>
@@ -169,7 +169,7 @@
     <section id="statistik-section" class="dash-section" hidden>
       <div class="dash-heading"><div><p class="dash-eyebrow">ANALISIS KEHADIRAN</p><h3>Statistik Kehadiran</h3><p>Perbandingan kehadiran berdasarkan kegiatan pengajian.</p></div></div>
       <div class="dash-toolbar">
-        <label>Jenis pengajian<select id="chart-filter"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label>
+        <label>Jenis pengajian<select id="chart-filter"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option><option value="Desa">Desa</option><option value="Pusat">Pusat</option></select></label>
         <label>Periode<select id="chart-period"><option value="30">30 hari terakhir</option><option value="90">90 hari terakhir</option><option value="180">180 hari terakhir</option></select></label>
         <button class="btn-muted" id="chart-refresh" type="button">Muat ulang</button>
       </div>
@@ -186,7 +186,7 @@
       <div class="dash-heading"><div><p class="dash-eyebrow">INSIGHT & TREN</p><h3>Analisis Bulanan</h3><p>Bandingkan tingkat kehadiran dari bulan ke bulan.</p></div></div>
         <article class="insight-panel" id="monthly-trend-panel">
           <div class="insight-header"><div><p class="insight-eyebrow">ANALISIS BULANAN</p><h3>Tren Kehadiran Bulanan</h3><p>Perbandingan persentase kehadiran dari bulan ke bulan.</p></div></div>
-          <div class="insight-tools"><label>Jenis pengajian<select id="insight-trend-type"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label><label>Rentang<select id="insight-trend-months"><option value="3">3 bulan</option><option value="6" selected>6 bulan</option><option value="12">12 bulan</option></select></label><button type="button" id="insight-trend-refresh" class="btn-muted">Perbarui</button></div>
+          <div class="insight-tools"><label>Jenis pengajian<select id="insight-trend-type"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option><option value="Desa">Desa</option><option value="Pusat">Pusat</option></select></label><label>Rentang<select id="insight-trend-months"><option value="3">3 bulan</option><option value="6" selected>6 bulan</option><option value="12">12 bulan</option></select></label><button type="button" id="insight-trend-refresh" class="btn-muted">Perbarui</button></div>
           <div id="insight-trend-chart" class="insight-trend" aria-live="polite">Memuat tren…</div>
         </article>
     </section>
@@ -202,7 +202,7 @@
       <div class="dash-heading"><div><p class="dash-eyebrow">UNTUK PENGURUS</p><h3>Laporan Pengurus</h3><p>Susun ringkasan pertemuan bulanan dan cetak ke PDF.</p></div></div>
       <article class="insight-panel insight-report" id="monthly-report-panel">
         <div class="insight-header"><div><p class="insight-eyebrow">LAPORAN PENGURUS</p><h3>Laporan Bulanan Otomatis</h3><p>Ringkasan setiap pertemuan, tingkat kehadiran, dan cetak sebagai PDF.</p></div></div>
-        <div class="insight-tools"><label>Bulan laporan<input id="insight-report-month" type="month"></label><label>Jenis pengajian<select id="insight-report-type"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label><button id="insight-report-load" type="button" class="btn-muted">Tampilkan Laporan</button><button id="insight-report-print" type="button" disabled>Cetak / Simpan PDF</button></div>
+        <div class="insight-tools"><label>Bulan laporan<input id="insight-report-month" type="month"></label><label>Jenis pengajian<select id="insight-report-type"><option value="">Semua jenis</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option><option value="Desa">Desa</option><option value="Pusat">Pusat</option></select></label><button id="insight-report-load" type="button" class="btn-muted">Tampilkan Laporan</button><button id="insight-report-print" type="button" disabled>Cetak / Simpan PDF</button></div>
         <div id="insight-report-results" aria-live="polite" class="insight-results">Pilih bulan lalu klik Tampilkan Laporan.</div>
       </article>
     </section>

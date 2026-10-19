@@ -8,7 +8,7 @@ const clean = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;
 const option = (v,t) => `<option value="${clean(v)}">${clean(t)}</option>`;
 const fmt = v => String(v ?? '').trim().toLowerCase();
 const dateLabel = v => v ? new Date(v+'T12:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}) : '';
-const eligibility = {'Caberawit':['PAUD','SD / Caberawit'],'Muda-Mudi':['Muda - Mudi'],'Kelompok':['Bapak - Bapak','Ibu - Ibu','Duda','Janda']};
+const eligibility = {'Caberawit':['PAUD','SD / Caberawit'],'Muda-Mudi':['Muda - Mudi'],'Kelompok':['Bapak - Bapak','Ibu - Ibu','Duda','Janda'],'Desa':['Bapak - Bapak','Ibu - Ibu','Duda','Janda'],'Pusat':['Bapak - Bapak','Ibu - Ibu','Duda','Janda','Muda - Mudi','SMP Sederajat','SMA Sederajat']};
 const jakartaToday = () => {
   const parts = new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
   const val = k => parts.find(p=>p.type===k)?.value;
@@ -35,7 +35,7 @@ async function callQrFunction(payload){
 }
 const eligibleMembers = event => {
   const allowed=[...(eligibility[event?.jenis_pengajian]||[])];
-  if(event?.jenis_pengajian==='Kelompok'&&event?.include_mudamudi)allowed.push('Muda - Mudi');
+  if(['Kelompok','Desa'].includes(event?.jenis_pengajian)&&event?.include_mudamudi)allowed.push('Muda - Mudi');
   return members.filter(m=>allowed.includes(m.kategori));
 };
 const eventText = e => `${dateLabel(e.event_date)} — [${e.jenis_pengajian}] ${e.title}${e.is_open?' (Dibuka)':' (Ditutup)'}`;
@@ -91,7 +91,7 @@ function createRecapControls(){
   const group=document.createElement('div');group.id='recap-multi-controls';
   group.style.cssText='grid-column:1 / -1;display:grid;gap:10px';
   group.innerHTML=`<label>Jenis pengajian untuk rekap
-    <select id="recap-type"><option value="">Semua jenis pengajian</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option></select></label>
+    <select id="recap-type"><option value="">Semua jenis pengajian</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Kelompok">Kelompok</option><option value="Desa">Desa</option><option value="Pusat">Pusat</option></select></label>
     <div><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
     <strong style="font-size:.93rem">Pilih kegiatan (boleh lebih dari satu)</strong>
     <label style="display:flex;align-items:center;gap:6px;font-weight:normal;font-size:.88rem"><input type="checkbox" id="recap-check-all" style="width:auto"> Pilih semua yang ditampilkan</label>

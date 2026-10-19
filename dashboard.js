@@ -10,10 +10,10 @@
   };
   const addDays = (date, n) => { const d=new Date(date+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10); };
   const dateID = date => new Date(date+'T12:00:00Z').toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
-  const categorySet = { 'Caberawit':['PAUD','SD / Caberawit'], 'Muda-Mudi':['Muda - Mudi'], 'Kelompok':['Bapak - Bapak','Ibu - Ibu','Duda','Janda'] };
+  const categorySet = { 'Caberawit':['PAUD','SD / Caberawit'], 'Muda-Mudi':['Muda - Mudi'], 'Kelompok':['Bapak - Bapak','Ibu - Ibu','Duda','Janda'],'Desa':['Bapak - Bapak','Ibu - Ibu','Duda','Janda'],'Pusat':['Bapak - Bapak','Ibu - Ibu','Duda','Janda','Muda - Mudi','SMP Sederajat','SMA Sederajat'] };
   const eligible = (event, members) => {
     const cats=[...(categorySet[event.jenis_pengajian]||[])];
-    if(event.jenis_pengajian==='Kelompok'&&event.include_mudamudi) cats.push('Muda - Mudi');
+    if(['Kelompok','Desa'].includes(event.jenis_pengajian)&&event.include_mudamudi) cats.push('Muda - Mudi');
     return members.filter(m=>cats.includes(m.kategori));
   };
   let db, members=[], recentEvents=[], upcomingEvents=[], isReady=false;
@@ -73,9 +73,9 @@
       <form id="marsela-manage-form" style="display:grid;gap:12px">
         <label style="display:grid;gap:5px">Nama kegiatan<input name="title" maxlength="150" minlength="3" required placeholder="Contoh: Pengajian Kelompok" style="width:100%;padding:11px;border:1px solid #c9d9df;border-radius:9px"></label>
         <label style="display:grid;gap:5px">Tanggal kegiatan<input name="event_date" type="date" required style="width:100%;padding:11px;border:1px solid #c9d9df;border-radius:9px"></label>
-        <label style="display:grid;gap:5px">Jenis pengajian<select name="jenis_pengajian" required style="width:100%;padding:11px;border:1px solid #c9d9df;border-radius:9px"><option value="Kelompok">Kelompok</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option></select></label>
+        <label style="display:grid;gap:5px">Jenis pengajian<select name="jenis_pengajian" required style="width:100%;padding:11px;border:1px solid #c9d9df;border-radius:9px"><option value="Kelompok">Kelompok</option><option value="Caberawit">Caberawit</option><option value="Muda-Mudi">Muda-Mudi</option><option value="Desa">Desa</option><option value="Pusat">Pusat</option></select></label>
         <label style="display:grid;gap:5px">Keterangan<textarea name="notes" rows="3" maxlength="500" placeholder="Lokasi atau keterangan kegiatan" style="width:100%;padding:11px;border:1px solid #c9d9df;border-radius:9px"></textarea></label>
-        <label style="display:flex;gap:9px;align-items:center"><input name="include_mudamudi" type="checkbox"> Sertakan Muda-Mudi pada kegiatan Kelompok</label>
+        <label style="display:flex;gap:9px;align-items:center"><input name="include_mudamudi" type="checkbox"> Sertakan Muda-Mudi pada kegiatan Kelompok / Desa</label>
         <label style="display:flex;gap:9px;align-items:center"><input name="is_open" type="checkbox"> Buka presensi (hanya berlaku pada hari kegiatan)</label>
         <button id="marsela-manage-submit" type="submit" style="border:0;border-radius:10px;background:#4fb99c;color:#10283b;padding:12px;font-weight:700;cursor:pointer">Periksa Data Kegiatan</button>
       </form>
@@ -88,6 +88,14 @@
     </section>`;
     document.body.appendChild(overlay);
     const form=overlay.querySelector('#marsela-manage-form');
+    const updateMudamudiChoice=()=>{
+      const type=form.elements.namedItem('jenis_pengajian').value;
+      const checkbox=form.elements.namedItem('include_mudamudi');
+      checkbox.disabled=!['Kelompok','Desa'].includes(type);
+      if(checkbox.disabled)checkbox.checked=false;
+    };
+    form.elements.namedItem('jenis_pengajian').addEventListener('change',updateMudamudiChoice);
+    updateMudamudiChoice();
     const confirm=overlay.querySelector('#marsela-manage-confirm');
     const output=overlay.querySelector('#marsela-manage-result');
     const save=overlay.querySelector('#marsela-manage-save');
@@ -107,7 +115,7 @@
       if(!response.ok||result.error||result.ok===false)throw new Error(result.error||`Server menolak permintaan (HTTP ${response.status}).`);
       return result;
     }
-    function startNew(){editingId=null;form.reset();form.hidden=false;confirm.hidden=true;editHint.hidden=true;newBtn.textContent='+ Tambah Baru';output.textContent='';field('title').focus();}
+    function startNew(){editingId=null;form.reset();updateMudamudiChoice();form.hidden=false;confirm.hidden=true;editHint.hidden=true;newBtn.textContent='+ Tambah Baru';output.textContent='';field('title').focus();}
     async function reloadManaged(){
       list.textContent='Memuat daftar kegiatan…';
       try{
@@ -129,7 +137,7 @@
         editingId=event.id;form.hidden=false;confirm.hidden=true;
         field('title').value=event.title;field('event_date').value=event.event_date;
         field('jenis_pengajian').value=event.jenis_pengajian;field('notes').value=event.notes||'';
-        field('include_mudamudi').checked=!!event.include_mudamudi;field('is_open').checked=!!event.is_open;
+        field('include_mudamudi').checked=!!event.include_mudamudi;updateMudamudiChoice();field('is_open').checked=!!event.is_open;
         editHint.hidden=false;editHint.textContent=`Mengedit kegiatan #${event.id}. Tanggal, jenis, dan peserta tidak boleh diubah bila sudah ada presensi atau sesi QR.`;
         field('title').focus();output.textContent='';return;
       }
@@ -161,7 +169,7 @@
       }
       const duplicate=allManaged.some(x=>x.id!==editingId&&x.event_date===event_date&&x.jenis_pengajian===jenis_pengajian&&x.title.trim().toLowerCase()===title.toLowerCase());
       if(duplicate){output.textContent='Kegiatan dengan nama, tanggal, dan jenis yang sama sudah ada pada kalender ini. Tidak ada data disimpan.';return;}
-      pending={title,event_date,jenis_pengajian,notes,include_mudamudi:data.has('include_mudamudi')&&jenis_pengajian==='Kelompok',is_open:data.has('is_open')&&event_date===dateWIB()};
+      pending={title,event_date,jenis_pengajian,notes,include_mudamudi:data.has('include_mudamudi')&&['Kelompok','Desa'].includes(jenis_pengajian),is_open:data.has('is_open')&&event_date===dateWIB()};
       overlay.querySelector('#marsela-manage-preview').textContent=`${editingId?'Periksa perubahan sebelum menyimpan:':'Periksa sebelum menyimpan:'}\n${title}\n${dateID(event_date)} · ${jenis_pengajian}\n${notes||'Tanpa keterangan'}\nPresensi: ${pending.is_open?'Dibuka hari ini':'Tidak dibuka'}`;
       form.hidden=true;confirm.hidden=false;output.textContent='';save.focus();
     });
