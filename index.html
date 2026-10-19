@@ -21,6 +21,7 @@
   <!-- CSS MARSELA -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="premium.css">
+  <link rel="stylesheet" href="sensus-layout.css">
 </head>
 
 <body>
@@ -60,6 +61,7 @@
       <p id="dash-message" class="message" role="status"></p>
     </section>
     <section id="sensus-section" hidden>
+    <div id="sensus-admin-entry" hidden><button type="button" id="sensus-admin-open">Kelola Data Sensus (Pengurus)</button></div>
     <!-- 📊 STATISTICS -->
     <div class="stats-grid" id="stats"></div>
     
@@ -251,6 +253,7 @@
 
 <script src="config.js"></script>
 <script src="admin-mode.js" defer></script>
+<script src="sensus-admin.js" defer></script>
 <script src="presensi.js" defer></script>
 <script src="dashboard.js" defer></script>
 <script src="insights.js" defer></script>

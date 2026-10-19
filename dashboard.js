@@ -1,5 +1,4 @@
-/* Marsela Dashboard — UI publik baca-saja, sumber data Supabase.
-   Panel Kelola Kegiatan tahap awal adalah pratinjau; tidak menulis ke database. */
+/* MARSELA Dashboard — data publik baca-saja, perubahan kegiatan via Edge Function. */
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
@@ -50,7 +49,7 @@
       calendarSelected=button.dataset.date;renderCalendar();
     });
   }
-  // Penambahan kegiatan hanya melalui Edge Function dengan verifikasi PIN di server.
+  // Perubahan kegiatan hanya melalui Edge Function dengan token sesi pengurus.
   function installEventManager(){
     if($('marsela-manage-open'))return;
     const root=$('marsela-calendar');
@@ -67,7 +66,10 @@
     overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(8,25,39,.7);padding:16px;overflow:auto;display:none;align-items:flex-start;justify-content:center';
     overlay.innerHTML=`<section role="dialog" aria-modal="true" aria-labelledby="marsela-manage-heading" style="background:#fff;color:#183047;width:min(100%,560px);border-radius:18px;padding:22px;margin:5vh auto;box-shadow:0 20px 70px #0004">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><h3 id="marsela-manage-heading" style="margin:0;color:#183047">Kelola Kegiatan</h3><button type="button" id="marsela-manage-close" aria-label="Tutup" style="border:0;background:#edf3f5;border-radius:8px;padding:9px 13px;color:#183047;cursor:pointer">Tutup ×</button></div>
-      <p style="color:#526779;line-height:1.5">Tambah kegiatan baru, termasuk tanggal lampau untuk migrasi presensi dari buku. Penyimpanan memerlukan PIN pengurus.</p>
+      <p style="color:#526779;line-height:1.5">Tambah kegiatan baru, termasuk tanggal lampau untuk migrasi presensi dari buku. Penyimpanan menggunakan sesi Mode Pengurus yang sedang aktif.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0"><button type="button" id="marsela-manage-new" class="btn-muted">+ Tambah Baru</button><label style="display:flex;gap:6px;align-items:center;font-size:13px"><input type="checkbox" id="marsela-manage-show-archived"> Tampilkan arsip</label></div>
+      <div id="marsela-manage-list" style="max-height:290px;overflow:auto;display:grid;gap:8px;margin:10px 0 18px"></div>
+      <p id="marsela-manage-edit-hint" hidden style="color:#526779;font-size:13px"></p>
       <form id="marsela-manage-form" style="display:grid;gap:12px">
         <label style="display:grid;gap:5px">Nama kegiatan<input name="title" maxlength="150" minlength="3" required placeholder="Contoh: Pengajian Kelompok" style="width:100%;padding:11px;border:1px solid #c9d9df;border-radius:9px"></label>
         <label style="display:grid;gap:5px">Tanggal kegiatan<input name="event_date" type="date" required style="width:100%;padding:11px;border:1px solid #c9d9df;border-radius:9px"></label>
@@ -79,7 +81,7 @@
       </form>
       <div id="marsela-manage-confirm" hidden style="margin-top:14px;border-top:1px solid #dce7eb;padding-top:14px">
         <p id="marsela-manage-preview" style="white-space:pre-line;color:#183047;line-height:1.6"></p>
-        <label style="display:grid;gap:6px">PIN pengurus<input id="marsela-manage-pin" type="password" autocomplete="off" minlength="20" placeholder="Masukkan PIN pengurus" style="width:100%;padding:11px;border:1px solid #c9d9df;border-radius:9px"></label>
+        
         <div style="display:flex;gap:10px;margin-top:12px"><button id="marsela-manage-back" type="button" style="flex:1;padding:12px;border:1px solid #c9d9df;border-radius:9px;background:#fff;color:#183047">Kembali</button><button id="marsela-manage-save" type="button" style="flex:2;padding:12px;border:0;border-radius:9px;background:#4fb99c;color:#10283b;font-weight:700">Simpan Kegiatan</button></div>
       </div>
       <p id="marsela-manage-result" role="status" aria-live="polite" style="margin:12px 0 0;color:#526779;white-space:pre-line"></p>
@@ -88,15 +90,65 @@
     const form=overlay.querySelector('#marsela-manage-form');
     const confirm=overlay.querySelector('#marsela-manage-confirm');
     const output=overlay.querySelector('#marsela-manage-result');
-    const pinInput=overlay.querySelector('#marsela-manage-pin');
     const save=overlay.querySelector('#marsela-manage-save');
-    let pending=null, saving=false;
-    const close=()=>{if(saving)return;overlay.hidden=true;overlay.style.display='none';pinInput.value='';pending=null;trigger.focus();};
-    trigger.addEventListener('click',()=>{if(!window.marselaIsAdmin?.())return;overlay.hidden=false;overlay.style.display='flex';form.hidden=false;confirm.hidden=true;output.textContent='';form.querySelector('[name="title"]').focus();});
+    let pending=null, saving=false, editingId=null, allManaged=[];
+    const list=overlay.querySelector('#marsela-manage-list');
+    const editHint=overlay.querySelector('#marsela-manage-edit-hint');
+    const newBtn=overlay.querySelector('#marsela-manage-new');
+    const archivedToggle=overlay.querySelector('#marsela-manage-show-archived');
+    const field=name=>form.elements.namedItem(name);
+    async function callAdmin(action, payload={}){
+      const adminToken=window.marselaAdminToken?.();
+      if(!window.marselaIsAdmin?.()||!adminToken)throw new Error('Sesi pengurus tidak aktif. Silakan masuk kembali.');
+      const c=window.MARSeLA_CONFIG||{};
+      if(!/^https:\/\/.+\.supabase\.co$/.test(c.supabaseUrl||'')||!c.supabaseAnonKey)throw new Error('Konfigurasi Supabase tidak tersedia.');
+      const response=await fetch(`${c.supabaseUrl}/functions/v1/marsela-qr`,{method:'POST',headers:{'Content-Type':'application/json','apikey':c.supabaseAnonKey,'Authorization':`Bearer ${c.supabaseAnonKey}`},body:JSON.stringify({action,adminToken,...payload})});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok||result.error||result.ok===false)throw new Error(result.error||`Server menolak permintaan (HTTP ${response.status}).`);
+      return result;
+    }
+    function startNew(){editingId=null;form.reset();form.hidden=false;confirm.hidden=true;editHint.hidden=true;newBtn.textContent='+ Tambah Baru';output.textContent='';field('title').focus();}
+    async function reloadManaged(){
+      list.textContent='Memuat daftar kegiatan…';
+      try{
+        allManaged=await pageAll('marsela_events','id,title,event_date,notes,is_open,jenis_pengajian,include_mudamudi,is_archived',q=>q.order('event_date',{ascending:false}).order('id',{ascending:false}));
+        drawManaged();
+      }catch(e){list.textContent='Gagal memuat daftar: '+(e.message||String(e));}
+    }
+    function drawManaged(){
+      const shown=allManaged.filter(e=>archivedToggle.checked||!e.is_archived);
+      list.innerHTML=shown.length?shown.map(e=>`<div style="border:1px solid #dbe6e9;border-radius:10px;padding:10px;display:grid;gap:8px"><div><b>${escape(e.title)}</b><div style="font-size:12px;color:#526779">${escape(dateID(e.event_date))} · ${escape(e.jenis_pengajian)} ${e.is_archived?'· DIARSIPKAN':''}</div></div><div style="display:flex;flex-wrap:wrap;gap:6px"><button type="button" class="btn-muted" data-op="edit" data-id="${e.id}">Edit</button><button type="button" class="btn-muted" data-op="${e.is_archived?'restore':'archive'}" data-id="${e.id}">${e.is_archived?'Pulihkan':'Arsipkan'}</button><button type="button" class="btn-muted" data-op="delete" data-id="${e.id}">Hapus</button></div></div>`).join(''):'<p style="color:#526779">Tidak ada kegiatan.</p>';
+    }
+    archivedToggle.addEventListener('change',drawManaged);
+    newBtn.addEventListener('click',startNew);
+    list.addEventListener('click',async e=>{
+      const btn=e.target.closest('button[data-op]');if(!btn||saving)return;
+      const event=allManaged.find(x=>String(x.id)===btn.dataset.id);if(!event)return;
+      const op=btn.dataset.op;
+      if(op==='edit'){
+        editingId=event.id;form.hidden=false;confirm.hidden=true;
+        field('title').value=event.title;field('event_date').value=event.event_date;
+        field('jenis_pengajian').value=event.jenis_pengajian;field('notes').value=event.notes||'';
+        field('include_mudamudi').checked=!!event.include_mudamudi;field('is_open').checked=!!event.is_open;
+        editHint.hidden=false;editHint.textContent=`Mengedit kegiatan #${event.id}. Tanggal, jenis, dan peserta tidak boleh diubah bila sudah ada presensi atau sesi QR.`;
+        field('title').focus();output.textContent='';return;
+      }
+      const descriptions={archive:`Arsipkan kegiatan "${event.title}"? Riwayat tetap tersimpan.`,restore:`Pulihkan kegiatan "${event.title}"?`,delete:`HAPUS PERMANEN kegiatan "${event.title}"? Hanya dapat dilakukan jika belum ada presensi dan sesi QR.`};
+      if(!window.confirm(descriptions[op]))return;
+      if(op==='delete'&&window.prompt('Ketik nama kegiatan persis untuk konfirmasi hapus permanen:')!==event.title){output.textContent='Penghapusan dibatalkan: nama konfirmasi tidak cocok.';return;}
+      saving=true;btn.disabled=true;output.textContent='Memproses…';
+      try{
+        await callAdmin(op==='delete'?'delete_event':op==='archive'?'archive_event':'restore_event',{eventId:event.id,...(op==='delete'?{confirmTitle:event.title}:{})});
+        output.textContent='Perubahan kegiatan berhasil.';await reloadManaged();await Promise.allSettled([refreshData(),loadSchedule()]);await loadDashboard().catch(console.error);
+      }catch(err){output.textContent='Gagal: '+(err.message||String(err));}
+      finally{saving=false;btn.disabled=false;}
+    });
+    const close=()=>{if(saving)return;overlay.hidden=true;overlay.style.display='none';pending=null;trigger.focus();};
+    trigger.addEventListener('click',()=>{if(!window.marselaIsAdmin?.())return;overlay.hidden=false;overlay.style.display='flex';startNew();reloadManaged();});
     overlay.querySelector('#marsela-manage-close').addEventListener('click',close);
     overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
     overlay.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
-    overlay.querySelector('#marsela-manage-back').addEventListener('click',()=>{if(saving)return;confirm.hidden=true;form.hidden=false;pinInput.value='';output.textContent='';});
+    overlay.querySelector('#marsela-manage-back').addEventListener('click',()=>{if(saving)return;confirm.hidden=true;form.hidden=false;output.textContent='';});
     form.addEventListener('submit',e=>{
       e.preventDefault();
       const data=new FormData(form);
@@ -107,28 +159,20 @@
       if(title.length<3||title.length>150||!/^\d{4}-\d{2}-\d{2}$/.test(event_date)){
         output.textContent='Periksa nama dan tanggal kegiatan.';return;
       }
-      const duplicate=calendarEvents.some(x=>x.event_date===event_date&&x.jenis_pengajian===jenis_pengajian&&x.title.trim().toLowerCase()===title.toLowerCase());
+      const duplicate=allManaged.some(x=>x.id!==editingId&&x.event_date===event_date&&x.jenis_pengajian===jenis_pengajian&&x.title.trim().toLowerCase()===title.toLowerCase());
       if(duplicate){output.textContent='Kegiatan dengan nama, tanggal, dan jenis yang sama sudah ada pada kalender ini. Tidak ada data disimpan.';return;}
       pending={title,event_date,jenis_pengajian,notes,include_mudamudi:data.has('include_mudamudi')&&jenis_pengajian==='Kelompok',is_open:data.has('is_open')&&event_date===dateWIB()};
-      overlay.querySelector('#marsela-manage-preview').textContent=`Periksa sebelum menyimpan:\n${title}\n${dateID(event_date)} · ${jenis_pengajian}\n${notes||'Tanpa keterangan'}\nPresensi: ${pending.is_open?'Dibuka hari ini':'Tidak dibuka'}`;
-      form.hidden=true;confirm.hidden=false;output.textContent='';pinInput.focus();
+      overlay.querySelector('#marsela-manage-preview').textContent=`${editingId?'Periksa perubahan sebelum menyimpan:':'Periksa sebelum menyimpan:'}\n${title}\n${dateID(event_date)} · ${jenis_pengajian}\n${notes||'Tanpa keterangan'}\nPresensi: ${pending.is_open?'Dibuka hari ini':'Tidak dibuka'}`;
+      form.hidden=true;confirm.hidden=false;output.textContent='';save.focus();
     });
     save.addEventListener('click',async()=>{
       if(saving||!pending)return;
-      const pin=pinInput.value;
-      if(pin.length<20){output.textContent='PIN pengurus minimal 20 karakter.';pinInput.focus();return;}
-      const c=window.MARSeLA_CONFIG||{};
-      if(!/^https:\/\/.+\.supabase\.co$/.test(c.supabaseUrl||'')||!c.supabaseAnonKey){output.textContent='Konfigurasi Supabase tidak tersedia.';return;}
       saving=true;save.disabled=true;save.textContent='Menyimpan…';output.textContent='Mengirim kegiatan ke server…';
       try{
-        const response=await fetch(`${c.supabaseUrl}/functions/v1/marsela-qr`,{
-          method:'POST',headers:{'Content-Type':'application/json','apikey':c.supabaseAnonKey,'Authorization':`Bearer ${c.supabaseAnonKey}`},
-          body:JSON.stringify({action:'create_event',adminPin:pin,...pending})
-        });
-        const result=await response.json().catch(()=>({}));
-        if(!response.ok||result.error||result.success===false)throw new Error(result.error||`Server menolak permintaan (HTTP ${response.status}).`);
-        output.textContent=`Kegiatan berhasil disimpan: ${pending.title} (${dateID(pending.event_date)}).`;
-        pinInput.value='';pending=null;confirm.hidden=true;form.hidden=false;form.reset();
+        await callAdmin(editingId?'update_event':'create_event',{...(editingId?{eventId:editingId}:{}),...pending});
+        output.textContent=`Kegiatan berhasil ${editingId?'diperbarui':'disimpan'}: ${pending.title} (${dateID(pending.event_date)}).`;
+        editingId=null;editHint.hidden=true;await reloadManaged();
+        pending=null;confirm.hidden=true;form.hidden=false;form.reset();
         await Promise.allSettled([refreshData(),loadSchedule()]);
         await loadDashboard().catch(console.error);
       }catch(error){output.textContent='Gagal menyimpan: '+(error.message||String(error));}
@@ -196,7 +240,7 @@
   async function getEvents(){
     const today=dateWIB();
     const from=addDays(today,-180),to=addDays(today,60);
-    const all=await pageAll('marsela_events','id,title,event_date,notes,is_open,jenis_pengajian,include_mudamudi',q=>q.gte('event_date',from).lte('event_date',to).order('event_date',{ascending:false}).order('id',{ascending:false}));
+    const all=await pageAll('marsela_events','id,title,event_date,notes,is_open,jenis_pengajian,include_mudamudi,is_archived',q=>q.eq('is_archived',false).gte('event_date',from).lte('event_date',to).order('event_date',{ascending:false}).order('id',{ascending:false}));
     recentEvents=all.filter(e=>e.event_date<=today);
     upcomingEvents=all.filter(e=>e.event_date>=today).sort((a,b)=>a.event_date.localeCompare(b.event_date)||Number(a.id)-Number(b.id));
   }
@@ -237,7 +281,7 @@
     const last=isoDay(calendarYear,calendarMonth,new Date(Date.UTC(calendarYear,calendarMonth,0)).getUTCDate());
     $('cal-status').textContent='Memuat jadwal dari Supabase…';
     try{
-      const list=await pageAll('marsela_events','id,title,event_date,notes,is_open,jenis_pengajian,include_mudamudi',q=>q.gte('event_date',first).lte('event_date',last).order('event_date',{ascending:true}).order('id',{ascending:true}));
+      const list=await pageAll('marsela_events','id,title,event_date,notes,is_open,jenis_pengajian,include_mudamudi,is_archived',q=>q.eq('is_archived',false).gte('event_date',first).lte('event_date',last).order('event_date',{ascending:true}).order('id',{ascending:true}));
       if(request!==calendarRequest)return;
       calendarEvents=list;
       if(!calendarSelected.startsWith(first.slice(0,7)))calendarSelected=first;
