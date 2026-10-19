@@ -29,15 +29,18 @@
     <h2>DATA SENSUS KELOMPOK MARSELA</h2>
     
     <div class="top-navigation">
-      <div class="brand-mark"><span class="brand-symbol">M</span><div><strong>MARSELA</strong><small>Community Portal</small></div></div>
+      <div class="brand-mark"><button type="button" id="marsela-admin-entry" class="brand-symbol marsela-admin-entry" aria-label="Masuk Mode Pengurus" title="Masuk Mode Pengurus">M</button><div><strong>MARSELA</strong><small>Community Portal</small></div></div>
       <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="utility-menu" aria-label="Buka menu"><span></span><span></span><span></span><b>Menu</b></button>
       <div class="utility-menu" id="utility-menu" hidden>
-        <div class="utility-menu-heading"><span>MENU PENGELOLAAN</span><small>Akses presensi & laporan</small></div>
-        <button type="button" class="utility-link" data-section="presensi-section" data-action="historical"><span class="utility-icon">✎</span><span><strong>Input Presensi Historis (Pengurus)</strong><small>Input kehadiran lampau dari buku presensi</small></span><span class="utility-arrow">↗</span></button>
+        <div class="utility-menu-heading"><span>MENU INFORMASI &amp; STATISTIK</span><small>Tersedia untuk semua anggota</small></div>
         <button type="button" class="utility-link" data-section="rekap-section"><span class="utility-icon">▤</span><span><strong>Rekap Presensi Pengajian</strong><small>Daftar kehadiran setiap kegiatan</small></span><span class="utility-arrow">↗</span></button>
         <button type="button" class="utility-link" data-section="analisis-section"><span class="utility-icon">◫</span><span><strong>Analisis Bulanan</strong><small>Tren dan statistik kehadiran</small></span><span class="utility-arrow">↗</span></button>
         <button type="button" class="utility-link" data-section="riwayat-section"><span class="utility-icon">◎</span><span><strong>Riwayat Individual</strong><small>Riwayat presensi anggota</small></span><span class="utility-arrow">↗</span></button>
-        <button type="button" class="utility-link" data-section="laporan-section"><span class="utility-icon">▧</span><span><strong>Laporan Pengurus</strong><small>Ringkasan bulanan dan cetak PDF</small></span><span class="utility-arrow">↗</span></button>
+        <div id="marsela-admin-menu-items" hidden>
+          <div class="utility-menu-heading"><span>MENU KHUSUS PENGURUS</span><small>Memerlukan Mode Pengurus</small></div>
+          <button type="button" class="utility-link" data-section="presensi-section" data-action="historical"><span class="utility-icon">✎</span><span><strong>Input Presensi Historis (Pengurus)</strong><small>Input kehadiran lampau dari buku presensi</small></span><span class="utility-arrow">↗</span></button>
+          <button type="button" class="utility-link" data-section="laporan-section"><span class="utility-icon">▧</span><span><strong>Laporan Pengurus</strong><small>Ringkasan bulanan dan cetak PDF</small></span><span class="utility-arrow">↗</span></button>
+        </div>
       </div>
     </div>
     <nav class="main-tabs" aria-label="Navigasi utama">
@@ -113,7 +116,7 @@
       <div class="subcard">
         <h3>Isi Presensi</h3>
         <form id="attendance-form" class="form-grid">
-          <label>Mode presensi<select id="attendance-mode"><option value="self">Presensi anggota (hari ini)</option><option value="manual">Input pengurus dari buku presensi</option></select></label>
+          <label>Mode presensi<select id="attendance-mode"><option value="self">Presensi anggota (hari ini)</option><option value="manual" hidden disabled>Input pengurus dari buku presensi</option></select></label>
           <label>Kegiatan<select id="public-event" required></select></label>
           <div id="member-picker-wrap" style="position:relative;min-width:0">
             <label for="member-search">Nama anggota</label>
@@ -232,7 +235,22 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div id="marsela-admin-dialog" class="marsela-admin-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="marsela-admin-title">
+  <div class="marsela-admin-panel">
+    <h3 id="marsela-admin-title">Masuk Mode Pengurus</h3>
+    <p>Masukkan PIN pengurus 20 digit yang sudah digunakan MARSELA.</p>
+    <form id="marsela-admin-form">
+      <label for="marsela-admin-pin">PIN Pengurus</label>
+      <input id="marsela-admin-pin" type="password" minlength="20" autocomplete="off" required placeholder="PIN pengurus">
+      <p id="marsela-admin-status" role="status" aria-live="polite"></p>
+      <div class="marsela-admin-actions"><button type="button" id="marsela-admin-cancel" class="btn-muted">Batal</button><button type="submit" id="marsela-admin-submit">Masuk Pengurus</button></div>
+    </form>
+    <div id="marsela-admin-logout-view" hidden><p>Mode Pengurus aktif pada halaman ini.</p><button type="button" id="marsela-admin-logout">Keluar Mode Pengurus</button></div>
+  </div>
+</div>
+
 <script src="config.js"></script>
+<script src="admin-mode.js" defer></script>
 <script src="presensi.js" defer></script>
 <script src="dashboard.js" defer></script>
 <script src="insights.js" defer></script>

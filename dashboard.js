@@ -60,6 +60,7 @@
     trigger.id='marsela-manage-open';trigger.type='button';trigger.className='btn-muted';
     trigger.textContent='Kelola Kegiatan';
     header.appendChild(trigger);
+    trigger.hidden=!window.marselaIsAdmin?.();
     const overlay=document.createElement('div');
     overlay.id='marsela-manage-overlay';
     overlay.hidden=true;
@@ -91,7 +92,7 @@
     const save=overlay.querySelector('#marsela-manage-save');
     let pending=null, saving=false;
     const close=()=>{if(saving)return;overlay.hidden=true;overlay.style.display='none';pinInput.value='';pending=null;trigger.focus();};
-    trigger.addEventListener('click',()=>{overlay.hidden=false;overlay.style.display='flex';form.hidden=false;confirm.hidden=true;output.textContent='';form.querySelector('[name="title"]').focus();});
+    trigger.addEventListener('click',()=>{if(!window.marselaIsAdmin?.())return;overlay.hidden=false;overlay.style.display='flex';form.hidden=false;confirm.hidden=true;output.textContent='';form.querySelector('[name="title"]').focus();});
     overlay.querySelector('#marsela-manage-close').addEventListener('click',close);
     overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
     overlay.addEventListener('keydown',e=>{if(e.key==='Escape')close();});

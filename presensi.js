@@ -43,6 +43,7 @@ const chosenEvents = () => events.filter(e=>selectedRecapIds.has(String(e.id)));
 function tabs(){
   const map={beranda:'beranda-section',sensus:'sensus-section',presensi:'presensi-section',jadwal:'jadwal-section',statistik:'statistik-section'};
   window.showMarselaSection=function(id){
+    if(window.marselaAdminGuard&&!window.marselaAdminGuard(id))return;
     document.querySelectorAll('#beranda-section,#sensus-section,#presensi-section,#jadwal-section,#statistik-section,#rekap-section,#analisis-section,#riwayat-section,#laporan-section').forEach(s=>s.hidden=s.id!==id);
     document.querySelectorAll('.tab-btn').forEach(b=>{const active=map[b.dataset.tab]===id;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
     document.querySelectorAll('.utility-link').forEach(b=>b.classList.toggle('active',b.dataset.section===id&&(b.dataset.action!=='historical'||attendanceMode()==='manual')));
@@ -68,6 +69,7 @@ function tabs(){
     toggle.addEventListener('click',()=>{const open=menu.hidden;menu.hidden=!open;toggle.setAttribute('aria-expanded',String(open));});
     document.querySelectorAll('.utility-link').forEach(b=>b.addEventListener('click',()=>{
       if(b.dataset.action==='historical'){
+        if(!window.marselaIsAdmin?.())return;
         const selector=el('attendance-mode');
         if(selector){
           selector.value='manual';
@@ -192,6 +194,7 @@ function attendanceMode(){
 function updateAttendanceMode(){
   const mode=attendanceMode();
   const selector=el('attendance-mode');
+  if(selector?.value==='manual'&&!window.marselaIsAdmin?.())selector.value='self';
   const wrap=el('manual-admin-pin-wrap');
   const pin=el('manual-admin-pin');
   if(selector){
