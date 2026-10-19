@@ -24,7 +24,7 @@
   const isoDay=(y,m,d)=>`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
   const monthName=(y,m)=>new Intl.DateTimeFormat('id-ID',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,1)));
   const shortDay=['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
-  const eventClass=e=> e.jenis_pengajian==='Caberawit'?'caberawit':e.jenis_pengajian==='Muda-Mudi'?'mudamudi':'kelompok';
+  const eventClass=e=> ({'Caberawit':'caberawit','Muda-Mudi':'mudamudi','Kelompok':'kelompok','Desa':'desa','Pusat':'pusat'}[e.jenis_pengajian]||'kelompok');
   const labelType=e=>e.jenis_pengajian||'Pengajian';
   function ensureCalendar(){
     if($('marsela-calendar'))return;
@@ -34,7 +34,7 @@
         <div class="cal-toolbar-title"><span class="cal-eyebrow">KALENDER BULANAN</span><h3 id="cal-month-title"></h3></div>
         <div class="cal-toolbar-actions"><button id="cal-prev" type="button" class="cal-icon-btn" aria-label="Bulan sebelumnya">&#10094;</button><button id="cal-today" type="button" class="btn-muted">Bulan ini</button><button id="cal-next" type="button" class="cal-icon-btn" aria-label="Bulan berikutnya">&#10095;</button></div>
       </div>
-      <div class="cal-legend" aria-label="Legenda jenis pengajian"><span><i class="cal-dot caberawit"></i>Caberawit</span><span><i class="cal-dot mudamudi"></i>Muda-Mudi</span><span><i class="cal-dot kelompok"></i>Kelompok</span></div>
+      <div class="cal-legend" aria-label="Legenda jenis pengajian"><span><i class="cal-dot caberawit"></i>Caberawit</span><span><i class="cal-dot mudamudi"></i>Muda-Mudi</span><span><i class="cal-dot kelompok"></i>Kelompok</span><span><i class="cal-dot desa"></i>Desa</span><span><i class="cal-dot pusat"></i>Pusat</span></div>
       <div class="cal-scroller"><div id="cal-grid" class="cal-grid" role="group" aria-label="Tanggal kegiatan"></div></div>
       <div id="cal-status" class="cal-status" role="status" aria-live="polite"></div>
       <div class="cal-details-head"><h3 id="cal-selected-title">Detail Kegiatan</h3><span id="cal-selected-count" class="cal-count"></span></div>
@@ -261,7 +261,7 @@
     const qrAction=e.event_date===dateWIB()&&e.is_open
       ? `<button type="button" class="marsela-qr-open" data-event-id="${escape(e.id)}" data-event-title="${escape(e.title)}"><span aria-hidden="true">▦</span> Tampilkan QR</button>`
       : '';
-    return `<article class="schedule-item ${cls}"><div class="schedule-date"><strong>${escape(dateID(e.event_date))}</strong><span>${escape(e.jenis_pengajian||'Pengajian')}</span></div><div class="schedule-detail"><b>${escape(e.title)}</b><small>${escape(e.notes||'Waktu/tempat belum dicantumkan')}</small></div><span class="schedule-pill">${e.event_date===dateWIB()?(e.is_open?'Presensi dibuka':'Hari ini'):'Akan datang'}</span>${qrAction}</article>`;
+    return `<article class="schedule-item ${cls}"><div class="schedule-date"><strong>${escape(dateID(e.event_date))}</strong><span>${escape(e.jenis_pengajian||'Pengajian')}</span></div><div class="schedule-detail"><b>${escape(e.title)}</b><small>${escape(e.notes||'Waktu/tempat belum dicantumkan')}</small></div><span class="schedule-pill">${e.event_date<dateWIB()?'Selesai':e.event_date===dateWIB()?(e.is_open?'Presensi dibuka':'Hari ini'):'Akan datang'}</span>${qrAction}</article>`;
   }
   async function loadDashboard(){
     if(!db){$('dash-message').textContent='Koneksi Supabase belum tersedia. Pastikan config.js sudah diisi.';return;}
