@@ -1565,3 +1565,24 @@ button:focus-visible, .tab-btn:focus-visible, select:focus-visible, input:focus-
 .marsela-confirm-lock {
   color: #526779 !important;
 }
+/* MARSELA: dialog konfirmasi presensi historis dan tipografi mobile. */
+.marsela-historical-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,28,45,.68);box-sizing:border-box}
+.marsela-historical-dialog{width:min(100%,440px);max-height:calc(100dvh - 32px);overflow:auto;box-sizing:border-box;background:#fff;border-radius:18px;padding:24px;color:#183047;box-shadow:0 20px 70px #0004}
+.marsela-historical-dialog h3{margin:0 0 10px;font-size:1.15rem;line-height:1.35}
+.marsela-historical-dialog p{font-size:.9rem;line-height:1.55;overflow-wrap:anywhere}
+.marsela-historical-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;margin-top:18px}
+.marsela-historical-actions button{padding:10px 14px;border-radius:9px;border:1px solid #cbd5e1;background:#fff;color:#183047;font-weight:700;cursor:pointer}
+.marsela-historical-actions #hist-confirm-save{background:#16846e;color:#fff;border-color:#16846e}
+@media(max-width:600px){
+ .marsela-historical-dialog{padding:18px;border-radius:14px}
+ .marsela-historical-dialog h3{font-size:1rem}
+ .marsela-historical-dialog p{font-size:.84rem}
+ .marsela-historical-actions button{font-size:.84rem;padding:10px 12px}
+ .marsela-confirm-card{max-width:100%;box-sizing:border-box}
+ .marsela-confirm-card h3{font-size:1.08rem}
+ .marsela-confirm-card p,.marsela-confirm-card .marsela-confirm-lock{font-size:.83rem;line-height:1.5}
+ .marsela-confirm-card .marsela-confirm-details{font-size:.82rem}
+ .schedule-detail b{font-size:.86rem}
+ .schedule-detail small,.schedule-date span{font-size:.76rem}
+ .schedule-pill{font-size:.7rem}
+}

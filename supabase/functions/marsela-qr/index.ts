@@ -290,14 +290,14 @@ Deno.serve(async (req: Request) => {
       if (body.include_mudamudi && !["Kelompok", "Desa"].includes(jenis)) return json({ error: "Muda-Mudi hanya dapat disertakan pada kegiatan Kelompok atau Desa." }, 400);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate) || Number.isNaN(Date.parse(eventDate + "T00:00:00Z")) || new Date(eventDate + "T00:00:00Z").toISOString().slice(0,10) !== eventDate) return json({ error: "Tanggal kegiatan tidak valid." }, 400);
       if (body.is_open && (eventDate !== todayJakarta() || event.is_archived)) return json({ error: "Presensi hanya boleh dibuka untuk kegiatan aktif hari ini." }, 409);
-      const sensitiveChanged = eventDate !== event.event_date || jenis !== event.jenis_pengajian || body.include_mudamudi !== event.include_mudamudi;
-      if (sensitiveChanged) {
+      const dateChanged = eventDate !== event.event_date;
+      if (dateChanged) {
         const [{ count: attendanceCount, error: aErr }, { count: qrCount, error: qErr }] = await Promise.all([
           db.from("marsela_attendance").select("event_id", { count: "exact", head: true }).eq("event_id", eventId),
           db.from("marsela_qr_sessions").select("id", { count: "exact", head: true }).eq("event_id", eventId),
         ]);
         if (aErr) throw aErr; if (qErr) throw qErr;
-        if ((attendanceCount ?? 0) > 0 || (qrCount ?? 0) > 0) return json({ error: "Tanggal, jenis, dan peserta kegiatan tidak boleh diubah setelah ada presensi atau sesi QR." }, 409);
+        if ((attendanceCount ?? 0) > 0 || (qrCount ?? 0) > 0) return json({ error: "Tanggal kegiatan tidak boleh diubah setelah ada presensi atau sesi QR." }, 409);
       }
       const { data: duplicates, error: dErr } = await db.from("marsela_events")
         .select("id").eq("event_date", eventDate).eq("jenis_pengajian", jenis).ilike("title", title).neq("id", eventId).limit(1);

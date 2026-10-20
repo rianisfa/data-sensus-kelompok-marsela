@@ -138,12 +138,11 @@
         field('title').value=event.title;field('event_date').value=event.event_date;
         field('jenis_pengajian').value=event.jenis_pengajian;field('notes').value=event.notes||'';
         field('include_mudamudi').checked=!!event.include_mudamudi;updateMudamudiChoice();field('is_open').checked=!!event.is_open;
-        editHint.hidden=false;editHint.textContent=`Mengedit kegiatan #${event.id}. Tanggal, jenis, dan peserta tidak boleh diubah bila sudah ada presensi atau sesi QR.`;
+        editHint.hidden=false;editHint.textContent=`Mengedit kegiatan #${event.id}. Tanggal terkunci jika sudah ada presensi atau sesi QR. Jenis pengajian dan peserta boleh disesuaikan; catatan presensi lama tetap tersimpan.`;
         field('title').focus();output.textContent='';return;
       }
       const descriptions={archive:`Arsipkan kegiatan "${event.title}"? Riwayat tetap tersimpan.`,restore:`Pulihkan kegiatan "${event.title}"?`,delete:`HAPUS PERMANEN kegiatan "${event.title}"? Hanya dapat dilakukan jika belum ada presensi dan sesi QR.`};
       if(!window.confirm(descriptions[op]))return;
-      if(op==='delete'&&window.prompt('Ketik nama kegiatan persis untuk konfirmasi hapus permanen:')!==event.title){output.textContent='Penghapusan dibatalkan: nama konfirmasi tidak cocok.';return;}
       saving=true;btn.disabled=true;output.textContent='Memproses…';
       try{
         await callAdmin(op==='delete'?'delete_event':op==='archive'?'archive_event':'restore_event',{eventId:event.id,...(op==='delete'?{confirmTitle:event.title}:{})});

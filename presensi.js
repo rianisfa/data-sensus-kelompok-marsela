@@ -344,8 +344,8 @@ async function submit(ev){
   if(!dateAllowed){message(mode==='manual'?'Kegiatan historis harus bertanggal hari ini atau sebelumnya. Kegiatan hari ini harus masih dibuka.':'Presensi hanya tersedia untuk kegiatan hari ini yang masih dibuka.');return;}
   if(presence.has(id)){message('Nama ini sudah tercatat dan presensi tidak dapat diubah.');return;}
   if(mode==='qr'&&(qrValidation!=='valid'||String(selected.id)!==String(qrValidatedEventId))){message('QR belum valid. Minta QR baru kepada pengurus.');return;}
-  const adminPin=mode==='manual'?(el('manual-admin-pin')?.value.trim()||''):'';
-  if(mode==='manual'&&!adminPin){message('Masukkan kunci pengurus untuk presensi manual.');return;}
+  const adminToken=mode==='manual'?window.marselaAdminToken?.():'';
+  if(mode==='manual'&&(!window.marselaIsAdmin?.()||!adminToken)){message('Sesi pengurus tidak aktif. Silakan masuk kembali.');return;}
   const member=members.find(m=>m.id===id);
   if(!member)return;
   if(!window.confirm(`Kirim presensi ${status} untuk ${member.nama}? Setelah dikirim TIDAK BISA DIUBAH.`))return;
@@ -357,7 +357,7 @@ async function submit(ev){
       const token=new URLSearchParams(window.location.search).get('presensiToken');
       await callQrFunction({action:'submit',token,memberId:id,status});
     }else if(mode==='manual'){
-      await callQrFunction({action:'submit_manual',adminPin,eventId:selected.id,memberId:id,status});
+      await callQrFunction({action:'submit_manual',adminToken,eventId:selected.id,memberId:id,status});
     }else{
       await callQrFunction({action:'submit_self',eventId:selected.id,memberId:id,status});
     }
@@ -409,21 +409,22 @@ function renderHistoricalList(){
   el('historical-check-visible').disabled=historicalBusy;
   el('historical-clear').disabled=historicalBusy;
 }
-function askHistoricalPin(count, label){
+function confirmHistoricalSubmission(count, label){
   return new Promise(resolve=>{
     const previous=document.activeElement;
     const modal=document.createElement('div');
-    modal.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,28,45,.68)';
-    modal.innerHTML=`<div role="dialog" aria-modal="true" aria-labelledby="hist-pin-title" style="width:min(100%,440px);background:white;border-radius:18px;padding:26px;color:#183047;box-shadow:0 20px 70px #0004"><h3 id="hist-pin-title">Konfirmasi Presensi Historis</h3><p id="hist-pin-desc"></p><form id="hist-pin-form"><label for="hist-pin-input" style="display:block;margin:12px 0 6px">Kunci pengurus</label><input id="hist-pin-input" type="password" required autocomplete="off" placeholder="Masukkan kunci pengurus" style="box-sizing:border-box;width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px"><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px"><button type="button" id="hist-pin-cancel" style="padding:10px 16px;border-radius:9px;border:1px solid #cbd5e1;background:white;color:#183047">Batal</button><button type="submit" style="padding:10px 16px;border-radius:9px;border:0;background:#16846e;color:white;font-weight:bold">Konfirmasi & Simpan</button></div></form></div>`;
-    modal.querySelector('#hist-pin-desc').textContent=`Simpan ${count} presensi untuk ${label}? Data yang tersimpan tidak dapat diubah.`;
+    modal.className='marsela-historical-overlay';
+    modal.innerHTML=`<div class="marsela-historical-dialog" role="dialog" aria-modal="true" aria-labelledby="hist-confirm-title"><h3 id="hist-confirm-title">Konfirmasi Presensi Historis</h3><p id="hist-confirm-desc"></p><div class="marsela-historical-actions"><button type="button" id="hist-confirm-cancel">Batal</button><button type="button" id="hist-confirm-save">Konfirmasi & Simpan</button></div></div>`;
+    modal.querySelector('#hist-confirm-desc').textContent=`Simpan ${count} presensi untuk ${label}? Data yang tersimpan tidak dapat diubah.`;
     document.body.append(modal);
-    const input=modal.querySelector('#hist-pin-input');
-    const finish=value=>{input.value='';modal.remove();if(previous?.isConnected)previous.focus({preventScroll:true});resolve(value);};
-    modal.querySelector('#hist-pin-cancel').addEventListener('click',()=>finish(null));
-    modal.addEventListener('click',e=>{if(e.target===modal)finish(null);});
-    modal.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();finish(null);}if(e.key==='Tab'){const buttons=[input,modal.querySelector('#hist-pin-cancel'),modal.querySelector('button[type="submit"]')];if(e.shiftKey&&document.activeElement===buttons[0]){e.preventDefault();buttons[2].focus();}else if(!e.shiftKey&&document.activeElement===buttons[2]){e.preventDefault();buttons[0].focus();}}});
-    modal.querySelector('#hist-pin-form').addEventListener('submit',e=>{e.preventDefault();if(input.value.trim())finish(input.value.trim());});
-    input.focus();
+    const cancel=modal.querySelector('#hist-confirm-cancel');
+    const save=modal.querySelector('#hist-confirm-save');
+    const finish=value=>{modal.remove();if(previous?.isConnected)previous.focus({preventScroll:true});resolve(value);};
+    cancel.addEventListener('click',()=>finish(false));
+    save.addEventListener('click',()=>finish(true));
+    modal.addEventListener('click',e=>{if(e.target===modal)finish(false);});
+    modal.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();finish(false);}if(e.key==='Tab'){if(e.shiftKey&&document.activeElement===cancel){e.preventDefault();save.focus();}else if(!e.shiftKey&&document.activeElement===save){e.preventDefault();cancel.focus();}}});
+    cancel.focus();
   });
 }
 function showHistoricalNotice(success,errors,label){
@@ -452,8 +453,9 @@ async function submitHistorical(){
   const pending=[...historicalSelected].filter(([id,status])=>permitted.has(id)&&!presence.has(id)&&['Hadir','Izin','Sakit'].includes(status));
   if(!pending.length)return;
   const event=selected,label=`${event.title} (${dateLabel(event.event_date)})`;
-  const pin=await askHistoricalPin(pending.length,label);
-  if(!pin||selected?.id!==event.id||attendanceMode()!=='manual')return;
+  if(!window.marselaIsAdmin?.()||!window.marselaAdminToken?.()){message('Sesi pengurus tidak aktif. Silakan masuk kembali.');return;}
+  const confirmed=await confirmHistoricalSubmission(pending.length,label);
+  if(!confirmed||selected?.id!==event.id||attendanceMode()!=='manual'||!window.marselaIsAdmin?.())return;
   historicalBusy=true;renderHistoricalList();
   const result=el('historical-result');
   let success=0;const errors=[];
@@ -462,7 +464,7 @@ async function submitHistorical(){
     for(const [id,status] of pending){
       if(presence.has(id)){historicalSelected.delete(id);errors.push(`${members.find(m=>m.id===id)?.nama||id}: sudah tercatat`);continue;}
       try{
-        await callQrFunction({action:'submit_manual',adminPin:pin,eventId:event.id,memberId:id,status});
+        await callQrFunction({action:'submit_manual',adminToken:window.marselaAdminToken?.(),eventId:event.id,memberId:id,status});
         presence.set(id,status);historicalSelected.delete(id);success++;
       }catch(error){
         const reason=error.message||'gagal';
